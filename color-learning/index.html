@@ -17,11 +17,18 @@
             <li><a href="community.html">Community</a></li>
         </ul>
         <div class="nav-right">
-            <button class="lang-btn">EN</button>
-            <button class="font-btn">A-</button>
-            <button class="font-btn">A+</button>
+            <button class="font-btn" id="fontDecrease" aria-label="Decrease font size">A-</button>
+            <button class="font-btn" id="fontIncrease" aria-label="Increase font size">A+</button>
+            <button class="font-btn" id="contrastToggle" aria-label="Toggle high contrast mode">◐</button>
+            <button class="lang-btn" id="langToggle" aria-label="Switch language">EN</button>
         </div>
     </nav>
+
+    <div class="breadcrumb">
+        <a href="index.html">Home</a>
+        <span class="breadcrumb-sep">/</span>
+        <span class="breadcrumb-current">Homepage</span>
+    </div>
 
     <div class="container">
         <div class="hero">
@@ -54,6 +61,97 @@
             <p class="carousel-desc">Explore different color models and understand their applications</p>
         </div>
     </div>
+
+    <section class="usp-section">
+        <h2 class="usp-heading">Why Color Learning?</h2>
+        <div class="usp-grid">
+            <div class="usp-item">
+                <div class="usp-icon">🎯</div>
+                <h3>Interactive Learning</h3>
+                <p>Hands-on RGB, CMYK, HSV and YCbCr exercises with real-time visual feedback</p>
+            </div>
+            <div class="usp-item">
+                <div class="usp-icon">🎮</div>
+                <h3>Learn Through Play</h3>
+                <p>Color-matching games that make encoding theory intuitive and fun</p>
+            </div>
+            <div class="usp-item">
+                <div class="usp-icon">📊</div>
+                <h3>Track Progress</h3>
+                <p>Structured tests and scoreboards to measure your mastery step by step</p>
+            </div>
+            <div class="usp-item">
+                <div class="usp-icon">🌐</div>
+                <h3>Community Driven</h3>
+                <p>Join discussions, share insights and grow with fellow color enthusiasts</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="showcase-section">
+        <h2 class="showcase-heading">How It Works</h2>
+        <div class="showcase-slider">
+            <div class="showcase-track" id="showcaseTrack">
+                <div class="showcase-slide">
+                    <div class="showcase-visual">
+                        <div class="showcase-color-ring">
+                            <span style="--angle:0deg;--clr:#EF4444">R</span>
+                            <span style="--angle:120deg;--clr:#22C55E">G</span>
+                            <span style="--angle:240deg;--clr:#3B82F6">B</span>
+                        </div>
+                    </div>
+                    <h3>1. Explore Color Models</h3>
+                    <p>Dive into RGB, CMYK, HSV and YCbCr with interactive visual guides</p>
+                </div>
+                <div class="showcase-slide">
+                    <div class="showcase-visual">
+                        <div class="showcase-puzzle">
+                            <div class="puzzle-piece" style="background:#6366F1"></div>
+                            <div class="puzzle-piece" style="background:#F59E0B"></div>
+                            <div class="puzzle-piece" style="background:#10B981"></div>
+                        </div>
+                    </div>
+                    <h3>2. Play & Practice</h3>
+                    <p>Challenge yourself with color-matching games and hands-on puzzles</p>
+                </div>
+                <div class="showcase-slide">
+                    <div class="showcase-visual">
+                        <div class="showcase-chart">
+                            <div class="chart-bar" style="--h:60%"></div>
+                            <div class="chart-bar" style="--h:80%"></div>
+                            <div class="chart-bar" style="--h:45%"></div>
+                            <div class="chart-bar" style="--h:95%"></div>
+                        </div>
+                    </div>
+                    <h3>3. Test & Improve</h3>
+                    <p>Take graded quizzes and watch your scores climb on the leaderboard</p>
+                </div>
+            </div>
+            <div class="showcase-controls">
+                <button class="showcase-btn" id="showcasePrev">‹</button>
+                <div class="showcase-dots" id="showcaseDots">
+                    <span class="showcase-dot active"></span>
+                    <span class="showcase-dot"></span>
+                    <span class="showcase-dot"></span>
+                </div>
+                <button class="showcase-btn" id="showcaseNext">›</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="promo-section">
+        <div class="promo-card">
+            <div class="promo-badge">🎁 New Member Bonus</div>
+            <h2 class="promo-title">Start Your Color Journey Today</h2>
+            <ul class="promo-perks">
+                <li><span class="promo-check">✓</span> Free access to all beginner-level courses</li>
+                <li><span class="promo-check">✓</span> Unlock 3 premium color games instantly</li>
+                <li><span class="promo-check">✓</span> Earn a Starter Badge on your profile</li>
+                <li><span class="promo-check">✓</span> Join the community with 500+ active learners</li>
+            </ul>
+            <a href="learning.html" class="promo-cta">Get Started Free →</a>
+        </div>
+    </section>
 
     <div class="ad-banner">
         <p>Advanced Color Course</p>
@@ -100,6 +198,237 @@
         }
 
         updateSlide();
+    </script>
+
+    <script>
+        (function () {
+            const track = document.getElementById('showcaseTrack');
+            const dots = document.querySelectorAll('#showcaseDots .showcase-dot');
+            const prevBtn = document.getElementById('showcasePrev');
+            const nextBtn = document.getElementById('showcaseNext');
+            let current = 0;
+            const total = dots.length;
+
+            function goTo(index) {
+                current = ((index % total) + total) % total;
+                track.style.transform = 'translateX(-' + (current * 100) + '%)';
+                dots.forEach(function (d, i) {
+                    d.classList.toggle('active', i === current);
+                });
+            }
+
+            prevBtn.addEventListener('click', function () { goTo(current - 1); });
+            nextBtn.addEventListener('click', function () { goTo(current + 1); });
+            dots.forEach(function (d, i) {
+                d.addEventListener('click', function () { goTo(i); });
+            });
+
+            setInterval(function () { goTo(current + 1); }, 5000);
+        })();
+    </script>
+
+    <script>
+        (function () {
+            var logo = document.querySelector('nav .logo');
+            if (logo) {
+                logo.style.cursor = 'pointer';
+                logo.addEventListener('click', function () {
+                    window.location.href = 'index.html';
+                });
+            }
+        })();
+    </script>
+
+    <script>
+        (function () {
+            var fontSteps = [80, 90, 100, 110, 120, 130];
+            var fontIndex = 2;
+            var root = document.documentElement;
+
+            function applyFontSize() {
+                root.style.fontSize = fontSteps[fontIndex] + '%';
+            }
+
+            document.getElementById('fontDecrease').addEventListener('click', function () {
+                if (fontIndex > 0) { fontIndex--; applyFontSize(); }
+            });
+
+            document.getElementById('fontIncrease').addEventListener('click', function () {
+                if (fontIndex < fontSteps.length - 1) { fontIndex++; applyFontSize(); }
+            });
+
+            var contrastToggle = document.getElementById('contrastToggle');
+            contrastToggle.addEventListener('click', function () {
+                document.body.classList.toggle('high-contrast');
+                contrastToggle.classList.toggle('active');
+            });
+        })();
+    </script>
+
+    <script>
+        (function () {
+            var i18n = {
+                en: {
+                    nav_home: 'Homepage',
+                    nav_learn: 'Learning',
+                    nav_game: 'Game',
+                    nav_test: 'Test',
+                    nav_community: 'Community',
+                    breadcrumb_home: 'Home',
+                    breadcrumb_current: 'Homepage',
+                    hero_title: 'Learn Color Encoding',
+                    hero_sub: 'Master RGB/CMYK/HSV/YCbCr',
+                    carousel_desc: 'Explore different color models and understand their applications',
+                    usp_heading: 'Why Color Learning?',
+                    usp1_title: 'Interactive Learning',
+                    usp1_desc: 'Hands-on RGB, CMYK, HSV and YCbCr exercises with real-time visual feedback',
+                    usp2_title: 'Learn Through Play',
+                    usp2_desc: 'Color-matching games that make encoding theory intuitive and fun',
+                    usp3_title: 'Track Progress',
+                    usp3_desc: 'Structured tests and scoreboards to measure your mastery step by step',
+                    usp4_title: 'Community Driven',
+                    usp4_desc: 'Join discussions, share insights and grow with fellow color enthusiasts',
+                    showcase_heading: 'How It Works',
+                    slide1_title: '1. Explore Color Models',
+                    slide1_desc: 'Dive into RGB, CMYK, HSV and YCbCr with interactive visual guides',
+                    slide2_title: '2. Play & Practice',
+                    slide2_desc: 'Challenge yourself with color-matching games and hands-on puzzles',
+                    slide3_title: '3. Test & Improve',
+                    slide3_desc: 'Take graded quizzes and watch your scores climb on the leaderboard',
+                    promo_badge: '🎁 New Member Bonus',
+                    promo_title: 'Start Your Color Journey Today',
+                    promo1: 'Free access to all beginner-level courses',
+                    promo2: 'Unlock 3 premium color games instantly',
+                    promo3: 'Earn a Starter Badge on your profile',
+                    promo4: 'Join the community with 500+ active learners',
+                    promo_cta: 'Get Started Free →',
+                    ad_banner: 'Advanced Color Course',
+                    footer_copy: '© 2026 Color Learning Website. All rights reserved.',
+                    footer_privacy: 'Privacy Policy',
+                    footer_terms: 'Terms of Use'
+                },
+                zh: {
+                    nav_home: '首页',
+                    nav_learn: '学习',
+                    nav_game: '游戏',
+                    nav_test: '测试',
+                    nav_community: '社区',
+                    breadcrumb_home: '首页',
+                    breadcrumb_current: '主页',
+                    hero_title: '学习色彩编码',
+                    hero_sub: '掌握 RGB/CMYK/HSV/YCbCr',
+                    carousel_desc: '探索不同的色彩模型，了解它们的应用',
+                    usp_heading: '为什么选择色彩学习？',
+                    usp1_title: '互动学习',
+                    usp1_desc: '通过 RGB、CMYK、HSV 和 YCbCr 实操练习，获得实时视觉反馈',
+                    usp2_title: '寓教于乐',
+                    usp2_desc: '色彩匹配游戏让编码理论变得直观有趣',
+                    usp3_title: '追踪进度',
+                    usp3_desc: '结构化测试和排行榜，逐步衡量你的掌握程度',
+                    usp4_title: '社区驱动',
+                    usp4_desc: '加入讨论、分享见解，与色彩爱好者共同成长',
+                    showcase_heading: '使用流程',
+                    slide1_title: '1. 探索色彩模型',
+                    slide1_desc: '通过交互式视觉指南深入了解 RGB、CMYK、HSV 和 YCbCr',
+                    slide2_title: '2. 游戏练习',
+                    slide2_desc: '用色彩匹配游戏和拼图挑战自我',
+                    slide3_title: '3. 测试提升',
+                    slide3_desc: '参加分级测验，看着你的分数在排行榜上攀升',
+                    promo_badge: '🎁 新用户福利',
+                    promo_title: '立即开启你的色彩之旅',
+                    promo1: '免费访问所有入门课程',
+                    promo2: '立即解锁 3 款高级色彩游戏',
+                    promo3: '获得新手徽章展示在个人资料',
+                    promo4: '加入 500+ 活跃学习者的社区',
+                    promo_cta: '免费开始 →',
+                    ad_banner: '高级色彩课程',
+                    footer_copy: '© 2026 色彩学习网站. 保留所有权利.',
+                    footer_privacy: '隐私政策',
+                    footer_terms: '使用条款'
+                }
+            };
+
+            var currentLang = 'en';
+            var langBtn = document.getElementById('langToggle');
+
+            function applyLang(lang) {
+                var t = i18n[lang];
+                var navLinks = document.querySelectorAll('nav ul li a');
+                var navKeys = ['nav_home', 'nav_learn', 'nav_game', 'nav_test', 'nav_community'];
+                navLinks.forEach(function (a, i) { a.textContent = t[navKeys[i]]; });
+
+                var bcHome = document.querySelector('.breadcrumb a');
+                var bcCurrent = document.querySelector('.breadcrumb-current');
+                if (bcHome) bcHome.textContent = t.breadcrumb_home;
+                if (bcCurrent) bcCurrent.textContent = t.breadcrumb_current;
+
+                var heroH1 = document.querySelector('.hero-text h1');
+                var heroP = document.querySelector('.hero-text p');
+                if (heroH1) heroH1.textContent = t.hero_title;
+                if (heroP) heroP.textContent = t.hero_sub;
+
+                var carouselDesc = document.querySelector('.carousel-desc');
+                if (carouselDesc) carouselDesc.textContent = t.carousel_desc;
+
+                var uspHeading = document.querySelector('.usp-heading');
+                if (uspHeading) uspHeading.textContent = t.usp_heading;
+
+                var uspItems = document.querySelectorAll('.usp-item');
+                var uspKeys = ['usp1', 'usp2', 'usp3', 'usp4'];
+                uspItems.forEach(function (item, i) {
+                    var h3 = item.querySelector('h3');
+                    var p = item.querySelector('p');
+                    if (h3) h3.textContent = t[uspKeys[i] + '_title'];
+                    if (p) p.textContent = t[uspKeys[i] + '_desc'];
+                });
+
+                var showcaseHeading = document.querySelector('.showcase-heading');
+                if (showcaseHeading) showcaseHeading.textContent = t.showcase_heading;
+
+                var slideKeys = ['slide1', 'slide2', 'slide3'];
+                var slides = document.querySelectorAll('.showcase-slide');
+                slides.forEach(function (slide, i) {
+                    var h3 = slide.querySelector('h3');
+                    var p = slide.querySelector('p');
+                    if (h3) h3.textContent = t[slideKeys[i] + '_title'];
+                    if (p) p.textContent = t[slideKeys[i] + '_desc'];
+                });
+
+                var promoBadge = document.querySelector('.promo-badge');
+                var promoTitle = document.querySelector('.promo-title');
+                if (promoBadge) promoBadge.textContent = t.promo_badge;
+                if (promoTitle) promoTitle.textContent = t.promo_title;
+
+                var promoPerks = document.querySelectorAll('.promo-perks li');
+                var perkKeys = ['promo1', 'promo2', 'promo3', 'promo4'];
+                promoPerks.forEach(function (li, i) {
+                    var check = li.querySelector('.promo-check');
+                    var checkText = check ? check.outerHTML : '';
+                    li.innerHTML = checkText + ' ' + t[perkKeys[i]];
+                });
+
+                var promoCta = document.querySelector('.promo-cta');
+                if (promoCta) promoCta.textContent = t.promo_cta;
+
+                var adBanner = document.querySelector('.ad-banner p');
+                if (adBanner) adBanner.textContent = t.ad_banner;
+
+                var footerP = document.querySelector('footer p');
+                if (footerP) {
+                    footerP.innerHTML = t.footer_copy +
+                        ' <a href="#">' + t.footer_privacy + '</a>' +
+                        ' <a href="#">' + t.footer_terms + '</a>';
+                }
+
+                document.documentElement.lang = lang === 'zh' ? 'zh' : 'en';
+                langBtn.textContent = lang === 'en' ? 'EN' : '中文';
+            }
+
+            langBtn.addEventListener('click', function () {
+                currentLang = currentLang === 'en' ? 'zh' : 'en';
+                applyLang(currentLang);
+            });
+        })();
     </script>
 </body>
 </html>
