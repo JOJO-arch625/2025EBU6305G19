@@ -6,13 +6,6 @@
     <title>Learning - Color Encoding | EBU5303 Complete Course</title>
     <link rel="stylesheet" href="styles.css">
     <style>
-        *{
-            margin:0;
-            padding:0;
-            box-sizing:border-box;
-            font-family:'Segoe UI',Roboto,Arial,sans-serif;
-            transition:all 0.3s ease;
-        }
         :root {
             --primary:#2c3e50;
             --secondary:#3498db;
@@ -32,63 +25,7 @@
             background-color:var(--light);
             font-size:100%;
         }
-        nav{
-            display:flex;
-            align-items:center;
-            justify-content:space-between;
-            padding:1rem 3rem;
-            background:var(--primary);
-            color:var(--white);
-            position:sticky;
-            top:0;
-            z-index:999;
-            box-shadow:0 3px 10px var(--shadow);
-        }
-        .logo{
-            font-size:2.2rem;
-            font-weight:bold;
-            display:flex;
-            align-items:center;
-            gap:0.6rem;
-        }
-        nav ul{
-            display:flex;
-            list-style:none;
-            gap:2.5rem;
-        }
-        nav a{
-            color:var(--white);
-            text-decoration:none;
-            font-size:1.15rem;
-            padding:0.6rem 0;
-            position:relative;
-        }
-        nav a.active{
-            color:var(--accent);
-            font-weight:600;
-        }
-        nav a:hover{
-            color:var(--secondary);
-        }
-        .nav-right{
-            display:flex;
-            gap:0.8rem;
-            align-items:center;
-        }
-        .lang-btn,.font-btn{
-            padding:0.6rem 1rem;
-            border:none;
-            border-radius:6px;
-            cursor:pointer;
-            background:var(--light);
-            color:var(--primary);
-            font-weight:500;
-        }
-        .lang-btn:hover,.font-btn:hover{
-            background:var(--secondary);
-            color:var(--white);
-        }
-        .container{
+           .container{
             max-width:1400px;
             margin:3rem auto;
             padding:0 1.5rem;
@@ -352,25 +289,22 @@
     </style>
 </head>
 <body>
-    <nav>
-        <div class="logo">🎨 Color Learning</div>
-        <ul>
-            <li><a href="index.html">Homepage</a></li>
-            <li><a href="learning.html" class="active">Learning</a></li>
-            <li><a href="game.html">Game</a></li>
-            <li><a href="test.html">Test</a></li>
-            <li><a href="community.html">Community</a></li>
-        </ul>
-        <div class="nav-right">
-            <button class="lang-btn" id="langBtn">EN</button>
-            <button class="font-btn" id="fontSmaller">A-</button>
-            <button class="font-btn" id="fontBigger">A+</button>
-        </div>
-    </nav>
+<nav>
+    <div class="logo">🎨</div>
+    <ul>
+        <li><a href="index.html">Homepage</a></li>
+        <li><a href="learning.html" class="active">Learning</a></li>
+        <li><a href="game.html">Game</a></li>
+        <li><a href="test.html">Test</a></li>
+        <li><a href="community.html">Community</a></li>
+    </ul>
+    <div class="nav-right">
+        <button class="font-btn" id="fontSmaller">A-</button>
+        <button class="font-btn" id="fontBigger">A+</button>
+        <button class="lang-btn" id="langBtn">EN</button>
+    </div>
+</nav>
     <div class="container">
-        <div class="breadcrumbs">
-            <a href="index.html">Home</a><span>&gt;</span><span>Learning Center</span>
-        </div>
         <h1 class="page-title">Enjoy Your Colour Encoding Learning！</h1>
         <p class="page-subtitle">Master Light Physics, Human Vision, RGB/CMYK/HSV/YUV/YCbCr — Full Professional Knowledge System</p>
         <div class="main-tabs">
@@ -1105,7 +1039,7 @@
     </footer>
     <script>
         let currentFontSize = 100;
-        const body = document.body;
+        const root = document.documentElement;
         const mainTabs = document.querySelectorAll('.main-tab');
         const subBasics = document.getElementById('sub-basics');
         const subModels = document.getElementById('sub-models');
@@ -1149,7 +1083,6 @@
             // 切换 é¡µé¢æ é¢ãå¯æ é¢ãé¢åå±
             document.querySelector('.page-title').textContent = pageTexts[lang].title;
             document.querySelector('.page-subtitle').textContent = pageTexts[lang].subtitle;
-            document.querySelector('.breadcrumbs span:last-child').textContent = pageTexts[lang].breadcrumb;
             // åæ¢ä¸»æ ç­¾ä¸å­æ ç­¾æå­
             document.getElementById('tab-basics').textContent = tabTexts[lang].basics;
             document.getElementById('tab-models').textContent = tabTexts[lang].models;
@@ -1188,15 +1121,24 @@
                 if (target) target.style.display = 'block';
             });
         });
-        document.getElementById('fontBigger').addEventListener('click', () => {
-            if (currentFontSize < 160) {
-                currentFontSize += 10;
-                body.style.fontSize = currentFontSize + '%';
-            }
-       
+document.getElementById('fontBigger').addEventListener('click', () => {
+    if (currentFontSize < 160) {
+        currentFontSize += 10;
+        root.style.fontSize = currentFontSize + '%';
+    }
 });
-        document.getElementById('fontSmaller').addEventListener('click', () => { if(currentFontSize > 60) { currentFontSize -= 10; body.style.fontSize = currentFontSize + '%'; } });
+document.getElementById('fontSmaller').addEventListener('click', () => { if(currentFontSize > 60) { currentFontSize -= 10; root.style.fontSize = currentFontSize + '%'; } });
         document.getElementById('langBtn').addEventListener('click', switchLanguage);
+function playClickSound() {
+    const audio = new Audio('./click.mp3');
+    audio.volume = 0.3;
+    audio.play().catch(e => console.log('音效播放失败:', e));
+}
+
+const themeButtons = document.querySelectorAll('.main-tab, .sub-tab');
+themeButtons.forEach(btn => {
+    btn.addEventListener('click', playClickSound);
+});
         window.addEventListener('load', () => { document.getElementById('content-color-basics').style.display = 'block'; });
     </script>
 </body>
