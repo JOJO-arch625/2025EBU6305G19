@@ -66,6 +66,7 @@ const gameCopy = {
         dispatch_score_label: "Round Score",
         dispatch_chain_label: "Chain",
         dispatch_rating_label: "Rating",
+        dispatch_skip_label: "Skip",
         dispatch_legend_eyebrow: "Cafe Flow",
         dispatch_legend_title: "Choose a customer, prep the right colour recipe, then serve",
         dispatch_legend_line_1: "Pick one customer order from the queue.",
@@ -82,6 +83,7 @@ const gameCopy = {
         dispatch_plate_label: "No plated order yet",
         dispatch_cook: "Cook Order",
         dispatch_clear_prep: "Clear Pot",
+        dispatch_skip: "Skip Guest",
         feedback_title: "Game feedback",
         feedback_ready: "Waiting for your action",
         feedback_correct: "Nice call",
@@ -169,6 +171,7 @@ const gameCopy = {
         dispatch_score_label: "本局得分",
         dispatch_chain_label: "连击",
         dispatch_rating_label: "评级",
+        dispatch_skip_label: "跳过",
         dispatch_legend_eyebrow: "玩法流程",
         dispatch_legend_title: "先选顾客，再配方下锅，最后出餐上菜",
         dispatch_legend_line_1: "先从顾客队列里选中一个订单。",
@@ -185,6 +188,7 @@ const gameCopy = {
         dispatch_plate_label: "当前还没有成品",
         dispatch_cook: "开始烹饪",
         dispatch_clear_prep: "清空锅具",
+        dispatch_skip: "跳过客人",
         feedback_title: "游戏反馈",
         feedback_ready: "等待你的操作",
         feedback_correct: "处理得很好",
@@ -347,6 +351,7 @@ const dispatchState = {
     streak: 0,
     completedOrders: 0,
     targetOrders: 10,
+    skipsLeft: 1,
     activeOrders: [],
     nextOrderId: 1,
     running: false,
@@ -356,11 +361,6 @@ const dispatchState = {
     selectedOrderId: null,
     prepModel: null,
     platedOrderId: null
-};
-
-const dispatchTuning = {
-    orderLifetime: 15,
-    spawnIntervalSeconds: 3
 };
 
 const workbenchState = {
@@ -416,6 +416,7 @@ const elements = {
     dispatchScoreText: document.getElementById("dispatch-score-text"),
     dispatchStreakText: document.getElementById("dispatch-streak-text"),
     dispatchRatingText: document.getElementById("dispatch-rating-text"),
+    dispatchSkipText: document.getElementById("dispatch-skip-text"),
     dispatchTokenRack: document.getElementById("dispatch-token-rack"),
     dispatchOrderGrid: document.getElementById("dispatch-order-grid"),
     restartDispatch: document.getElementById("restart-dispatch"),
@@ -426,6 +427,7 @@ const elements = {
     dispatchPlateLabel: document.getElementById("dispatch-plate-label"),
     dispatchCook: document.getElementById("dispatch-cook"),
     dispatchClearPrep: document.getElementById("dispatch-clear-prep"),
+    dispatchSkip: document.getElementById("dispatch-skip"),
     hueAvatar: document.getElementById("hue-avatar"),
     hueFeedbackText: document.getElementById("hue-feedback-text"),
     hueFeedbackStatus: document.getElementById("hue-feedback-status"),
@@ -688,8 +690,7 @@ function makeOrder(template) {
         label: template.label,
         hint: template.hint,
         correctModel: template.correctModel,
-        explanation: template.explanation,
-        timeLeft: dispatchTuning.orderLifetime
+        explanation: template.explanation
     };
 }
 
@@ -698,7 +699,7 @@ function pickDispatchTemplate() {
 }
 
 function spawnDispatchOrder() {
-    if (dispatchState.activeOrders.length >= 3) {
+    if (dispatchState.activeOrders.length >= 1) {
         return;
     }
     dispatchState.activeOrders.push(makeOrder(pickDispatchTemplate()));
@@ -724,6 +725,7 @@ function startDispatchRound() {
     dispatchState.score = 0;
     dispatchState.streak = 0;
     dispatchState.completedOrders = 0;
+    dispatchState.skipsLeft = 1;
     dispatchState.activeOrders = [];
     dispatchState.nextOrderId = 1;
     dispatchState.tickCount = 0;
@@ -734,37 +736,10 @@ function startDispatchRound() {
     dispatchState.running = true;
     resetDispatchFeedback();
     spawnDispatchOrder();
-    spawnDispatchOrder();
     renderDispatchGame();
 
     dispatchState.tickHandle = setInterval(() => {
         dispatchState.timeLeft -= 1;
-        dispatchState.tickCount += 1;
-
-        dispatchState.activeOrders = dispatchState.activeOrders.flatMap((order) => {
-            const nextOrder = { ...order, timeLeft: order.timeLeft - 1 };
-            if (nextOrder.timeLeft <= 0) {
-                dispatchState.streak = 0;
-                if (dispatchState.selectedOrderId === order.id) {
-                    dispatchState.selectedOrderId = null;
-                }
-                if (dispatchState.platedOrderId === order.id) {
-                    dispatchState.platedOrderId = null;
-                }
-                updateGlobalScore(0, "reset", "status_retry");
-                setDispatchFeedback("wrong", {
-                    en: `${order.label.en} timed out. ${order.correctModel} would have been the right pipeline.`,
-                    zh: `${order.label.zh} 超时了。正确的处理模型应该是 ${order.correctModel}。`
-                });
-                playFeedbackTone(220);
-                return [];
-            }
-            return [nextOrder];
-        });
-
-        if (dispatchState.tickCount % dispatchTuning.spawnIntervalSeconds === 0) {
-            spawnDispatchOrder();
-        }
 
         if (dispatchState.completedOrders >= dispatchState.targetOrders || dispatchState.timeLeft <= 0) {
             finishDispatchRound();
@@ -869,7 +844,9 @@ function serveDispatchOrder(orderId) {
     dispatchState.selectedOrderId = null;
     dispatchState.platedOrderId = null;
     dispatchState.prepModel = null;
-    spawnDispatchOrder();
+    if (dispatchState.completedOrders < dispatchState.targetOrders && dispatchState.running) {
+        spawnDispatchOrder();
+    }
 
     if (dispatchState.completedOrders >= 8) {
         tasks.modelClear = true;
@@ -937,6 +914,29 @@ function finishDispatchRound() {
     renderDispatchGame();
 }
 
+function skipDispatchOrder() {
+    if (!dispatchState.running || dispatchState.skipsLeft <= 0 || dispatchState.activeOrders.length === 0) {
+        return;
+    }
+
+    const skippedOrder = dispatchState.activeOrders[0];
+    dispatchState.skipsLeft -= 1;
+    dispatchState.activeOrders = [];
+    dispatchState.selectedOrderId = null;
+    dispatchState.platedOrderId = null;
+    dispatchState.prepModel = null;
+
+    if (dispatchState.completedOrders < dispatchState.targetOrders) {
+        spawnDispatchOrder();
+    }
+
+    setDispatchFeedback("ready", {
+        en: `Skipped ${skippedOrder.label.en}. A new guest has taken the seat.`,
+        zh: `已跳过 ${skippedOrder.label.zh}，下一位顾客已经入座。`
+    });
+    renderDispatchGame();
+}
+
 function renderDispatchTokens() {
     elements.dispatchTokenRack.innerHTML = "";
     modelTokens.forEach((token) => {
@@ -980,7 +980,6 @@ function renderDispatchOrders() {
         const isSelected = dispatchState.selectedOrderId === order.id;
         const isCooked = dispatchState.platedOrderId === order.id;
         card.className = `cg-order-card is-${order.scenarioType}${isSelected ? " is-selected" : ""}${isCooked ? " is-cooked" : ""}`;
-        const timerPercent = Math.max(0, (order.timeLeft / dispatchTuning.orderLifetime) * 100);
         card.innerHTML = `
             <div class="cg-order-top">
                 <div class="cg-customer-avatar is-${order.scenarioType}">
@@ -1005,9 +1004,6 @@ function renderDispatchOrders() {
                     ${worldState.language === "en" ? "Serve Dish" : "上菜"}
                 </button>
             </div>
-            <div class="cg-order-timer">
-                <span class="cg-order-timer-fill" style="width:${timerPercent}%"></span>
-            </div>
         `;
 
         card.querySelector('[data-action="select"]').addEventListener("click", () => selectDispatchOrder(order.id));
@@ -1023,6 +1019,8 @@ function renderDispatchGame() {
     elements.dispatchScoreText.textContent = String(dispatchState.score);
     elements.dispatchStreakText.textContent = String(dispatchState.streak);
     elements.dispatchRatingText.textContent = getRatingFromScore(dispatchState.score, { s: 120, a: 90, b: 65 });
+    elements.dispatchSkipText.textContent = String(dispatchState.skipsLeft);
+    elements.dispatchSkip.disabled = dispatchState.skipsLeft <= 0 || !dispatchState.running;
     renderDispatchTokens();
     renderDispatchKitchen();
     renderDispatchOrders();
@@ -1330,6 +1328,7 @@ function attachEvents() {
         dispatchState.prepModel = null;
         renderDispatchGame();
     });
+    elements.dispatchSkip.addEventListener("click", skipDispatchOrder);
     elements.restartHue.addEventListener("click", startWorkbenchRound);
     elements.checkHue.addEventListener("click", evaluateWorkbenchMix);
     elements.nextTarget.addEventListener("click", () => {

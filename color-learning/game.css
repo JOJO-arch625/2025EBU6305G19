@@ -811,45 +811,153 @@ body::after {
     filter: blur(2px);
 }
 
-.cg-station-art-screen {
+.cg-station-art-cafe-body {
     left: 36px;
-    top: 26px;
-    width: 178px;
-    height: 116px;
-    border-radius: 22px;
-    background: linear-gradient(180deg, #fffefe 0%, #eef6ff 100%);
-    border: 10px solid #f5f9ff;
+    right: 36px;
+    bottom: 44px;
+    height: 108px;
+    border-radius: 28px 28px 20px 20px;
+    background: linear-gradient(180deg, #fffefd 0%, #fff1f8 100%);
+    border: 1px solid rgba(255,255,255,0.95);
     box-shadow: 0 18px 30px rgba(148, 163, 184, 0.16);
 }
 
-.cg-station-art-screen::before {
-    content: "";
-    position: absolute;
-    inset: 12px;
-    border-radius: 14px;
+.cg-station-art-cafe-awning {
+    left: 46px;
+    right: 46px;
+    top: 34px;
+    height: 40px;
+    border-radius: 18px 18px 10px 10px;
     background:
-        radial-gradient(circle at 28% 32%, rgba(255,255,255,0.9), transparent 18%),
-        linear-gradient(145deg, rgba(255,126,182,0.35), rgba(123,198,255,0.4));
+        repeating-linear-gradient(
+            90deg,
+            #ff9ec7 0 22px,
+            #fff5fb 22px 44px,
+            #9ed4ff 44px 66px,
+            #fff5fb 66px 88px
+        );
+    box-shadow: 0 14px 22px rgba(148, 163, 184, 0.12);
 }
 
-.cg-station-art-desk {
-    left: 74px;
-    bottom: 48px;
-    width: 104px;
-    height: 20px;
-    border-radius: 999px;
-    background: linear-gradient(180deg, #ffd7e7, #ffbfd8);
+.cg-station-art-cafe-window {
+    left: 58px;
+    top: 84px;
+    width: 90px;
+    height: 54px;
+    border-radius: 18px;
+    background: linear-gradient(145deg, rgba(255,126,182,0.28), rgba(123,198,255,0.42));
+    border: 7px solid #f6fbff;
 }
 
-.cg-station-art-desk::before {
+.cg-station-art-cafe-window::before {
     content: "";
     position: absolute;
-    left: 38px;
-    top: -20px;
-    width: 28px;
-    height: 24px;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 6px;
+    transform: translateX(-50%);
+    background: rgba(255,255,255,0.78);
+}
+
+.cg-station-art-cafe-window::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: 6px;
+    transform: translateY(-50%);
+    background: rgba(255,255,255,0.78);
+}
+
+.cg-station-art-cafe-door {
+    right: 58px;
+    top: 76px;
+    width: 48px;
+    height: 72px;
+    border-radius: 18px 18px 14px 14px;
+    background: linear-gradient(180deg, #f8fbff 0%, #e9f1ff 100%);
+    border: 1px solid #dfe8f6;
+}
+
+.cg-station-art-cafe-door::before {
+    content: "";
+    position: absolute;
+    left: 16px;
+    right: 16px;
+    top: 16px;
+    bottom: 18px;
     border-radius: 12px;
-    background: #f1f7ff;
+    background: linear-gradient(145deg, rgba(123,198,255,0.46), rgba(255,126,182,0.26));
+}
+
+.cg-station-art-cafe-door::after {
+    content: "";
+    position: absolute;
+    right: 8px;
+    top: 36px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #9cb6d4;
+}
+
+.cg-station-art-cafe-sign {
+    left: 92px;
+    top: 14px;
+    width: 66px;
+    height: 30px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #fff5fb, #eef6ff);
+    box-shadow: 0 10px 18px rgba(148, 163, 184, 0.12);
+}
+
+.cg-station-art-cafe-sign::before {
+    content: "CAFE";
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    color: #b05893;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+}
+
+.cg-station-art-cafe-cup {
+    left: 148px;
+    top: 92px;
+    width: 26px;
+    height: 30px;
+    border-radius: 0 0 10px 10px;
+    background: linear-gradient(180deg, #ffffff 0%, #fff0f7 100%);
+    border: 1px solid #eadfea;
+}
+
+.cg-station-art-cafe-cup::before {
+    content: "";
+    position: absolute;
+    right: -8px;
+    top: 8px;
+    width: 10px;
+    height: 12px;
+    border: 3px solid #eadfea;
+    border-left: none;
+    border-radius: 0 10px 10px 0;
+}
+
+.cg-station-art-cafe-cup::after {
+    content: "";
+    position: absolute;
+    left: 7px;
+    top: -14px;
+    width: 12px;
+    height: 16px;
+    background:
+        radial-gradient(circle at 50% 100%, rgba(255,255,255,0.9), transparent 40%),
+        linear-gradient(180deg, rgba(178, 214, 255, 0.15), rgba(255,255,255,0));
+    opacity: 0.9;
 }
 
 .cg-station-light-a,
