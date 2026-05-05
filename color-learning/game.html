@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Game - Colour Encoding Playground</title>
+    <title>Game - Colour Encoding Lab World</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="game.css">
 </head>
@@ -37,228 +37,438 @@
         </div>
     </div>
 
-    <main class="container cg-page">
-        <section class="cg-hero">
-            <div class="cg-hero-copy">
-                <p class="cg-eyebrow" data-i18n="hero_eyebrow">Chencc7002 Game Module</p>
-                <h1 data-i18n="hero_title">Play with colour models in a bright little lab.</h1>
-                <p class="cg-hero-text" data-i18n="hero_text">
-                    This page turns colour encoding into two friendly mini-games. One helps users match real media tasks to the correct colour model. The other lets users tune hue, saturation, and lightness with clear feedback.
-                </p>
-                <div class="cg-hero-actions">
-                    <a class="cg-button cg-button-primary" href="#game-selector" data-i18n="hero_cta_start">Start Playing</a>
-                    <a class="cg-button cg-button-secondary" href="#support-panel" data-i18n="hero_cta_support">See Learning Links</a>
+    <main class="container cg-app">
+        <section class="cg-world-shell">
+            <div class="cg-world" id="world">
+                <div class="cg-world-grid"></div>
+                <div class="cg-world-decor cg-world-decor-a"></div>
+                <div class="cg-world-decor cg-world-decor-b"></div>
+                <div class="cg-world-decor cg-world-decor-c"></div>
+                <div class="cg-path cg-path-a"></div>
+                <div class="cg-path cg-path-b"></div>
+                <div class="cg-path cg-path-c"></div>
+                <div class="cg-stepping-stones" aria-hidden="true">
+                    <span class="cg-stone cg-stone-1"></span>
+                    <span class="cg-stone cg-stone-2"></span>
+                    <span class="cg-stone cg-stone-3"></span>
+                    <span class="cg-stone cg-stone-4"></span>
+                    <span class="cg-stone cg-stone-5"></span>
+                    <span class="cg-stone cg-stone-6"></span>
                 </div>
-            </div>
+                <div class="cg-world-props" aria-hidden="true">
+                    <span class="cg-prop cg-prop-flower cg-prop-flower-a"></span>
+                    <span class="cg-prop cg-prop-flower cg-prop-flower-b"></span>
+                    <span class="cg-prop cg-prop-flower cg-prop-flower-c"></span>
+                    <span class="cg-prop cg-prop-crystal cg-prop-crystal-a"></span>
+                    <span class="cg-prop cg-prop-crystal cg-prop-crystal-b"></span>
+                </div>
 
-            <aside class="cg-hero-visual" aria-label="Game theme preview">
-                <div class="cg-artboard">
-                    <span class="cg-bubble cg-bubble-a"></span>
-                    <span class="cg-bubble cg-bubble-b"></span>
-                    <span class="cg-bubble cg-bubble-c"></span>
-                    <div class="cg-palette-card">
-                        <span class="cg-palette-swatch cg-swatch-pink"></span>
-                        <span class="cg-palette-swatch cg-swatch-blue"></span>
-                        <span class="cg-palette-swatch cg-swatch-mint"></span>
+                <button class="cg-landmark cg-landmark-plaza" id="station-plaza" data-station="plaza" aria-label="Welcome plaza">
+                    <div class="cg-plaza-arch"></div>
+                    <div class="cg-plaza-sign">
+                        <span class="cg-plaza-chip">CL</span>
+                        <h2 data-i18n="hero_title_short">Chromatic Plaza</h2>
                     </div>
-                    <div class="cg-art-ribbon" data-i18n="art_badge">Cute Lab Mode</div>
-                </div>
-            </aside>
-        </section>
-
-        <section class="cg-status-grid" aria-label="Game status">
-            <article class="cg-stat-card">
-                <span data-i18n="stat_points">Points</span>
-                <strong id="score-points">0</strong>
-            </article>
-            <article class="cg-stat-card">
-                <span data-i18n="stat_streak">Streak</span>
-                <strong id="score-streak">0</strong>
-            </article>
-            <article class="cg-stat-card">
-                <span data-i18n="stat_status">Status</span>
-                <strong id="score-status" data-i18n="status_ready">Ready</strong>
-            </article>
-        </section>
-
-        <section class="cg-selector-panel" id="game-selector">
-            <div class="cg-section-heading">
-                <p class="cg-eyebrow" data-i18n="selector_eyebrow">Game picker</p>
-                <h2 data-i18n="selector_title">Choose one of the two core mini-games</h2>
-            </div>
-            <div class="cg-mode-grid">
-                <button class="cg-mode-card is-active" type="button" data-mode="model-match">
-                    <span class="cg-mode-index">01</span>
-                    <strong data-i18n="mode_match_title">Model Match</strong>
-                    <span data-i18n="mode_match_desc">Pick the right colour model for each real design scenario.</span>
-                </button>
-                <button class="cg-mode-card" type="button" data-mode="hue-lab">
-                    <span class="cg-mode-index">02</span>
-                    <strong data-i18n="mode_hue_title">Hue Lab</strong>
-                    <span data-i18n="mode_hue_desc">Move HSL sliders and chase the target colour.</span>
-                </button>
-            </div>
-        </section>
-
-        <section class="cg-stage">
-            <article class="cg-panel cg-panel-game is-visible" id="panel-model-match">
-                <div class="cg-panel-header">
-                    <div>
-                        <p class="cg-eyebrow" data-i18n="match_eyebrow">Mini-game 1</p>
-                        <h2 data-i18n="match_heading">Model Match</h2>
+                    <div class="cg-plaza-crystals">
+                        <span class="cg-plaza-crystal cg-plaza-crystal-a"></span>
+                        <span class="cg-plaza-crystal cg-plaza-crystal-b"></span>
+                        <span class="cg-plaza-crystal cg-plaza-crystal-c"></span>
                     </div>
-                    <button class="cg-button cg-button-secondary" type="button" id="next-scenario" data-i18n="match_next">Next Scenario</button>
+                </button>
+
+                <button class="cg-landmark cg-landmark-quest" id="station-quest" data-station="quest">
+                    <div class="cg-quest-roof"></div>
+                    <div class="cg-quest-board">
+                        <span class="cg-quest-note cg-quest-note-a"></span>
+                        <span class="cg-quest-note cg-quest-note-b"></span>
+                        <span class="cg-quest-note cg-quest-note-c"></span>
+                        <span class="cg-quest-pin cg-quest-pin-a"></span>
+                        <span class="cg-quest-pin cg-quest-pin-b"></span>
+                        <span class="cg-quest-pin cg-quest-pin-c"></span>
+                        <span class="cg-quest-title" data-i18n="panel_title_short">Quest Board</span>
+                    </div>
+                </button>
+
+                <section class="cg-landmark cg-landmark-status">
+                    <div class="cg-status-glow"></div>
+                    <div class="cg-hud-grid">
+                        <article class="cg-hud-card">
+                            <span data-i18n="stat_points">Points</span>
+                            <strong id="score-points">0</strong>
+                        </article>
+                        <article class="cg-hud-card">
+                            <span data-i18n="stat_streak">Streak</span>
+                            <strong id="score-streak">0</strong>
+                        </article>
+                        <article class="cg-hud-card">
+                            <span data-i18n="stat_status">Status</span>
+                            <strong id="score-status" data-i18n="status_ready">Ready</strong>
+                        </article>
+                    </div>
+                </section>
+
+                <div class="cg-inspector-panel" id="inspector-panel" aria-hidden="true">
+                    <span class="cg-station-badge" id="active-station-type" data-i18n="station_idle">Idle</span>
+                    <h3 id="active-station-title" data-i18n="station_title_idle">Walk to a station</h3>
+                    <p id="active-station-text" data-i18n="station_text_idle">
+                        Use WASD or arrow keys to move the character. You can also click a station directly.
+                    </p>
+                    <div class="cg-world-controls">
+                        <span data-i18n="controls_title">Controls</span>
+                        <p data-i18n="controls_text">Move with WASD / arrow keys, then press Enter when you are near a station.</p>
+                    </div>
                 </div>
 
-                <div class="cg-progress-card">
+                <div class="cg-quest-panel" id="quest-panel" aria-hidden="true">
+                    <div class="cg-mission-bar">
+                        <div class="cg-progress-meta">
+                            <span data-i18n="mission_progress">Mission Progress</span>
+                            <strong id="mission-progress-text">0 / 4</strong>
+                        </div>
+                        <div class="cg-progress-track" aria-hidden="true">
+                            <span class="cg-progress-fill" id="mission-progress-fill"></span>
+                        </div>
+                    </div>
+
+                    <div class="cg-mission-panel">
+                        <div class="cg-panel-heading">
+                            <p class="cg-eyebrow" data-i18n="panel_eyebrow">Mission List</p>
+                            <h2 data-i18n="panel_title">What to do in this world</h2>
+                        </div>
+
+                        <ul class="cg-task-list">
+                            <li class="cg-task" id="task-model-visit">
+                                <span class="cg-task-dot"></span>
+                                <span data-i18n="task_model_visit">Reach the Dispatch Studio</span>
+                            </li>
+                            <li class="cg-task" id="task-model-clear">
+                                <span class="cg-task-dot"></span>
+                                <span data-i18n="task_model_clear">Clear enough orders in one dispatch round</span>
+                            </li>
+                            <li class="cg-task" id="task-hue-clear">
+                                <span class="cg-task-dot"></span>
+                                <span data-i18n="task_hue_clear">Finish Hue Lab with a strong average score</span>
+                            </li>
+                            <li class="cg-task" id="task-gate-visit">
+                                <span class="cg-task-dot"></span>
+                                <span data-i18n="task_gate_visit">Reach the exit gate for site links</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <button class="cg-station cg-station-model" id="station-model" data-station="model">
+                    <span class="cg-station-art cg-station-art-screen"></span>
+                    <span class="cg-station-art cg-station-art-desk"></span>
+                    <span class="cg-station-light cg-station-light-a"></span>
+                    <span class="cg-station-light cg-station-light-b"></span>
+                    <span class="cg-station-label" data-i18n="station_model">Dispatch Studio</span>
+                </button>
+
+                <button class="cg-station cg-station-hue" id="station-hue" data-station="hue">
+                    <span class="cg-station-art cg-station-art-pool"></span>
+                    <span class="cg-station-art cg-station-art-bottle cg-station-art-bottle-a"></span>
+                    <span class="cg-station-art cg-station-art-bottle cg-station-art-bottle-b"></span>
+                    <span class="cg-station-art cg-station-art-bottle cg-station-art-bottle-c"></span>
+                    <span class="cg-station-label" data-i18n="station_hue">Hue Lab</span>
+                </button>
+
+                <button class="cg-station cg-station-gate" id="station-gate" data-station="gate">
+                    <span class="cg-station-art cg-station-art-arch"></span>
+                    <span class="cg-station-art cg-station-art-portal"></span>
+                    <span class="cg-station-light cg-station-light-c"></span>
+                    <span class="cg-station-label" data-i18n="station_gate">Exit Gate</span>
+                </button>
+
+                <div class="cg-avatar" id="player" aria-hidden="true">
+                    <span class="cg-avatar-shadow"></span>
+                    <span class="cg-avatar-head"></span>
+                    <span class="cg-avatar-core"></span>
+                </div>
+
+                <div class="cg-world-prompt" id="world-prompt" data-i18n="prompt_idle">Move closer to a station</div>
+            </div>
+        </section>
+    </main>
+
+    <div class="cg-modal" id="modal-model" aria-hidden="true">
+        <div class="cg-modal-backdrop" data-close-modal></div>
+        <div class="cg-modal-panel">
+            <button class="cg-modal-close" type="button" data-close-modal aria-label="Close">×</button>
+            <div class="cg-modal-header">
+                <div>
+                    <p class="cg-eyebrow" data-i18n="match_eyebrow">Mini-game 1</p>
+                    <h2 data-i18n="match_heading">Chromatic Cafe</h2>
+                </div>
+                <div class="cg-inline-actions">
+                    <div class="cg-round-pill">
+                        <span data-i18n="time_left_label">Time Left</span>
+                        <strong id="dispatch-time-text">95s</strong>
+                    </div>
+                    <button class="cg-button cg-button-secondary" type="button" id="restart-dispatch" data-i18n="dispatch_restart">Restart Round</button>
+                </div>
+            </div>
+
+            <div class="cg-mini-grid">
+                <section class="cg-progress-card cg-progress-card-game">
                     <div class="cg-progress-meta">
-                        <span data-i18n="progress_label">Progress</span>
-                        <strong id="match-progress-text">1 / 4</strong>
+                        <span data-i18n="dispatch_goal_label">Orders Cleared</span>
+                        <strong id="dispatch-progress-text">0 / 10</strong>
                     </div>
                     <div class="cg-progress-track" aria-hidden="true">
-                        <span class="cg-progress-fill" id="match-progress-fill"></span>
+                        <span class="cg-progress-fill" id="dispatch-progress-fill"></span>
                     </div>
+                    <div class="cg-mini-stats">
+                        <article class="cg-mini-stat">
+                            <span data-i18n="dispatch_score_label">Round Score</span>
+                            <strong id="dispatch-score-text">0</strong>
+                        </article>
+                        <article class="cg-mini-stat">
+                            <span data-i18n="dispatch_chain_label">Chain</span>
+                            <strong id="dispatch-streak-text">0</strong>
+                        </article>
+                        <article class="cg-mini-stat">
+                            <span data-i18n="dispatch_rating_label">Rating</span>
+                            <strong id="dispatch-rating-text">C</strong>
+                        </article>
+                    </div>
+                </section>
+
+                <section class="cg-progress-card cg-progress-card-game">
+                    <div class="cg-panel-heading">
+                        <p class="cg-eyebrow" data-i18n="dispatch_legend_eyebrow">Cafe Flow</p>
+                        <h3 data-i18n="dispatch_legend_title">Choose a customer, prep the right colour recipe, then serve</h3>
+                    </div>
+                    <ul class="cg-legend-list">
+                        <li data-i18n="dispatch_legend_line_1">Pick one customer order from the queue.</li>
+                        <li data-i18n="dispatch_legend_line_2">Drag the right recipe bottle into the mixer pot.</li>
+                        <li data-i18n="dispatch_legend_line_3">Cook first, then serve the plated order.</li>
+                        <li data-i18n="dispatch_legend_line_4">Wrong recipes waste time and break your chain.</li>
+                    </ul>
+                </section>
+            </div>
+
+            <section class="cg-dispatch-layout cg-cafe-layout">
+                <div class="cg-token-bay cg-cafe-pantry">
+                    <div class="cg-panel-heading">
+                        <p class="cg-eyebrow" data-i18n="dispatch_tokens_eyebrow">Pantry Bottles</p>
+                        <h3 data-i18n="dispatch_tokens_title">Choose a base recipe for the current guest</h3>
+                    </div>
+                    <div class="cg-token-rack" id="dispatch-token-rack"></div>
                 </div>
 
-                <div class="cg-scenario-card">
-                    <span class="cg-scenario-tag" id="scenario-tag"></span>
-                    <h3 id="scenario-title"></h3>
-                    <p id="scenario-description"></p>
-                </div>
-
-                <div class="cg-option-grid" id="match-options"></div>
-
-                <div class="cg-feedback-card cg-feedback-card-character" aria-live="polite">
-                    <div class="cg-feedback-avatar" id="match-avatar" data-state="ready">
-                        <span class="cg-avatar-hair"></span>
-                        <span class="cg-avatar-face">
-                            <span class="cg-avatar-eye cg-avatar-eye-left"></span>
-                            <span class="cg-avatar-eye cg-avatar-eye-right"></span>
-                            <span class="cg-avatar-mouth"></span>
-                            <span class="cg-avatar-blush cg-avatar-blush-left"></span>
-                            <span class="cg-avatar-blush cg-avatar-blush-right"></span>
-                        </span>
-                        <span class="cg-avatar-body"></span>
-                        <span class="cg-avatar-arm cg-avatar-arm-left"></span>
-                        <span class="cg-avatar-arm cg-avatar-arm-right"></span>
+                <div class="cg-order-bay cg-cafe-kitchen">
+                    <div class="cg-panel-heading">
+                        <p class="cg-eyebrow" data-i18n="dispatch_kitchen_eyebrow">Kitchen Counter</p>
+                        <h3 data-i18n="dispatch_kitchen_title">Prep, cook, and plate before serving</h3>
                     </div>
-                    <div class="cg-feedback-copy">
-                        <span class="cg-feedback-status" id="match-feedback-status" data-i18n="feedback_ready">Waiting for your answer</span>
-                        <h3 data-i18n="feedback_title">Game feedback</h3>
-                        <p id="match-feedback-text"></p>
-                    </div>
-                </div>
-            </article>
-
-            <article class="cg-panel cg-panel-game" id="panel-hue-lab">
-                <div class="cg-panel-header">
-                    <div>
-                        <p class="cg-eyebrow" data-i18n="hue_eyebrow">Mini-game 2</p>
-                        <h2 data-i18n="hue_heading">Hue Lab</h2>
+                    <div class="cg-kitchen-stage">
+                        <div class="cg-mixer-pot" id="dispatch-pot-slot">
+                            <span class="cg-mixer-bubble cg-mixer-bubble-a"></span>
+                            <span class="cg-mixer-bubble cg-mixer-bubble-b"></span>
+                            <span class="cg-mixer-bubble cg-mixer-bubble-c"></span>
+                            <div class="cg-mixer-liquid" id="dispatch-pot-liquid"></div>
+                            <strong id="dispatch-pot-label" data-i18n="dispatch_pot_label">Drop one recipe bottle here</strong>
+                        </div>
+                        <div class="cg-plate-stage">
+                            <div class="cg-serve-plate" id="dispatch-serve-plate">
+                                <div class="cg-serve-dish" id="dispatch-serve-dish"></div>
+                            </div>
+                            <p class="cg-brief-line" id="dispatch-plate-label" data-i18n="dispatch_plate_label">No plated order yet</p>
+                        </div>
                     </div>
                     <div class="cg-inline-actions">
-                        <button class="cg-button cg-button-secondary" type="button" id="next-target" data-i18n="hue_next">Next Target</button>
-                        <button class="cg-button cg-button-secondary" type="button" id="reset-hue" data-i18n="hue_reset">Reset Sliders</button>
+                        <button class="cg-button cg-button-primary" type="button" id="dispatch-cook" data-i18n="dispatch_cook">Cook Order</button>
+                        <button class="cg-button cg-button-secondary" type="button" id="dispatch-clear-prep" data-i18n="dispatch_clear_prep">Clear Pot</button>
                     </div>
                 </div>
 
-                <div class="cg-progress-card">
+                <div class="cg-order-bay cg-customer-bay">
+                    <div class="cg-panel-heading">
+                        <p class="cg-eyebrow" data-i18n="dispatch_orders_eyebrow">Guest Queue</p>
+                        <h3 data-i18n="dispatch_orders_title">Take orders, keep patience high, and serve fast</h3>
+                    </div>
+                    <div class="cg-order-grid" id="dispatch-order-grid"></div>
+                </div>
+            </section>
+
+            <div class="cg-feedback-card cg-feedback-card-character cg-feedback-card-game">
+                <div class="cg-feedback-avatar" id="match-avatar" data-state="ready">
+                    <span class="cg-avatar-hair"></span>
+                    <span class="cg-avatar-face">
+                        <span class="cg-avatar-eye cg-avatar-eye-left"></span>
+                        <span class="cg-avatar-eye cg-avatar-eye-right"></span>
+                        <span class="cg-avatar-mouth"></span>
+                        <span class="cg-avatar-blush cg-avatar-blush-left"></span>
+                        <span class="cg-avatar-blush cg-avatar-blush-right"></span>
+                    </span>
+                    <span class="cg-avatar-body"></span>
+                    <span class="cg-avatar-arm cg-avatar-arm-left"></span>
+                    <span class="cg-avatar-arm cg-avatar-arm-right"></span>
+                </div>
+                <div class="cg-feedback-copy">
+                    <span class="cg-feedback-status" id="match-feedback-status" data-i18n="feedback_ready">Waiting for your action</span>
+                    <h3 data-i18n="feedback_title">Game feedback</h3>
+                    <p id="match-feedback-text"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="cg-modal" id="modal-hue" aria-hidden="true">
+        <div class="cg-modal-backdrop" data-close-modal></div>
+        <div class="cg-modal-panel">
+            <button class="cg-modal-close" type="button" data-close-modal aria-label="Close">×</button>
+            <div class="cg-modal-header">
+                <div>
+                    <p class="cg-eyebrow" data-i18n="hue_eyebrow">Mini-game 2</p>
+                    <h2 data-i18n="hue_heading">Hue Lab Workbench</h2>
+                </div>
+                <div class="cg-inline-actions">
+                    <div class="cg-round-pill">
+                        <span data-i18n="time_left_label">Time Left</span>
+                        <strong id="hue-time-text">80s</strong>
+                    </div>
+                    <button class="cg-button cg-button-secondary" type="button" id="restart-hue" data-i18n="hue_restart">Restart Bench</button>
+                </div>
+            </div>
+
+            <div class="cg-mini-grid">
+                <section class="cg-progress-card cg-progress-card-game">
                     <div class="cg-progress-meta">
-                        <span data-i18n="progress_label">Progress</span>
-                        <strong id="hue-progress-text">1 / 3</strong>
+                        <span data-i18n="hue_goal_label">Targets Finished</span>
+                        <strong id="hue-progress-text">0 / 4</strong>
                     </div>
                     <div class="cg-progress-track" aria-hidden="true">
                         <span class="cg-progress-fill" id="hue-progress-fill"></span>
                     </div>
+                    <div class="cg-mini-stats">
+                        <article class="cg-mini-stat">
+                            <span data-i18n="hue_average_label">Average</span>
+                            <strong id="hue-average-text">0%</strong>
+                        </article>
+                        <article class="cg-mini-stat">
+                            <span data-i18n="dispatch_chain_label">Chain</span>
+                            <strong id="hue-streak-text">0</strong>
+                        </article>
+                        <article class="cg-mini-stat">
+                            <span data-i18n="dispatch_rating_label">Rating</span>
+                            <strong id="hue-rating-text">C</strong>
+                        </article>
+                    </div>
+                </section>
+
+                <section class="cg-progress-card cg-progress-card-game">
+                    <div class="cg-panel-heading">
+                        <p class="cg-eyebrow" data-i18n="hue_recipe_eyebrow">Target Brief</p>
+                        <h3 id="hue-target-title">Soft UI Sky</h3>
+                    </div>
+                    <p class="cg-brief-line" id="hue-target-scenario"></p>
+                    <p class="cg-brief-line" id="hue-target-lesson"></p>
+                </section>
+            </div>
+
+            <section class="cg-workbench-layout">
+                <div class="cg-bench-visuals">
+                    <div class="cg-bench-card">
+                        <p class="cg-eyebrow" data-i18n="target_label">Target Colour</p>
+                        <div class="cg-bowl" id="target-swatch"></div>
+                        <p class="cg-swatch-meta" id="target-meta"></p>
+                    </div>
+                    <div class="cg-bench-card">
+                        <p class="cg-eyebrow" data-i18n="current_label">Your Mix</p>
+                        <div class="cg-bowl" id="current-swatch"></div>
+                        <p class="cg-swatch-meta" id="current-meta"></p>
+                    </div>
+                    <div class="cg-match-meter">
+                        <span data-i18n="meter_label">Match Score</span>
+                        <strong id="match-score">0%</strong>
+                        <p id="target-lesson"></p>
+                    </div>
                 </div>
 
-                <div class="cg-hue-layout">
-                    <section class="cg-hue-visuals">
-                        <div class="cg-swatch-card">
-                            <p class="cg-eyebrow" data-i18n="target_label">Target Colour</p>
-                            <div class="cg-swatch" id="target-swatch"></div>
-                            <p class="cg-swatch-meta" id="target-meta"></p>
-                        </div>
-                        <div class="cg-swatch-card">
-                            <p class="cg-eyebrow" data-i18n="current_label">Your Mix</p>
-                            <div class="cg-swatch" id="current-swatch"></div>
-                            <p class="cg-swatch-meta" id="current-meta"></p>
-                        </div>
-                        <div class="cg-match-meter">
-                            <span data-i18n="meter_label">Match Score</span>
-                            <strong id="match-score">0%</strong>
-                            <p id="target-lesson"></p>
-                        </div>
-                    </section>
-
-                    <section class="cg-hue-controls">
-                        <label class="cg-slider-group">
+                <div class="cg-bench-controls">
+                    <div class="cg-control-card">
+                        <div class="cg-control-header">
                             <span data-i18n="slider_h">Hue</span>
-                            <input type="range" id="slider-h" min="0" max="360" value="180">
-                            <strong id="slider-h-value">180</strong>
-                        </label>
-                        <label class="cg-slider-group">
-                            <span data-i18n="slider_s">Saturation</span>
-                            <input type="range" id="slider-s" min="0" max="100" value="50">
-                            <strong id="slider-s-value">50%</strong>
-                        </label>
-                        <label class="cg-slider-group">
-                            <span data-i18n="slider_l">Lightness</span>
-                            <input type="range" id="slider-l" min="0" max="100" value="50">
-                            <strong id="slider-l-value">50%</strong>
-                        </label>
-
-                        <div class="cg-inline-actions">
-                            <button class="cg-button cg-button-primary" type="button" id="check-hue" data-i18n="hue_check">Check Colour</button>
+                            <strong id="slider-h-value">180°</strong>
                         </div>
-                    </section>
-                </div>
-
-                <div class="cg-feedback-card cg-feedback-card-character" aria-live="polite">
-                    <div class="cg-feedback-avatar" id="hue-avatar" data-state="ready">
-                        <span class="cg-avatar-hair"></span>
-                        <span class="cg-avatar-face">
-                            <span class="cg-avatar-eye cg-avatar-eye-left"></span>
-                            <span class="cg-avatar-eye cg-avatar-eye-right"></span>
-                            <span class="cg-avatar-mouth"></span>
-                            <span class="cg-avatar-blush cg-avatar-blush-left"></span>
-                            <span class="cg-avatar-blush cg-avatar-blush-right"></span>
-                        </span>
-                        <span class="cg-avatar-body"></span>
-                        <span class="cg-avatar-arm cg-avatar-arm-left"></span>
-                        <span class="cg-avatar-arm cg-avatar-arm-right"></span>
+                        <div class="cg-hue-wheel-shell">
+                            <input class="cg-range" type="range" id="slider-h" min="0" max="360" value="180">
+                        </div>
                     </div>
-                    <div class="cg-feedback-copy">
-                        <span class="cg-feedback-status" id="hue-feedback-status" data-i18n="feedback_ready">Waiting for your answer</span>
-                        <h3 data-i18n="feedback_title">Game feedback</h3>
-                        <p id="hue-feedback-text"></p>
+
+                    <div class="cg-control-card">
+                        <div class="cg-control-header">
+                            <span data-i18n="slider_s">Saturation</span>
+                            <strong id="slider-s-value">50%</strong>
+                        </div>
+                        <div class="cg-vial-shell">
+                            <div class="cg-vial-glass">
+                                <span class="cg-vial-fill" id="vial-fill"></span>
+                            </div>
+                            <input class="cg-range cg-range-vertical" type="range" id="slider-s" min="0" max="100" value="50">
+                        </div>
+                    </div>
+
+                    <div class="cg-control-card">
+                        <div class="cg-control-header">
+                            <span data-i18n="slider_l">Lightness</span>
+                            <strong id="slider-l-value">50%</strong>
+                        </div>
+                        <div class="cg-valve-shell">
+                            <input class="cg-range" type="range" id="slider-l" min="0" max="100" value="50">
+                        </div>
+                    </div>
+
+                    <div class="cg-inline-actions">
+                        <button class="cg-button cg-button-primary" type="button" id="check-hue" data-i18n="hue_check">Confirm Mix</button>
+                        <button class="cg-button cg-button-secondary" type="button" id="next-target" data-i18n="hue_next">Next Target</button>
+                        <button class="cg-button cg-button-secondary" type="button" id="reset-hue" data-i18n="hue_reset">Reset Bench</button>
                     </div>
                 </div>
-            </article>
-        </section>
+            </section>
 
-        <section class="cg-support-grid" id="support-panel">
-            <article class="cg-panel">
-                <p class="cg-eyebrow" data-i18n="safe_eyebrow">Safety and clarity</p>
-                <h2 data-i18n="safe_heading">Clear feedback, easy reset, no risky interaction</h2>
-                <ul class="cg-bullet-list">
-                    <li data-i18n="safe_1">All actions can be reset without losing the whole page state.</li>
-                    <li data-i18n="safe_2">Feedback explains why an answer works instead of only marking right or wrong.</li>
-                    <li data-i18n="safe_3">No login, upload, tracking, or real user data is required.</li>
-                </ul>
-            </article>
+            <div class="cg-feedback-card cg-feedback-card-character cg-feedback-card-game">
+                <div class="cg-feedback-avatar" id="hue-avatar" data-state="ready">
+                    <span class="cg-avatar-hair"></span>
+                    <span class="cg-avatar-face">
+                        <span class="cg-avatar-eye cg-avatar-eye-left"></span>
+                        <span class="cg-avatar-eye cg-avatar-eye-right"></span>
+                        <span class="cg-avatar-mouth"></span>
+                        <span class="cg-avatar-blush cg-avatar-blush-left"></span>
+                        <span class="cg-avatar-blush cg-avatar-blush-right"></span>
+                    </span>
+                    <span class="cg-avatar-body"></span>
+                    <span class="cg-avatar-arm cg-avatar-arm-left"></span>
+                    <span class="cg-avatar-arm cg-avatar-arm-right"></span>
+                </div>
+                <div class="cg-feedback-copy">
+                    <span class="cg-feedback-status" id="hue-feedback-status" data-i18n="feedback_ready">Waiting for your action</span>
+                    <h3 data-i18n="feedback_title">Game feedback</h3>
+                    <p id="hue-feedback-text"></p>
+                </div>
+            </div>
+        </div>
+    </div>
 
-            <article class="cg-panel">
-                <p class="cg-eyebrow" data-i18n="link_eyebrow">Cross-page flow</p>
-                <h2 data-i18n="link_heading">How this module connects to the rest of the site</h2>
-                <ul class="cg-link-list">
-                    <li><a href="learning.html" data-i18n="link_learning">Go to Learning for deeper theory review</a></li>
-                    <li><a href="test.html" data-i18n="link_test">Go to Test for formal self-assessment</a></li>
-                    <li><a href="community.html" data-i18n="link_community">Go to Community for sharing and ranking</a></li>
-                </ul>
-            </article>
-        </section>
-    </main>
+    <div class="cg-modal" id="modal-gate" aria-hidden="true">
+        <div class="cg-modal-backdrop" data-close-modal></div>
+        <div class="cg-modal-panel cg-modal-panel-small">
+            <button class="cg-modal-close" type="button" data-close-modal aria-label="Close">×</button>
+            <div class="cg-modal-header">
+                <div>
+                    <p class="cg-eyebrow" data-i18n="gate_eyebrow">Exit Gate</p>
+                    <h2 data-i18n="gate_heading">Choose your next destination</h2>
+                </div>
+            </div>
+            <div class="cg-gate-links">
+                <a class="cg-gate-link" href="learning.html" data-i18n="link_learning">Go to Learning for deeper theory review</a>
+                <a class="cg-gate-link" href="test.html" data-i18n="link_test">Go to Test for formal self-assessment</a>
+                <a class="cg-gate-link" href="community.html" data-i18n="link_community">Go to Community for sharing and ranking</a>
+            </div>
+        </div>
+    </div>
 
     <script src="game.js"></script>
 </body>
