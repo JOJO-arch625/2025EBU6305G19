@@ -5,10 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Scoreboard - Color Learning</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="community-pages.css">
 </head>
-<body>
+<body class="community-pages-body">
     <nav>
-        <div class="logo">🎨</div>
+        <div class="logo">🎨 Color Learning</div>
         <ul>
             <li><a href="index.html">Homepage</a></li>
             <li><a href="learning.html">Learning</a></li>
@@ -24,91 +25,94 @@
     </nav>
 
     <div class="container">
-        <a href="community.html" class="back-link">← Back to Community</a>
         <h1 class="page-title">Community Scoreboard</h1>
         <p class="page-subtitle">Top performers and rankings updated daily</p>
 
-        <div class="scoreboard-container">
+        <div class="content-section">
+            <a href="community.html" class="back-link">← Back to Community</a>
+
+            <div class="scoreboard-container">
             <div>
-                <h3 style="margin-bottom: 20px; font-size: 18px;">Global Leaderboard</h3>
+                <h3 class="scoreboard-heading">Global Leaderboard</h3>
                 <table class="leaderboard-table">
                     <tr class="rank-1">
                         <td class="leaderboard-rank">1</td>
                         <td><span class="star-badge"></span> Casey Morgan</td>
-                        <td style="text-align: right;">Points: 3120 • Streak: 45 days</td>
+                        <td class="leaderboard-stats">Points: 3120 • Streak: 45 days</td>
                     </tr>
                     <tr class="rank-2">
                         <td class="leaderboard-rank">2</td>
                         <td><span class="star-badge"></span> Sam Rivera</td>
-                        <td style="text-align: right;">Points: 2680 • Streak: 38 days</td>
+                        <td class="leaderboard-stats">Points: 2680 • Streak: 38 days</td>
                     </tr>
                     <tr class="rank-3">
                         <td class="leaderboard-rank">3</td>
                         <td><span class="star-badge"></span> Alex Chen</td>
-                        <td style="text-align: right;">Points: 2450 • Streak: 32 days</td>
+                        <td class="leaderboard-stats">Points: 2450 • Streak: 32 days</td>
                     </tr>
                     <tr>
                         <td class="leaderboard-rank">4</td>
                         <td>Jordan Lee</td>
-                        <td style="text-align: right;">Points: 1820 • Streak: 28 days</td>
+                        <td class="leaderboard-stats">Points: 1820 • Streak: 28 days</td>
                     </tr>
                     <tr>
                         <td class="leaderboard-rank">5</td>
                         <td>Riley Park</td>
-                        <td style="text-align: right;">Points: 1650 • Streak: 24 days</td>
+                        <td class="leaderboard-stats">Points: 1650 • Streak: 24 days</td>
                     </tr>
                     <tr>
                         <td class="leaderboard-rank">6</td>
                         <td>Morgan Davis</td>
-                        <td style="text-align: right;">Points: 1420 • Streak: 20 days</td>
+                        <td class="leaderboard-stats">Points: 1420 • Streak: 20 days</td>
                     </tr>
                     <tr>
                         <td class="leaderboard-rank">7</td>
                         <td>Quinn Taylor</td>
-                        <td style="text-align: right;">Points: 1280 • Streak: 18 days</td>
+                        <td class="leaderboard-stats">Points: 1280 • Streak: 18 days</td>
                     </tr>
                     <tr>
                         <td class="leaderboard-rank">8</td>
                         <td>Avery Wilson</td>
-                        <td style="text-align: right;">Points: 1150 • Streak: 15 days</td>
+                        <td class="leaderboard-stats">Points: 1150 • Streak: 15 days</td>
                     </tr>
                     <tr>
                         <td class="leaderboard-rank">9</td>
                         <td>Drew Martinez</td>
-                        <td style="text-align: right;">Points: 980 • Streak: 12 days</td>
+                        <td class="leaderboard-stats">Points: 980 • Streak: 12 days</td>
                     </tr>
                     <tr>
                         <td class="leaderboard-rank">10</td>
                         <td>Taylor Kim</td>
-                        <td style="text-align: right;">Points: 890 • Streak: 10 days</td>
+                        <td class="leaderboard-stats">Points: 890 • Streak: 10 days</td>
                     </tr>
                 </table>
             </div>
             <div>
-                <h3 style="margin-bottom: 20px; font-size: 18px;">Star Learners</h3>
+                <h3 class="scoreboard-heading">Star Learners</h3>
                 <div class="star-card">
                     <p><span class="star-badge"></span> Top 3 Performers</p>
-                    <p style="font-size: 12px; color: #6B7280;">Awarded to the top 3 learners on the global leaderboard</p>
+                    <p class="star-muted">Awarded to the top 3 learners on the global leaderboard</p>
                 </div>
                 <div class="star-card">
                     <p><span class="star-badge"></span> #1 Casey Morgan</p>
-                    <p style="font-size: 14px; color: #6B7280;">3120 points • 45 day streak</p>
+                    <p class="star-detail">3120 points • 45 day streak</p>
                 </div>
                 <div class="star-card">
                     <p><span class="star-badge"></span> #2 Sam Rivera</p>
-                    <p style="font-size: 14px; color: #6B7280;">2680 points • 38 day streak</p>
+                    <p class="star-detail">2680 points • 38 day streak</p>
                 </div>
                 <div class="star-card">
                     <p><span class="star-badge"></span> #3 Alex Chen</p>
-                    <p style="font-size: 14px; color: #6B7280;">2450 points • 32 day streak</p>
+                    <p class="star-detail">2450 points • 32 day streak</p>
                 </div>
 
                 <div class="time-periods">
                     <h3>Time Periods</h3>
-                    <button class="time-btn">This Week</button>
-                    <button class="time-btn">This Month</button>
-                    <button class="time-btn">All Time</button>
+                    <button type="button" class="time-btn">This Week</button>
+                    <button type="button" class="time-btn">This Month</button>
+                    <button type="button" class="time-btn">All Time</button>
                 </div>
+            </div>
             </div>
         </div>
     </div>

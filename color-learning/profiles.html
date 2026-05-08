@@ -5,51 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profiles - Color Learning</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="community-pages.css">
     <style>
-        .profile-card {
-            border: 1px solid #e8ebf7;
-            border-radius: 12px;
-            padding: 18px;
-            background: #fff;
-            transition: transform 0.18s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-        }
-
-        .profile-card:hover {
-            transform: translateY(-2px);
-            border-color: #ccd5f7;
-            box-shadow: 0 10px 24px rgba(79, 70, 229, 0.1);
-        }
-
-        .profile-card h3 {
-            margin-bottom: 10px;
-        }
-
-        .profile-stats {
-            margin-bottom: 10px;
-        }
-
-        .profile-bio {
-            color: #374151;
-            font-size: 14px;
-            margin-bottom: 10px;
-            line-height: 1.6;
-        }
-
-        .profile-focus,
-        .profile-goal,
-        .profile-progress {
-            font-size: 13px;
-            color: #4b5563;
-            margin-bottom: 6px;
-            line-height: 1.5;
-        }
-
-        .profile-focus strong,
-        .profile-goal strong,
-        .profile-progress strong {
-            color: #1f2937;
-        }
-
         .profile-details {
             display: none;
         }
@@ -74,8 +31,6 @@
             width: min(700px, 100%);
             max-height: 85vh;
             overflow-y: auto;
-            border-radius: 12px;
-            padding: 20px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.22);
         }
 
@@ -92,17 +47,9 @@
         }
 
         .profile-close-btn {
-            border: 1px solid #e0e5f6;
-            background: #f6f8ff;
-            border-radius: 8px;
             padding: 6px 10px;
             cursor: pointer;
             font-weight: 700;
-            color: #3f4b76;
-        }
-
-        .profile-close-btn:hover {
-            background: #ecf1ff;
         }
 
         .profile-modal-level {
@@ -111,14 +58,27 @@
         }
 
         .profile-modal-stats {
-            color: #4b5563;
             margin-bottom: 12px;
+        }
+
+        .profile-bio {
+            font-size: 14px;
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+
+        .profile-focus,
+        .profile-goal,
+        .profile-progress {
+            font-size: 13px;
+            margin-bottom: 6px;
+            line-height: 1.5;
         }
     </style>
 </head>
-<body>
+<body class="community-pages-body">
     <nav>
-        <div class="logo">🎨</div>
+        <div class="logo">🎨 Color Learning</div>
         <ul>
             <li><a href="index.html">Homepage</a></li>
             <li><a href="learning.html">Learning</a></li>
@@ -134,9 +94,11 @@
     </nav>
 
     <div class="container">
-        <a href="community.html" class="back-link">← Back to Community</a>
         <h1 class="page-title">Learner Profiles</h1>
         <p class="page-subtitle">Explore member profiles and their learning journey</p>
+
+        <div class="content-section">
+        <a href="community.html" class="back-link">← Back to Community</a>
 
         <div class="filter-bar">
             <button class="filter-btn active" onclick="filterProfiles('all')">All</button>
@@ -231,6 +193,7 @@
                 </div>
                 <a href="#" class="module-link">View Full Profile →</a>
             </div>
+        </div>
         </div>
     </div>
 

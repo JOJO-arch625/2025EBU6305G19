@@ -5,131 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Community - Color Learning</title>
     <link rel="stylesheet" href="styles.css">
-    <style>
-        body {
-            font-family: "Inter", "Segoe UI", Arial, sans-serif;
-            background: linear-gradient(180deg, #fafbff 0%, #f6f8ff 100%);
-            color: #1f2937;
-        }
-
-        nav {
-            background: rgba(255, 255, 255, 0.88);
-            backdrop-filter: blur(6px);
-            border-bottom: 1px solid #eceffd;
-        }
-
-        .container {
-            padding-top: 52px;
-            padding-bottom: 72px;
-        }
-
-        .page-title {
-            font-size: 34px;
-            font-weight: 700;
-            color: #2d3760;
-            margin-bottom: 10px;
-            letter-spacing: 0.2px;
-        }
-
-        .page-subtitle {
-            font-size: 17px;
-            color: #6b7280;
-            margin-bottom: 36px;
-        }
-
-        .community-modules {
-            gap: 24px;
-            margin-bottom: 34px;
-        }
-
-        .module {
-            padding: 24px 22px;
-            border: 1px solid #e9ecf9;
-            border-radius: 16px;
-            background: #ffffff;
-            box-shadow: 0 6px 16px rgba(115, 126, 175, 0.1);
-            transition: transform 0.18s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-        }
-
-        .module:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 22px rgba(115, 126, 175, 0.14);
-            border-color: #dce2fb;
-        }
-
-        .module h3 {
-            margin-bottom: 10px;
-            color: #2f3a67;
-            font-size: 21px;
-        }
-
-        .module p {
-            margin-bottom: 14px;
-            color: #5b6584;
-            line-height: 1.65;
-        }
-
-        .module-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            padding: 8px 12px;
-            border-radius: 10px;
-            color: #4957d8;
-            font-weight: 600;
-            text-decoration: none;
-            background: #eef1ff;
-            transition: background-color 0.2s ease, color 0.2s ease;
-        }
-
-        .module-link:hover {
-            text-decoration: none;
-            color: #3241c8;
-            background: #e4e9ff;
-        }
-
-        .star-badge {
-            width: 18px;
-            height: 18px;
-            border-radius: 6px;
-            background: linear-gradient(135deg, #ffe58f 0%, #ffd36a 100%);
-            box-shadow: 0 2px 8px rgba(255, 201, 82, 0.45);
-            margin-right: 8px;
-        }
-
-        .subpages-list {
-            margin-top: 8px;
-            padding: 20px 22px;
-            border-top: none;
-            border: 1px solid #e9ecf9;
-            border-radius: 14px;
-            background: #ffffff;
-            box-shadow: 0 6px 16px rgba(115, 126, 175, 0.08);
-        }
-
-        .subpages-list h4 {
-            margin-bottom: 12px;
-            color: #2f3a67;
-        }
-
-        .subpages-list li {
-            margin-bottom: 9px;
-        }
-
-        .subpages-list a {
-            color: #5563de;
-            font-weight: 500;
-        }
-
-        .subpages-list a:hover {
-            color: #3a49cb;
-            text-decoration: underline;
-        }
-    </style>
+    <link rel="stylesheet" href="community-pages.css">
 </head>
-<body>
+<body class="community-pages-body">
     <nav>
-        <div class="logo">🎨</div>
+        <div class="logo">🎨 Color Learning</div>
         <ul>
             <li><a href="index.html">Homepage</a></li>
             <li><a href="learning.html">Learning</a></li>
@@ -148,32 +28,34 @@
         <h1 class="page-title">Color Learning Community</h1>
         <p class="page-subtitle">Learn Together & Compete</p>
 
-        <div class="community-modules">
-            <div class="module">
-                <h3>Social Learning</h3>
-                <p>Join Group Discussions & Share Tips</p>
-                <a href="discussions.html" class="module-link">Explore Discussions →</a>
+        <div class="content-section">
+            <div class="community-modules">
+                <div class="module">
+                    <h3>Social Learning</h3>
+                    <p>Join Group Discussions & Share Tips</p>
+                    <a href="discussions.html" class="module-link">Explore Discussions →</a>
+                </div>
+                <div class="module">
+                    <h3>Profiles</h3>
+                    <p>View Learner Profiles & Progress</p>
+                    <a href="profiles.html" class="module-link">Browse Profiles →</a>
+                </div>
+                <div class="module">
+                    <h3>Scoreboard + Star Learners</h3>
+                    <p>Check Leaderboard & Top Performers</p>
+                    <span class="star-badge"></span>
+                    <a href="scoreboard.html" class="module-link">View Scoreboard →</a>
+                </div>
             </div>
-            <div class="module">
-                <h3>Profiles</h3>
-                <p>View Learner Profiles & Progress</p>
-                <a href="profiles.html" class="module-link">Browse Profiles →</a>
-            </div>
-            <div class="module">
-                <h3>Scoreboard + Star Learners</h3>
-                <p>Check Leaderboard & Top Performers</p>
-                <span class="star-badge"></span>
-                <a href="scoreboard.html" class="module-link">View Scoreboard →</a>
-            </div>
-        </div>
 
-        <div class="subpages-list">
-            <h4>Community Sub-pages:</h4>
-            <ul>
-                <li><a href="discussions.html">Discussions</a></li>
-                <li><a href="profiles.html">Learner Profiles</a></li>
-                <li><a href="scoreboard.html">Scoreboard</a></li>
-            </ul>
+            <div class="subpages-list">
+                <h4>Community Sub-pages:</h4>
+                <ul>
+                    <li><a href="discussions.html">Discussions</a></li>
+                    <li><a href="profiles.html">Learner Profiles</a></li>
+                    <li><a href="scoreboard.html">Scoreboard</a></li>
+                </ul>
+            </div>
         </div>
     </div>
 
