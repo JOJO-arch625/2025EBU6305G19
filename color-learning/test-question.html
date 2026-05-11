@@ -8,8 +8,10 @@
     <link rel="stylesheet" href="test-pages.css">
 </head>
 <body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
     <nav>
         <div class="logo">CL</div>
+        <button class="nav-toggle" aria-label="Toggle navigation">☰</button>
         <ul>
             <li><a href="index.html">Homepage</a></li>
             <li><a href="learning.html">Learning</a></li>
@@ -24,8 +26,15 @@
         </div>
     </nav>
 
-    <div class="container">
-        <div class="question-container">
+    <div class="breadcrumb">
+        <a href="index.html">Home</a>
+        <span class="breadcrumb-sep">/</span>
+        <a href="test.html">Test</a>
+        <span class="breadcrumb-sep">/</span>
+        <span class="breadcrumb-current">Question</span>
+    </div>
+
+    <div class="container" id="main-content">
             <div class="question-header">
                 <div class="question-status">
                     <span class="level-badge level-1" id="question-level">Level 1</span>
@@ -89,7 +98,7 @@
 
     <footer>
         <p>&copy; 2026 Color Learning Website. All rights reserved.
-            <a href="#">Privacy Policy</a>
+            <a href="privacy.html">Privacy Policy</a>
             <a href="#">Terms of Use</a>
         </p>
     </footer>
@@ -495,5 +504,6 @@
 
         renderQuestion();
     </script>
+    <script src="common.js"></script>
 </body>
 </html>

@@ -720,3 +720,163 @@
         white-space: normal;
     }
 }
+
+.community-pages-body .discussion-content {
+    display: none;
+}
+
+.community-pages-body .discussion-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+}
+
+.community-pages-body .discussion-modal.open {
+    display: flex;
+}
+
+.community-pages-body .discussion-modal-content {
+    background: #fff;
+    width: min(760px, 100%);
+    max-height: 85vh;
+    overflow-y: auto;
+}
+
+.community-pages-body .discussion-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    gap: 12px;
+    margin-bottom: 10px;
+}
+
+.community-pages-body .discussion-modal-header h2 {
+    margin: 0;
+}
+
+.community-pages-body .discussion-close-btn {
+    padding: 6px 10px;
+    cursor: pointer;
+    font-weight: 700;
+}
+
+.community-pages-body .discussion-modal-tag {
+    display: inline-block;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+}
+
+.community-pages-body .discussion-modal-meta {
+    margin-bottom: 12px;
+}
+
+.community-pages-body .new-discussion-form {
+    display: grid;
+    gap: 12px;
+}
+
+.community-pages-body .new-discussion-form label {
+    display: grid;
+    gap: 6px;
+    font-weight: 600;
+}
+
+.community-pages-body .new-discussion-form input,
+.community-pages-body .new-discussion-form textarea {
+    width: 100%;
+    padding: 10px;
+    font-size: 0.95rem;
+    font-family: inherit;
+}
+
+.community-pages-body .new-discussion-form textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.community-pages-body .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 4px;
+}
+
+.community-pages-body .secondary-btn,
+.community-pages-body .primary-btn {
+    padding: 8px 14px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.community-pages-body .profile-details {
+    display: none;
+}
+
+.community-pages-body .profile-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+}
+
+.community-pages-body .profile-modal.open {
+    display: flex;
+}
+
+.community-pages-body .profile-modal-content {
+    background: #fff;
+    width: min(700px, 100%);
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.22);
+}
+
+.community-pages-body .profile-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 10px;
+}
+
+.community-pages-body .profile-modal-header h2 {
+    margin: 0;
+}
+
+.community-pages-body .profile-close-btn {
+    padding: 6px 10px;
+    cursor: pointer;
+    font-weight: 700;
+}
+
+.community-pages-body .profile-modal-level {
+    display: inline-block;
+    margin-bottom: 8px;
+}
+
+.community-pages-body .profile-modal-stats {
+    margin-bottom: 12px;
+}
+
+.community-pages-body .profile-bio {
+    font-size: 14px;
+    margin-bottom: 10px;
+    line-height: 1.6;
+}
+
+.community-pages-body .profile-focus,
+.community-pages-body .profile-goal,
+.community-pages-body .profile-progress {
+    font-size: 13px;
+    margin-bottom: 6px;
+    line-height: 1.5;
+}

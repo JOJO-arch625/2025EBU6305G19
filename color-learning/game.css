@@ -2231,3 +2231,159 @@ body::after {
     transform: none;
     box-shadow: none;
 }
+
+.cg-logo {
+    cursor: pointer;
+}
+
+.cg-footer {
+    text-align: center;
+    padding: 2rem;
+    background: #2c3e50;
+    color: #fff;
+    margin-top: 2rem;
+}
+
+.cg-footer-link {
+    color: #2ecc71;
+    margin: 0 0.5rem;
+}
+
+@media (max-width: 768px) {
+    .cg-world {
+        min-height: auto;
+        overflow: auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 16px;
+        padding: 24px 16px;
+    }
+
+    .cg-world-grid,
+    .cg-world-decor,
+    .cg-path,
+    .cg-stepping-stones,
+    .cg-world-props {
+        display: none;
+    }
+
+    .cg-landmark,
+    .cg-station {
+        position: relative !important;
+        left: auto !important;
+        right: auto !important;
+        top: auto !important;
+        bottom: auto !important;
+        transform: none !important;
+        margin: 12px auto;
+        display: block;
+    }
+
+    .cg-avatar {
+        display: none;
+    }
+
+    .cg-world-prompt {
+        position: relative;
+        left: auto;
+        bottom: auto;
+        transform: none;
+        margin: 0 auto;
+    }
+
+    .cg-world-shell {
+        padding: 16px;
+    }
+
+    .cg-inspector-panel,
+    .cg-quest-panel {
+        position: relative;
+        left: auto;
+        right: auto;
+        top: auto;
+        bottom: auto;
+        width: 100%;
+        opacity: 1;
+        transform: none;
+        pointer-events: auto;
+    }
+
+    .cg-modal-panel {
+        width: calc(100vw - 24px);
+        padding: 16px;
+    }
+
+    .cg-dispatch-layout,
+    .cg-cafe-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .cg-workbench-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .cg-hue-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .cg-mini-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .cg-mini-stats {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .cg-feedback-card-character {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+
+    .cg-option-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .cg-kitchen-stage {
+        grid-template-columns: 1fr;
+    }
+
+    .cg-order-top {
+        grid-template-columns: 1fr;
+        justify-items: center;
+    }
+
+    .cg-vial-shell {
+        grid-template-columns: 1fr;
+        justify-items: center;
+    }
+
+    .cg-model-token {
+        grid-template-columns: 70px minmax(0, 1fr);
+    }
+
+    .cg-order-actions {
+        grid-template-columns: 1fr;
+    }
+
+    .cg-serve-plate {
+        width: 120px;
+        height: 120px;
+    }
+
+    .cg-mixer-pot {
+        min-height: 160px;
+    }
+
+    .cg-match-meter strong {
+        font-size: 2rem;
+    }
+
+    .cg-swatch {
+        height: 100px;
+    }
+
+    .cg-bowl {
+        height: 120px;
+    }
+}
