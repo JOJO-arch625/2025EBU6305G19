@@ -8,8 +8,10 @@
     <link rel="stylesheet" href="community-pages.css">
 </head>
 <body class="community-pages-body">
+    <a href="#main-content" class="skip-link">Skip to main content</a>
     <nav>
         <div class="logo">🎨 Color Learning</div>
+        <button class="nav-toggle" aria-label="Toggle navigation">☰</button>
         <ul>
             <li><a href="index.html">Homepage</a></li>
             <li><a href="learning.html">Learning</a></li>
@@ -24,7 +26,15 @@
         </div>
     </nav>
 
-    <div class="container">
+    <div class="breadcrumb">
+        <a href="index.html">Home</a>
+        <span class="breadcrumb-sep">/</span>
+        <a href="community.html">Community</a>
+        <span class="breadcrumb-sep">/</span>
+        <span class="breadcrumb-current">Scoreboard</span>
+    </div>
+
+    <div class="container" id="main-content">
         <h1 class="page-title">Community Scoreboard</h1>
         <p class="page-subtitle">Top performers and rankings updated daily</p>
 
@@ -119,9 +129,10 @@
 
     <footer>
         <p>© 2026 Color Learning Website. All rights reserved.
-            <a href="#">Privacy Policy</a>
+            <a href="privacy.html">Privacy Policy</a>
             <a href="#">Terms of Use</a>
         </p>
     </footer>
+    <script src="common.js"></script>
 </body>
 </html>

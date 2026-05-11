@@ -8,8 +8,10 @@
     <link rel="stylesheet" href="test-pages.css">
 </head>
 <body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
     <nav>
         <div class="logo">CL</div>
+        <button class="nav-toggle" aria-label="Toggle navigation">☰</button>
         <ul>
             <li><a href="index.html">Homepage</a></li>
             <li><a href="learning.html">Learning</a></li>
@@ -24,7 +26,13 @@
         </div>
     </nav>
 
-    <div class="container">
+    <div class="breadcrumb">
+        <a href="index.html">Home</a>
+        <span class="breadcrumb-sep">/</span>
+        <span class="breadcrumb-current">Test</span>
+    </div>
+
+    <div class="container" id="main-content">
         <h1 class="page-title">Color Encoding Mock Test</h1>
         <p class="page-subtitle">Choose a level and get instant feedback after every question.</p>
 
@@ -67,9 +75,10 @@
 
     <footer>
         <p>&copy; 2026 Color Learning Website. All rights reserved.
-            <a href="#">Privacy Policy</a>
+            <a href="privacy.html">Privacy Policy</a>
             <a href="#">Terms of Use</a>
         </p>
     </footer>
+    <script src="common.js"></script>
 </body>
 </html>

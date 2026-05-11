@@ -6,103 +6,12 @@
     <title>Discussions - Color Learning</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="community-pages.css">
-    <style>
-        .discussion-content {
-            display: none;
-        }
-
-        .discussion-modal {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.45);
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            padding: 20px;
-        }
-
-        .discussion-modal.open {
-            display: flex;
-        }
-
-        .discussion-modal-content {
-            background: #fff;
-            width: min(760px, 100%);
-            max-height: 85vh;
-            overflow-y: auto;
-        }
-
-        .discussion-modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: start;
-            gap: 12px;
-            margin-bottom: 10px;
-        }
-
-        .discussion-modal-header h2 {
-            margin: 0;
-        }
-
-        .discussion-close-btn {
-            padding: 6px 10px;
-            cursor: pointer;
-            font-weight: 700;
-        }
-
-        .discussion-modal-tag {
-            display: inline-block;
-            margin-bottom: 8px;
-            font-size: 0.9rem;
-        }
-
-        .discussion-modal-meta {
-            margin-bottom: 12px;
-        }
-
-        .new-discussion-form {
-            display: grid;
-            gap: 12px;
-        }
-
-        .new-discussion-form label {
-            display: grid;
-            gap: 6px;
-            font-weight: 600;
-        }
-
-        .new-discussion-form input,
-        .new-discussion-form textarea {
-            width: 100%;
-            padding: 10px;
-            font-size: 0.95rem;
-            font-family: inherit;
-        }
-
-        .new-discussion-form textarea {
-            min-height: 120px;
-            resize: vertical;
-        }
-
-        .form-actions {
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-            margin-top: 4px;
-        }
-
-        .secondary-btn,
-        .primary-btn {
-            padding: 8px 14px;
-            cursor: pointer;
-            font-weight: 600;
-        }
-    </style>
 </head>
 <body class="community-pages-body">
+    <a href="#main-content" class="skip-link">Skip to main content</a>
     <nav>
         <div class="logo">🎨 Color Learning</div>
+        <button class="nav-toggle" aria-label="Toggle navigation">☰</button>
         <ul>
             <li><a href="index.html">Homepage</a></li>
             <li><a href="learning.html">Learning</a></li>
@@ -117,7 +26,15 @@
         </div>
     </nav>
 
-    <div class="container">
+    <div class="breadcrumb">
+        <a href="index.html">Home</a>
+        <span class="breadcrumb-sep">/</span>
+        <a href="community.html">Community</a>
+        <span class="breadcrumb-sep">/</span>
+        <span class="breadcrumb-current">Discussions</span>
+    </div>
+
+    <div class="container" id="main-content">
         <h1 class="page-title">Group Discussions</h1>
         <p class="page-subtitle">Join conversations and share your learning tips</p>
 
@@ -259,7 +176,7 @@
 
     <footer>
         <p>© 2026 Color Learning Website. All rights reserved.
-            <a href="#">Privacy Policy</a>
+            <a href="privacy.html">Privacy Policy</a>
             <a href="#">Terms of Use</a>
         </p>
     </footer>
@@ -386,6 +303,8 @@
             const content = contentInput.value.trim();
             if (!author || !title || !content) return;
 
+            if (!confirm('Are you sure you want to publish this discussion?')) return;
+
             const newCard = createDiscussionCard(author, title, content);
             discussionsGrid.prepend(newCard);
             closeNewDiscussionModal();
@@ -401,5 +320,6 @@
             }
         });
     </script>
+    <script src="common.js"></script>
 </body>
 </html>

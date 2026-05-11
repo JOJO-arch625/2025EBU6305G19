@@ -274,3 +274,7 @@
         width: 100%;
     }
 }
+
+#start-test-btn {
+    margin-top: 40px;
+}
