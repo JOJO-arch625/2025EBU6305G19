@@ -26,8 +26,10 @@
         <button class="lang-btn" id="langBtn">EN</button>
     </div>
 </nav>
-
-    <div class="breadcrumb">
+<div class="beach-header-bg-wrapper">
+  <div class="beach-header-bg"></div>
+</div>
+        <div class="breadcrumb">
         <a href="index.html">Home</a>
         <span class="breadcrumb-sep">/</span>
         <span class="breadcrumb-current">Learning</span>
@@ -210,7 +212,7 @@
                 <li>Wide color gamut</li>
                 <li>Direct hardware support</li>
             </ul>
-            <h3>6. Summary</h3>
+            <h3>7. Summary</h3>
             <ul>
                 <li>Additive model for light-emitting screens</li>
                 <li>8-bit per channel: 0–255 value range</li>
@@ -880,6 +882,79 @@ themeButtons.forEach(btn => {
             logoEl.style.cursor = 'pointer';
             logoEl.addEventListener('click', function() { window.location.href = 'index.html'; });
         }
+function initCollapseTitles() {
+    // H2 下拉板块：Basics、Vision
+    const h2Sections = [
+        "content-color-basics",
+        "content-color-basics-cn",
+        "content-color-vision",
+        "content-color-vision-cn"
+    ];
+
+    // H3 下拉板块：所有色彩模型
+    const h3Sections = [
+        "content-rgb", "content-yuv", "content-cmyk", "content-hsv",
+        "content-rgb-cn", "content-yuv-cn", "content-cmyk-cn", "content-hsv-cn"
+    ];
+
+    // 处理 H2
+    h2Sections.forEach(id => {
+        const box = document.getElementById(id);
+        if (!box) return;
+        const titles = box.querySelectorAll("h2");
+        setupCollapse(titles);
+    });
+
+    // 处理 H3
+    h3Sections.forEach(id => {
+        const box = document.getElementById(id);
+        if (!box) return;
+        const titles = box.querySelectorAll("h3");
+        setupCollapse(titles);
+    });
+
+    // 统一处理折叠 + 按顺序加彩虹 class
+    function setupCollapse(titles) {
+        titles.forEach((el, index) => {
+            // 强制添加彩虹类名 1~7
+            let num = index + 1;
+            if (num > 7) num = 7;
+            el.classList.add("rainbow-item-" + num);
+
+            // 包裹折叠内容
+            const wrap = document.createElement("div");
+            wrap.className = "collapse-wrap";
+            let next = el.nextElementSibling;
+            const list = [];
+
+            while (next) {
+                let stop = false;
+                if (el.tagName === "H2") {
+                    if (next.tagName === "H2") stop = true;
+                } else {
+                    if (next.tagName === "H2" || next.tagName === "H3") stop = true;
+                }
+                if (stop) break;
+
+                list.push(next);
+                next = next.nextElementSibling;
+            }
+
+            list.forEach(item => wrap.appendChild(item));
+            el.after(wrap);
+            el.classList.add("collapsed");
+
+            // 点击折叠 + 音效
+            el.onclick = function() {
+                playClickSound();
+                wrap.classList.toggle("open");
+                el.classList.toggle("collapsed");
+            };
+        });
+    }
+}
+
+window.addEventListener("load", initCollapseTitles);
     </script>
 </body>
 </html>
