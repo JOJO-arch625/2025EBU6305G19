@@ -8,8 +8,10 @@
     <link rel="stylesheet" href="test-pages.css">
 </head>
 <body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
     <nav>
         <div class="logo">CL</div>
+        <button class="nav-toggle" aria-label="Toggle navigation">☰</button>
         <ul>
             <li><a href="index.html">Homepage</a></li>
             <li><a href="learning.html">Learning</a></li>
@@ -24,7 +26,15 @@
         </div>
     </nav>
 
-    <div class="container">
+    <div class="breadcrumb">
+        <a href="index.html">Home</a>
+        <span class="breadcrumb-sep">/</span>
+        <a href="test.html">Test</a>
+        <span class="breadcrumb-sep">/</span>
+        <span class="breadcrumb-current">About</span>
+    </div>
+
+    <div class="container" id="main-content">
         <a href="test.html" class="back-link">&larr; Back to Test</a>
 
         <div class="test-about-container">
@@ -48,12 +58,12 @@
             </div>
         </div>
 
-        <button class="new-discussion-btn" id="start-test-btn" style="margin-top: 40px;" type="button">Start Test</button>
+        <button class="new-discussion-btn" id="start-test-btn" type="button">Start Test</button>
     </div>
 
     <footer>
         <p>&copy; 2026 Color Learning Website. All rights reserved.
-            <a href="#">Privacy Policy</a>
+            <a href="privacy.html">Privacy Policy</a>
             <a href="#">Terms of Use</a>
         </p>
     </footer>
@@ -158,8 +168,11 @@
         });
 
         document.getElementById('start-test-btn').addEventListener('click', () => {
-            window.location.href = `test-question.html?level=${levelKey}`;
+            if (window.confirm('Start the test now? Make sure you are ready.')) {
+                window.location.href = `test-question.html?level=${levelKey}`;
+            }
         });
     </script>
+    <script src="common.js"></script>
 </body>
 </html>

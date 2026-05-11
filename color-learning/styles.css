@@ -864,6 +864,72 @@ footer a:hover {
     .promo-card {
         padding: 30px 24px;
     }
+
+    .nav-toggle {
+        display: block;
+    }
+
+    nav ul {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: #FFFFFF;
+        flex-direction: column;
+        padding: 20px;
+        border-bottom: 1px solid #f0f0f0;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        z-index: 999;
+    }
+
+    nav ul.nav-open {
+        display: flex;
+    }
+
+    nav ul li {
+        padding: 10px 0;
+    }
+
+    .nav-right {
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-left: auto;
+    }
+
+    .breadcrumb {
+        padding: 12px 20px;
+        font-size: 12px;
+    }
+}
+
+.nav-toggle {
+    display: none;
+    background: none;
+    border: 1px solid #E5E7EB;
+    border-radius: 6px;
+    font-size: 22px;
+    cursor: pointer;
+    padding: 4px 10px;
+    line-height: 1;
+}
+
+.skip-link {
+    position: absolute;
+    top: -50px;
+    left: 0;
+    background: #6366F1;
+    color: #FFFFFF;
+    padding: 10px 20px;
+    z-index: 10000;
+    text-decoration: none;
+    font-weight: 600;
+    border-radius: 0 0 6px 0;
+    transition: top 0.2s;
+}
+
+.skip-link:focus {
+    top: 0;
 }
 
 /* ==============================================
@@ -1350,4 +1416,48 @@ body.high-contrast footer a {
 
 body.high-contrast footer a:hover {
     color: #FFC107;
+}
+
+.privacy-section {
+    background: #fff;
+    padding: 2.5rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    margin-bottom: 2rem;
+}
+
+.privacy-section h2 {
+    color: #2c3e50;
+    border-left: 5px solid #3498db;
+    padding-left: 1rem;
+    margin-bottom: 1.2rem;
+}
+
+.privacy-section h2.privacy-heading-green {
+    border-left-color: #2ecc71;
+}
+
+.privacy-section h2.privacy-heading-orange {
+    border-left-color: #f39c12;
+}
+
+.privacy-section h2.privacy-heading-red {
+    border-left-color: #e74c3c;
+}
+
+.privacy-section p {
+    line-height: 1.8;
+    color: #34495e;
+    margin-bottom: 1.5rem;
+}
+
+.privacy-section ul {
+    margin-left: 2rem;
+    line-height: 2;
+    color: #34495e;
+    margin-bottom: 1.5rem;
+}
+
+.privacy-section a {
+    color: #3498db;
 }
