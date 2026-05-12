@@ -9,8 +9,10 @@
     <link rel="stylesheet" href="game-upgrade.css?v=latest-20260512d">
 </head>
 <body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
     <nav class="cg-top-nav">
-        <div class="logo cg-logo" onclick="window.location.href='index.html'" style="cursor: pointer;">CL</div>
+        <div class="logo cg-logo" onclick="window.location.href='index.html'">CL</div>
+        <button class="nav-toggle" aria-label="Toggle navigation">☰</button>
         <ul>
             <li><a href="index.html" data-i18n="nav_home">Homepage</a></li>
             <li><a href="learning.html" data-i18n="nav_learning">Learning</a></li>
@@ -38,7 +40,7 @@
         </div>
     </div>
 
-    <main class="container cg-app">
+    <main class="container cg-app" id="main-content">
         <section class="cg-world-shell">
             <div class="cg-world" id="world">
                 <div class="cg-world-grid"></div>
@@ -195,6 +197,13 @@
             </div>
         </section>
     </main>
+
+    <footer class="cg-footer">
+        <p>&copy; 2026 Color Learning Website. All rights reserved.
+            <a href="privacy.html" class="cg-footer-link">Privacy Policy</a>
+            <a href="#" class="cg-footer-link">Terms of Use</a>
+        </p>
+    </footer>
 
     <div class="cg-modal" id="modal-model" aria-hidden="true">
         <div class="cg-modal-backdrop" data-close-modal></div>
@@ -487,5 +496,16 @@
 
     <script src="game.js"></script>
     <script src="game-upgrade.js?v=latest-20260512d"></script>
+    <script>
+    (function() {
+        var navToggle = document.querySelector('.nav-toggle');
+        if (navToggle) {
+            navToggle.addEventListener('click', function() {
+                var navUl = document.querySelector('nav ul');
+                if (navUl) navUl.classList.toggle('nav-open');
+            });
+        }
+    })();
+    </script>
 </body>
 </html>

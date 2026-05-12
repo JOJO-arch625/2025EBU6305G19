@@ -5,221 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Discussions - Color Learning</title>
     <link rel="stylesheet" href="styles.css">
-    <style>
-        .discussion-content {
-            display: none;
-        }
-
-        .discussion-modal {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.45);
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            padding: 20px;
-        }
-
-        .discussion-modal.open {
-            display: flex;
-        }
-
-        .discussion-modal-content {
-            background: #fff;
-            width: min(760px, 100%);
-            max-height: 85vh;
-            overflow-y: auto;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-        }
-
-        .discussion-modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: start;
-            gap: 12px;
-            margin-bottom: 10px;
-        }
-
-        .discussion-modal-header h2 {
-            margin: 0;
-        }
-
-        .discussion-close-btn {
-            border: none;
-            background: #f2f2f2;
-            border-radius: 8px;
-            padding: 6px 10px;
-            cursor: pointer;
-            font-weight: 700;
-        }
-
-        .discussion-modal-tag {
-            display: inline-block;
-            margin-bottom: 8px;
-            font-size: 0.9rem;
-            color: #555;
-        }
-
-        .discussion-modal-meta {
-            color: #666;
-            margin-bottom: 12px;
-        }
-
-        .new-discussion-form {
-            display: grid;
-            gap: 12px;
-        }
-
-        .new-discussion-form label {
-            display: grid;
-            gap: 6px;
-            font-weight: 600;
-        }
-
-        .new-discussion-form input,
-        .new-discussion-form textarea {
-            width: 100%;
-            border: 1px solid #d9d9d9;
-            border-radius: 8px;
-            padding: 10px;
-            font-size: 0.95rem;
-            font-family: inherit;
-        }
-
-        .new-discussion-form textarea {
-            min-height: 120px;
-            resize: vertical;
-        }
-
-        .form-actions {
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-            margin-top: 4px;
-        }
-
-        .secondary-btn,
-        .primary-btn {
-            border: none;
-            border-radius: 8px;
-            padding: 8px 12px;
-            cursor: pointer;
-            font-weight: 600;
-        }
-
-        .secondary-btn {
-            background: #efefef;
-        }
-
-        .primary-btn {
-            background: #3d7eff;
-            color: #fff;
-        }
-
-        /* Community button polish */
-        .filter-btn,
-        .new-discussion-btn,
-        .secondary-btn,
-        .primary-btn,
-        .discussion-close-btn {
-            transition: transform 0.16s ease, box-shadow 0.22s ease, background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
-        }
-
-        .filter-btn {
-            border-radius: 999px;
-            border-color: #d8def8;
-            color: #3f4b76;
-            background: #ffffff;
-            font-weight: 600;
-            padding: 9px 16px;
-        }
-
-        .filter-btn:hover {
-            border-color: #aab8f2;
-            box-shadow: 0 4px 12px rgba(87, 105, 204, 0.16);
-            transform: translateY(-1px);
-        }
-
-        .filter-btn.active {
-            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
-            border-color: transparent;
-            color: #ffffff;
-            box-shadow: 0 8px 20px rgba(79, 70, 229, 0.3);
-        }
-
-        .new-discussion-btn {
-            border-radius: 12px;
-            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
-            border: none;
-            font-weight: 600;
-            box-shadow: 0 10px 22px rgba(79, 70, 229, 0.25);
-        }
-
-        .new-discussion-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 14px 28px rgba(79, 70, 229, 0.32);
-        }
-
-        .new-discussion-btn:active,
-        .filter-btn:active,
-        .primary-btn:active,
-        .secondary-btn:active,
-        .discussion-close-btn:active {
-            transform: translateY(0);
-        }
-
-        .primary-btn {
-            border-radius: 10px;
-            background: linear-gradient(135deg, #4f7dff 0%, #3d7eff 100%);
-            box-shadow: 0 8px 18px rgba(61, 126, 255, 0.28);
-        }
-
-        .primary-btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 12px 22px rgba(61, 126, 255, 0.34);
-        }
-
-        .secondary-btn {
-            border-radius: 10px;
-            background: #f3f5fb;
-            color: #364261;
-            border: 1px solid #dde3f5;
-        }
-
-        .secondary-btn:hover {
-            background: #e9eefc;
-            border-color: #c6d1f5;
-            transform: translateY(-1px);
-        }
-
-        .discussion-close-btn {
-            border-radius: 10px;
-            border: 1px solid #e2e7f5;
-            background: #f7f9ff;
-            color: #404a6d;
-        }
-
-        .discussion-close-btn:hover {
-            background: #eaf0ff;
-            transform: translateY(-1px);
-        }
-
-        .filter-btn:focus-visible,
-        .new-discussion-btn:focus-visible,
-        .secondary-btn:focus-visible,
-        .primary-btn:focus-visible,
-        .discussion-close-btn:focus-visible {
-            outline: 3px solid rgba(99, 102, 241, 0.32);
-            outline-offset: 2px;
-        }
-    </style>
+    <link rel="stylesheet" href="community-pages.css">
 </head>
-<body>
+<body class="community-pages-body">
+    <a href="#main-content" class="skip-link">Skip to main content</a>
     <nav>
-        <div class="logo">🎨</div>
+        <div class="logo">🎨 Color Learning</div>
+        <button class="nav-toggle" aria-label="Toggle navigation">☰</button>
         <ul>
             <li><a href="index.html">Homepage</a></li>
             <li><a href="learning.html">Learning</a></li>
@@ -234,10 +26,20 @@
         </div>
     </nav>
 
-    <div class="container">
-        <a href="community.html" class="back-link">← Back to Community</a>
+    <div class="breadcrumb">
+        <a href="index.html">Home</a>
+        <span class="breadcrumb-sep">/</span>
+        <a href="community.html">Community</a>
+        <span class="breadcrumb-sep">/</span>
+        <span class="breadcrumb-current">Discussions</span>
+    </div>
+
+    <div class="container" id="main-content">
         <h1 class="page-title">Group Discussions</h1>
         <p class="page-subtitle">Join conversations and share your learning tips</p>
+
+        <div class="content-section">
+        <a href="community.html" class="back-link">← Back to Community</a>
 
         <div class="filter-bar">
             <button class="filter-btn active" onclick="filterDiscussions('all')">All</button>
@@ -330,6 +132,7 @@
         </div>
 
         <button class="new-discussion-btn" id="openNewDiscussionBtn">Start New Discussion</button>
+        </div>
     </div>
 
     <div class="discussion-modal" id="discussionModal" aria-hidden="true">
@@ -373,7 +176,7 @@
 
     <footer>
         <p>© 2026 Color Learning Website. All rights reserved.
-            <a href="#">Privacy Policy</a>
+            <a href="privacy.html">Privacy Policy</a>
             <a href="#">Terms of Use</a>
         </p>
     </footer>
@@ -500,6 +303,8 @@
             const content = contentInput.value.trim();
             if (!author || !title || !content) return;
 
+            if (!confirm('Are you sure you want to publish this discussion?')) return;
+
             const newCard = createDiscussionCard(author, title, content);
             discussionsGrid.prepend(newCard);
             closeNewDiscussionModal();
@@ -515,5 +320,6 @@
             }
         });
     </script>
+    <script src="common.js"></script>
 </body>
 </html>

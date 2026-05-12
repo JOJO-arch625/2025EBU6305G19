@@ -1,0 +1,328 @@
+:root {
+    --primary: #2c3e50;
+    --secondary: #3498db;
+    --accent: #2ecc71;
+    --warning: #f39c12;
+    --danger: #e74c3c;
+    --light: #f8f9fa;
+    --dark: #34495e;
+    --gray: #7f8c8d;
+    --white: #ffffff;
+    --black: #000000;
+    --border: #ddd;
+    --shadow: rgba(0, 0, 0, 0.1);
+}
+
+html, body {
+    scroll-behavior: smooth;
+    background-color: var(--light);
+    font-size: 100%;
+}
+
+.learning-page .container {
+    max-width: 1400px;
+    margin: 3rem auto;
+    padding: 0 1.5rem;
+}
+
+.breadcrumbs {
+    margin-bottom: 2rem;
+    font-size: 1.05rem;
+    color: var(--gray);
+}
+
+.breadcrumbs a {
+    color: var(--secondary);
+    text-decoration: none;
+}
+
+.breadcrumbs span {
+    margin: 0 0.5rem;
+}
+
+.learning-page .page-title {
+    text-align: center;
+    font-size: 2.8rem;
+    color: var(--primary);
+    margin-bottom: 0.8rem;
+}
+
+.learning-page .page-subtitle {
+    text-align: center;
+    color: var(--gray);
+    margin-bottom: 3rem;
+    font-size: 1.3rem;
+}
+
+.main-tabs {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.main-tab {
+    padding: 1.2rem 2.8rem;
+    background: var(--white);
+    border: none;
+    border-radius: 10px;
+    font-size: 1.2rem;
+    font-weight: 500;
+    cursor: pointer;
+    box-shadow: 0 3px 8px var(--shadow);
+}
+
+.main-tab.active {
+    background: var(--secondary);
+    color: var(--white);
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+}
+
+.sub-tabs {
+    display: flex;
+    gap: 1.2rem;
+    margin-bottom: 2.8rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.sub-tab {
+    padding: 1rem 1.8rem;
+    background: var(--white);
+    border: none;
+    border-radius: 10px;
+    font-size: 1.05rem;
+    font-weight: 500;
+    cursor: pointer;
+    box-shadow: 0 3px 8px var(--shadow);
+}
+
+.sub-tab.active {
+    background: var(--accent);
+    color: var(--white);
+    transform: translateY(-3px);
+}
+
+.learning-page .content-section {
+    background: var(--white);
+    padding: 3.5rem;
+    border-radius: 16px;
+    box-shadow: 0 5px 20px var(--shadow);
+    margin-bottom: 3rem;
+    animation: fadeIn 0.5s ease forwards;
+    opacity: 0;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.learning-page .content-section h2 {
+    color: var(--primary);
+    margin-bottom: 1.8rem;
+    border-left: 6px solid var(--secondary);
+    padding-left: 1.5rem;
+    font-size: 2.1rem;
+}
+
+.learning-page .content-section h3 {
+    color: var(--dark);
+    margin: 2.2rem 0 1.4rem 0;
+    font-size: 1.6rem;
+}
+
+.learning-page .content-section h4 {
+    color: var(--secondary);
+    margin: 1.8rem 0 1rem 0;
+    font-size: 1.3rem;
+}
+
+.learning-page .content-section h5 {
+    color: var(--accent);
+    margin: 1.5rem 0 0.8rem 0;
+    font-size: 1.15rem;
+}
+
+.learning-page .content-section p {
+    line-height: 2;
+    color: var(--dark);
+    margin-bottom: 1.5rem;
+    font-size: 1.1rem;
+}
+
+.learning-page .content-section ul,
+.learning-page .content-section ol {
+    margin-left: 2.8rem;
+    margin-bottom: 1.6rem;
+}
+
+.learning-page .content-section li {
+    line-height: 2;
+    color: var(--dark);
+    margin-bottom: 0.8rem;
+    font-size: 1.1rem;
+}
+
+.img-box {
+    text-align: center;
+    margin: 2.5rem 0;
+}
+
+.img-box img {
+    max-width: 800px;
+    width: 100%;
+    height: auto;
+    max-height: 500px;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px var(--shadow);
+    border: 1px solid var(--border);
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.img-box p {
+    font-size: 1rem;
+    color: var(--gray);
+    margin-top: 1rem;
+    font-style: italic;
+}
+
+.info-box {
+    background: #f1f9ff;
+    border-left: 6px solid var(--secondary);
+    padding: 1.8rem;
+    margin: 1.8rem 0;
+    border-radius: 0 10px 10px 0;
+}
+
+.warning-box {
+    background: #fff9e6;
+    border-left: 6px solid var(--warning);
+    padding: 1.8rem;
+    margin: 1.8rem 0;
+    border-radius: 0 10px 10px 0;
+}
+
+.key-box {
+    background: #f0fff4;
+    border-left: 6px solid var(--accent);
+    padding: 1.8rem;
+    margin: 1.8rem 0;
+    border-radius: 0 10px 10px 0;
+}
+
+.formula-box {
+    background: #f7f7f7;
+    padding: 1.8rem;
+    border-radius: 10px;
+    font-family: Consolas, 'Courier New', monospace;
+    margin: 1.8rem 0;
+    border: 1px solid var(--border);
+    font-size: 1.1rem;
+    line-height: 1.8;
+}
+
+.demo-box {
+    background: #f8fff9;
+    padding: 2rem;
+    border-radius: 12px;
+    margin: 2rem 0;
+    border: 2px solid var(--accent);
+}
+
+.demo-title {
+    font-weight: bold;
+    color: var(--accent);
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+}
+
+.color-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 1.2rem;
+    margin: 1.5rem 0;
+}
+
+.color-item {
+    text-align: center;
+}
+
+.color-swatch {
+    width: 80px;
+    height: 80px;
+    border-radius: 12px;
+    margin: 0 auto 0.8rem;
+    border: 2px solid var(--border);
+}
+
+.color-label {
+    font-size: 0.95rem;
+    color: var(--dark);
+}
+
+.compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 2rem 0;
+}
+
+.compare-table th,
+.compare-table td {
+    padding: 1.2rem;
+    text-align: left;
+    border: 1px solid var(--border);
+}
+
+.compare-table th {
+    background-color: var(--secondary);
+    color: var(--white);
+    font-size: 1.1rem;
+}
+
+.compare-table tr:nth-child(even) {
+    background-color: var(--light);
+}
+
+.animate-fade {
+    animation: fadeIn 0.6s ease forwards;
+}
+
+.learning-page footer {
+    text-align: center;
+    padding: 3rem;
+    background: var(--primary);
+    color: var(--white);
+    margin-top: 5rem;
+}
+
+.learning-page footer p {
+    margin-bottom: 0.8rem;
+    font-size: 1.05rem;
+}
+
+.learning-page footer a {
+    color: var(--accent);
+    text-decoration: none;
+    margin: 0 1rem;
+}
+
+.learning-page footer a:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 992px) {
+    .learning-page .content-section { padding: 2rem; }
+    .main-tab, .sub-tab { padding: 0.9rem 1.5rem; }
+}
+
+@media (max-width: 768px) {
+    .learning-page nav { padding: 1rem 1.5rem; }
+    .learning-page nav ul { gap: 1.2rem; }
+    .learning-page .page-title { font-size: 2.2rem; }
+    .learning-page .content-section { padding: 1.5rem; }
+}

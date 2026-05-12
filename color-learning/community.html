@@ -5,10 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Community - Color Learning</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="community-pages.css">
 </head>
-<body>
+<body class="community-pages-body">
+    <a href="#main-content" class="skip-link">Skip to main content</a>
     <nav>
-        <div class="logo">🎨</div>
+        <div class="logo">🎨 Color Learning</div>
+        <button class="nav-toggle" aria-label="Toggle navigation">☰</button>
         <ul>
             <li><a href="index.html">Homepage</a></li>
             <li><a href="learning.html">Learning</a></li>
@@ -23,44 +26,53 @@
         </div>
     </nav>
 
-    <div class="container">
+    <div class="breadcrumb">
+        <a href="index.html">Home</a>
+        <span class="breadcrumb-sep">/</span>
+        <span class="breadcrumb-current">Community</span>
+    </div>
+
+    <div class="container" id="main-content">
         <h1 class="page-title">Color Learning Community</h1>
         <p class="page-subtitle">Learn Together & Compete</p>
 
-        <div class="community-modules">
-            <div class="module">
-                <h3>Social Learning</h3>
-                <p>Join Group Discussions & Share Tips</p>
-                <a href="discussions.html" class="module-link">Explore Discussions →</a>
+        <div class="content-section">
+            <div class="community-modules">
+                <div class="module">
+                    <h3>Social Learning</h3>
+                    <p>Join Group Discussions & Share Tips</p>
+                    <a href="discussions.html" class="module-link">Explore Discussions →</a>
+                </div>
+                <div class="module">
+                    <h3>Profiles</h3>
+                    <p>View Learner Profiles & Progress</p>
+                    <a href="profiles.html" class="module-link">Browse Profiles →</a>
+                </div>
+                <div class="module">
+                    <h3>Scoreboard + Star Learners</h3>
+                    <p>Check Leaderboard & Top Performers</p>
+                    <span class="star-badge"></span>
+                    <a href="scoreboard.html" class="module-link">View Scoreboard →</a>
+                </div>
             </div>
-            <div class="module">
-                <h3>Profiles</h3>
-                <p>View Learner Profiles & Progress</p>
-                <a href="profiles.html" class="module-link">Browse Profiles →</a>
-            </div>
-            <div class="module">
-                <h3>Scoreboard + Star Learners</h3>
-                <p>Check Leaderboard & Top Performers</p>
-                <span class="star-badge"></span>
-                <a href="scoreboard.html" class="module-link">View Scoreboard →</a>
-            </div>
-        </div>
 
-        <div class="subpages-list">
-            <h4>Community Sub-pages:</h4>
-            <ul>
-                <li><a href="discussions.html">Discussions</a></li>
-                <li><a href="profiles.html">Learner Profiles</a></li>
-                <li><a href="scoreboard.html">Scoreboard</a></li>
-            </ul>
+            <div class="subpages-list">
+                <h4>Community Sub-pages:</h4>
+                <ul>
+                    <li><a href="discussions.html">Discussions</a></li>
+                    <li><a href="profiles.html">Learner Profiles</a></li>
+                    <li><a href="scoreboard.html">Scoreboard</a></li>
+                </ul>
+            </div>
         </div>
     </div>
 
     <footer>
         <p>© 2026 Color Learning Website. All rights reserved.
-            <a href="#">Privacy Policy</a>
+            <a href="privacy.html">Privacy Policy</a>
             <a href="#">Terms of Use</a>
         </p>
     </footer>
+    <script src="common.js"></script>
 </body>
 </html>

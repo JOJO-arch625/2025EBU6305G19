@@ -856,4 +856,608 @@ footer a:hover {
     .test-about-container {
         grid-template-columns: 1fr;
     }
+
+    .usp-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .promo-card {
+        padding: 30px 24px;
+    }
+
+    .nav-toggle {
+        display: block;
+    }
+
+    nav ul {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: #FFFFFF;
+        flex-direction: column;
+        padding: 20px;
+        border-bottom: 1px solid #f0f0f0;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        z-index: 999;
+    }
+
+    nav ul.nav-open {
+        display: flex;
+    }
+
+    nav ul li {
+        padding: 10px 0;
+    }
+
+    .nav-right {
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-left: auto;
+    }
+
+    .breadcrumb {
+        padding: 12px 20px;
+        font-size: 12px;
+    }
+}
+
+.nav-toggle {
+    display: none;
+    background: none;
+    border: 1px solid #E5E7EB;
+    border-radius: 6px;
+    font-size: 22px;
+    cursor: pointer;
+    padding: 4px 10px;
+    line-height: 1;
+}
+
+.skip-link {
+    position: absolute;
+    top: -50px;
+    left: 0;
+    background: #6366F1;
+    color: #FFFFFF;
+    padding: 10px 20px;
+    z-index: 10000;
+    text-decoration: none;
+    font-weight: 600;
+    border-radius: 0 0 6px 0;
+    transition: top 0.2s;
+}
+
+.skip-link:focus {
+    top: 0;
+}
+
+/* ==============================================
+   USP Section - Core Unique Selling Points
+   ============================================== */
+.usp-section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 60px 40px;
+}
+
+.usp-heading {
+    font-size: 22px;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.usp-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 30px;
+}
+
+.usp-item {
+    text-align: center;
+    padding: 30px 20px;
+    border: 1px solid #E5E7EB;
+    border-radius: 8px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.usp-item:hover {
+    border-color: #6366F1;
+    box-shadow: 0 2px 12px rgba(99, 102, 241, 0.08);
+}
+
+.usp-icon {
+    font-size: 32px;
+    margin-bottom: 16px;
+}
+
+.usp-item h3 {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.usp-item p {
+    font-size: 14px;
+    color: #6B7280;
+    line-height: 1.5;
+}
+
+/* ==============================================
+   Showcase Section - Animated Slideshow
+   ============================================== */
+.showcase-section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 60px 40px;
+}
+
+.showcase-heading {
+    font-size: 22px;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.showcase-slider {
+    overflow: hidden;
+    position: relative;
+}
+
+.showcase-track {
+    display: flex;
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.showcase-slide {
+    min-width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 20px 60px 30px;
+}
+
+.showcase-visual {
+    width: 200px;
+    height: 160px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 24px;
+}
+
+.showcase-color-ring {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    animation: colorRingSpin 8s linear infinite;
+}
+
+.showcase-color-ring span {
+    position: absolute;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 14px;
+    color: #fff;
+    background: var(--clr);
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%) rotate(var(--angle)) translateY(-50px) rotate(calc(-1 * var(--angle)));
+    animation: colorPulse 2s ease-in-out infinite alternate;
+}
+
+@keyframes colorRingSpin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes colorPulse {
+    from { transform: translate(-50%, -50%) rotate(var(--angle)) translateY(-50px) rotate(calc(-1 * var(--angle))) scale(1); }
+    to { transform: translate(-50%, -50%) rotate(var(--angle)) translateY(-50px) rotate(calc(-1 * var(--angle))) scale(1.12); }
+}
+
+.showcase-puzzle {
+    display: flex;
+    gap: 12px;
+}
+
+.puzzle-piece {
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
+    animation: puzzleBounce 1.6s ease-in-out infinite alternate;
+}
+
+.puzzle-piece:nth-child(2) { animation-delay: 0.2s; }
+.puzzle-piece:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes puzzleBounce {
+    from { transform: translateY(0); }
+    to { transform: translateY(-12px); }
+}
+
+.showcase-chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 14px;
+    height: 100px;
+}
+
+.chart-bar {
+    width: 24px;
+    border-radius: 4px 4px 0 0;
+    background: #6366F1;
+    height: var(--h);
+    animation: chartGrow 1.2s ease-out forwards;
+    animation-delay: 0.3s;
+    transform-origin: bottom;
+    transform: scaleY(0);
+}
+
+.chart-bar:nth-child(2) { animation-delay: 0.5s; }
+.chart-bar:nth-child(3) { animation-delay: 0.7s; }
+.chart-bar:nth-child(4) { animation-delay: 0.9s; }
+
+@keyframes chartGrow {
+    to { transform: scaleY(1); }
+}
+
+.showcase-slide h3 {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.showcase-slide p {
+    font-size: 14px;
+    color: #6B7280;
+    max-width: 400px;
+}
+
+.showcase-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 24px;
+}
+
+.showcase-btn {
+    width: 36px;
+    height: 36px;
+    border: 1px solid #D1D5DB;
+    background: #FFFFFF;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+}
+
+.showcase-btn:hover {
+    background: #F3F4F6;
+}
+
+.showcase-dots {
+    display: flex;
+    gap: 8px;
+}
+
+.showcase-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #D1D5DB;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.showcase-dot.active {
+    background: #6366F1;
+}
+
+/* ==============================================
+   Promo Section - New Member Bonus
+   ============================================== */
+.promo-section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 60px 40px;
+}
+
+.promo-card {
+    background: linear-gradient(135deg, #E0E7FF 0%, #F5F3FF 50%, #EDE9FE 100%);
+    border-radius: 12px;
+    padding: 48px;
+    text-align: center;
+}
+
+.promo-badge {
+    display: inline-block;
+    padding: 6px 18px;
+    background: #6366F1;
+    color: #FFFFFF;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 20px;
+}
+
+.promo-title {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 24px;
+}
+
+.promo-perks {
+    list-style: none;
+    max-width: 420px;
+    margin: 0 auto 28px;
+    text-align: left;
+}
+
+.promo-perks li {
+    font-size: 15px;
+    color: #374151;
+    padding: 8px 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.promo-check {
+    color: #22C55E;
+    font-weight: 700;
+    font-size: 16px;
+}
+
+.promo-cta {
+    display: inline-block;
+    padding: 12px 32px;
+    background: #6366F1;
+    color: #FFFFFF;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: 500;
+    font-size: 16px;
+    transition: background 0.2s;
+}
+
+.promo-cta:hover {
+    background: #4F46E5;
+}
+
+/* ==============================================
+   Breadcrumb Navigation
+   ============================================== */
+.breadcrumb {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 12px 40px;
+    font-size: 13px;
+    color: #9CA3AF;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.breadcrumb a {
+    color: #6366F1;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.breadcrumb a:hover {
+    text-decoration: underline;
+}
+
+.breadcrumb-sep {
+    color: #D1D5DB;
+}
+
+.breadcrumb-current {
+    color: #6B7280;
+    font-weight: 500;
+}
+
+/* ==============================================
+   High Contrast Mode
+   ============================================== */
+body.high-contrast {
+    background-color: #000000;
+    color: #FFFFFF;
+}
+
+body.high-contrast nav {
+    border-bottom-color: #555555;
+}
+
+body.high-contrast nav a {
+    color: #FFFFFF;
+}
+
+body.high-contrast nav a.active,
+body.high-contrast nav a:hover {
+    color: #FFD700;
+}
+
+body.high-contrast .logo {
+    background-color: #FFD700;
+    color: #000000;
+}
+
+body.high-contrast .lang-btn,
+body.high-contrast .font-btn {
+    background: #1A1A1A;
+    border-color: #555555;
+    color: #FFFFFF;
+}
+
+body.high-contrast .font-btn.active {
+    background: #FFD700;
+    color: #000000;
+    border-color: #FFD700;
+}
+
+body.high-contrast .breadcrumb a {
+    color: #FFD700;
+}
+
+body.high-contrast .breadcrumb-current {
+    color: #CCCCCC;
+}
+
+body.high-contrast .breadcrumb-sep {
+    color: #555555;
+}
+
+body.high-contrast .hero-text p,
+body.high-contrast .carousel-content p,
+body.high-contrast .carousel-desc {
+    color: #CCCCCC;
+}
+
+body.high-contrast .carousel-btn {
+    background: #1A1A1A;
+    border-color: #555555;
+    color: #FFFFFF;
+}
+
+body.high-contrast .carousel-btn:hover {
+    background: #333333;
+}
+
+body.high-contrast .dot {
+    background: #555555;
+}
+
+body.high-contrast .dot.active {
+    background: #FFD700;
+}
+
+body.high-contrast .usp-item {
+    border-color: #555555;
+}
+
+body.high-contrast .usp-item:hover {
+    border-color: #FFD700;
+    box-shadow: 0 2px 12px rgba(255, 215, 0, 0.15);
+}
+
+body.high-contrast .usp-item p {
+    color: #CCCCCC;
+}
+
+body.high-contrast .showcase-slide p {
+    color: #CCCCCC;
+}
+
+body.high-contrast .showcase-btn {
+    background: #1A1A1A;
+    border-color: #555555;
+    color: #FFFFFF;
+}
+
+body.high-contrast .showcase-btn:hover {
+    background: #333333;
+}
+
+body.high-contrast .showcase-dot {
+    background: #555555;
+}
+
+body.high-contrast .showcase-dot.active {
+    background: #FFD700;
+}
+
+body.high-contrast .promo-card {
+    background: linear-gradient(135deg, #1A1A2E 0%, #16213E 50%, #0F3460 100%);
+}
+
+body.high-contrast .promo-perks li {
+    color: #CCCCCC;
+}
+
+body.high-contrast .promo-check {
+    color: #FFD700;
+}
+
+body.high-contrast .promo-cta {
+    background: #FFD700;
+    color: #000000;
+}
+
+body.high-contrast .promo-cta:hover {
+    background: #FFC107;
+}
+
+body.high-contrast .ad-banner {
+    border-top-color: #555555;
+    color: #FFFFFF;
+}
+
+body.high-contrast footer {
+    border-top-color: #555555;
+    color: #999999;
+}
+
+body.high-contrast footer a {
+    color: #FFD700;
+}
+
+body.high-contrast footer a:hover {
+    color: #FFC107;
+}
+
+.privacy-section {
+    background: #fff;
+    padding: 2.5rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    margin-bottom: 2rem;
+}
+
+.privacy-section h2 {
+    color: #2c3e50;
+    border-left: 5px solid #3498db;
+    padding-left: 1rem;
+    margin-bottom: 1.2rem;
+}
+
+.privacy-section h2.privacy-heading-green {
+    border-left-color: #2ecc71;
+}
+
+.privacy-section h2.privacy-heading-orange {
+    border-left-color: #f39c12;
+}
+
+.privacy-section h2.privacy-heading-red {
+    border-left-color: #e74c3c;
+}
+
+.privacy-section p {
+    line-height: 1.8;
+    color: #34495e;
+    margin-bottom: 1.5rem;
+}
+
+.privacy-section ul {
+    margin-left: 2rem;
+    line-height: 2;
+    color: #34495e;
+    margin-bottom: 1.5rem;
+}
+
+.privacy-section a {
+    color: #3498db;
 }

@@ -5,411 +5,59 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Learning - Color Encoding | EBU5303 Complete Course</title>
     <link rel="stylesheet" href="styles.css">
-    <style>
-        *{
-            margin:0;
-            padding:0;
-            box-sizing:border-box;
-            font-family:'Segoe UI',Roboto,Arial,sans-serif;
-            transition:all 0.3s ease;
-        }
-        :root {
-            --primary:#2c3e50;
-            --secondary:#3498db;
-            --accent:#2ecc71;
-            --warning:#f39c12;
-            --danger:#e74c3c;
-            --light:#f8f9fa;
-            --dark:#34495e;
-            --gray:#7f8c8d;
-            --white:#ffffff;
-            --black:#000000;
-            --border:#ddd;
-            --shadow:rgba(0,0,0,0.1);
-        }
-        .high-contrast {
-            --primary:#000000;
-            --secondary:#ffff00;
-            --accent:#00ff00;
-            --warning:#ff8800;
-            --danger:#ff0000;
-            --light:#ffffff;
-            --dark:#000000;
-            --gray:#222222;
-            --white:#ffffff;
-            --black:#000000;
-            --border:#ffffff;
-            --shadow:rgba(255,255,255,0.3);
-        }
-        html,body{
-            scroll-behavior:smooth;
-            background-color:var(--light);
-            font-size:100%;
-        }
-        nav{
-            display:flex;
-            align-items:center;
-            justify-content:space-between;
-            padding:1rem 3rem;
-            background:var(--primary);
-            color:var(--white);
-            position:sticky;
-            top:0;
-            z-index:999;
-            box-shadow:0 3px 10px var(--shadow);
-        }
-        .logo{
-            font-size:2.2rem;
-            font-weight:bold;
-            display:flex;
-            align-items:center;
-            gap:0.6rem;
-        }
-        nav ul{
-            display:flex;
-            list-style:none;
-            gap:2.5rem;
-        }
-        nav a{
-            color:var(--white);
-            text-decoration:none;
-            font-size:1.15rem;
-            padding:0.6rem 0;
-            position:relative;
-        }
-        nav a.active{
-            color:var(--accent);
-            font-weight:600;
-        }
-        nav a:hover{
-            color:var(--secondary);
-        }
-        .nav-right{
-            display:flex;
-            gap:0.8rem;
-            align-items:center;
-        }
-        .lang-btn,.font-btn,.contrast-btn{
-            padding:0.6rem 1rem;
-            border:none;
-            border-radius:6px;
-            cursor:pointer;
-            background:var(--light);
-            color:var(--primary);
-            font-weight:500;
-        }
-        .lang-btn:hover,.font-btn:hover,.contrast-btn:hover{
-            background:var(--secondary);
-            color:var(--white);
-        }
-        .container{
-            max-width:1400px;
-            margin:3rem auto;
-            padding:0 1.5rem;
-        }
-        .breadcrumbs{
-            margin-bottom:2rem;
-            font-size:1.05rem;
-            color:var(--gray);
-        }
-        .breadcrumbs a{
-            color:var(--secondary);
-            text-decoration:none;
-        }
-        .breadcrumbs span{
-            margin:0 0.5rem;
-        }
-        .page-title{
-            text-align:center;
-            font-size:2.8rem;
-            color:var(--primary);
-            margin-bottom:0.8rem;
-        }
-        .page-subtitle{
-            text-align:center;
-            color:var(--gray);
-            margin-bottom:3rem;
-            font-size:1.3rem;
-        }
-        .main-tabs{
-            display:flex;
-            gap:1.5rem;
-            margin-bottom:2.5rem;
-            justify-content:center;
-            flex-wrap:wrap;
-        }
-        .main-tab{
-            padding:1.2rem 2.8rem;
-            background:var(--white);
-            border:none;
-            border-radius:10px;
-            font-size:1.2rem;
-            font-weight:500;
-            cursor:pointer;
-            box-shadow:0 3px 8px var(--shadow);
-        }
-        .main-tab.active{
-            background:var(--secondary);
-            color:var(--white);
-            transform:translateY(-3px);
-            box-shadow:0 5px 15px rgba(52,152,219,0.4);
-        }
-        .sub-tabs{
-            display:flex;
-            gap:1.2rem;
-            margin-bottom:2.8rem;
-            justify-content:center;
-            flex-wrap:wrap;
-        }
-        .sub-tab{
-            padding:1rem 1.8rem;
-            background:var(--white);
-            border:none;
-            border-radius:10px;
-            font-size:1.05rem;
-            font-weight:500;
-            cursor:pointer;
-            box-shadow:0 3px 8px var(--shadow);
-        }
-        .sub-tab.active{
-            background:var(--accent);
-            color:var(--white);
-            transform:translateY(-3px);
-        }
-        .content-section{
-            background:var(--white);
-            padding:3.5rem;
-            border-radius:16px;
-            box-shadow:0 5px 20px var(--shadow);
-            margin-bottom:3rem;
-            animation:fadeIn 0.5s ease forwards;
-            opacity:0;
-        }
-        @keyframes fadeIn{
-            from{opacity:0; transform:translateY(20px);}
-            to{opacity:1; transform:translateY(0);}
-        }
-        .content-section h2{
-            color:var(--primary);
-            margin-bottom:1.8rem;
-            border-left:6px solid var(--secondary);
-            padding-left:1.5rem;
-            font-size:2.1rem;
-        }
-        .content-section h3{
-            color:var(--dark);
-            margin:2.2rem 0 1.4rem 0;
-            font-size:1.6rem;
-        }
-        .content-section h4{
-            color:var(--secondary);
-            margin:1.8rem 0 1rem 0;
-            font-size:1.3rem;
-        }
-        .content-section h5{
-            color:var(--accent);
-            margin:1.5rem 0 0.8rem 0;
-            font-size:1.15rem;
-        }
-        .content-section p{
-            line-height:2;
-            color:var(--dark);
-            margin-bottom:1.5rem;
-            font-size:1.1rem;
-        }
-        .content-section ul,.content-section ol{
-            margin-left:2.8rem;
-            margin-bottom:1.6rem;
-        }
-        .content-section li{
-            line-height:2;
-            color:var(--dark);
-            margin-bottom:0.8rem;
-            font-size:1.1rem;
-        }
-        .img-box{
-            text-align:center;
-            margin:2.5rem 0;
-        }
-        .img-box img{
-            max-width:100%;
-            height:auto;
-            border-radius:12px;
-            box-shadow:0 5px 15px var(--shadow);
-            border:1px solid var(--border);
-        }
-        .img-box p{
-            font-size:1rem;
-            color:var(--gray);
-            margin-top:1rem;
-            font-style:italic;
-        }
-        .info-box{
-            background:#f1f9ff;
-            border-left:6px solid var(--secondary);
-            padding:1.8rem;
-            margin:1.8rem 0;
-            border-radius:0 10px 10px 0;
-        }
-        .warning-box{
-            background:#fff9e6;
-            border-left:6px solid var(--warning);
-            padding:1.8rem;
-            margin:1.8rem 0;
-            border-radius:0 10px 10px 0;
-        }
-        .key-box{
-            background:#f0fff4;
-            border-left:6px solid var(--accent);
-            padding:1.8rem;
-            margin:1.8rem 0;
-            border-radius:0 10px 10px 0;
-        }
-        .formula-box{
-            background:#f7f7f7;
-            padding:1.8rem;
-            border-radius:10px;
-            font-family:Consolas,'Courier New',monospace;
-            margin:1.8rem 0;
-            border:1px solid var(--border);
-            font-size:1.1rem;
-            line-height:1.8;
-        }
-        .demo-box{
-            background:#f8fff9;
-            padding:2rem;
-            border-radius:12px;
-            margin:2rem 0;
-            border:2px solid var(--accent);
-        }
-        .demo-title{
-            font-weight:bold;
-            color:var(--accent);
-            margin-bottom:1rem;
-            font-size:1.2rem;
-        }
-        .color-grid{
-            display:grid;
-            grid-template-columns:repeat(auto-fit,minmax(100px,1fr));
-            gap:1.2rem;
-            margin:1.5rem 0;
-        }
-        .color-item{
-            text-align:center;
-        }
-        .color-swatch{
-            width:80px;
-            height:80px;
-            border-radius:12px;
-            margin:0 auto 0.8rem;
-            border:2px solid var(--border);
-        }
-        .color-label{
-            font-size:0.95rem;
-            color:var(--dark);
-        }
-        .compare-table{
-            width:100%;
-            border-collapse:collapse;
-            margin:2rem 0;
-        }
-        .compare-table th,.compare-table td{
-            padding:1.2rem;
-            text-align:left;
-            border:1px solid var(--border);
-        }
-        .compare-table th{
-            background-color:var(--secondary);
-            color:var(--white);
-            font-size:1.1rem;
-        }
-        .compare-table tr:nth-child(even){
-            background-color:var(--light);
-        }
-        .animate-fade{
-            animation:fadeIn 0.6s ease forwards;
-        }
-        footer{
-            text-align:center;
-            padding:3rem;
-            background:var(--primary);
-            color:var(--white);
-            margin-top:5rem;
-        }
-        footer p{
-            margin-bottom:0.8rem;
-            font-size:1.05rem;
-        }
-        footer a{
-            color:var(--accent);
-            text-decoration:none;
-            margin:0 1rem;
-        }
-        footer a:hover{
-            text-decoration:underline;
-        }
-        @media(max-width:992px){
-            .content-section{padding:2rem;}
-            .main-tab,.sub-tab{padding:0.9rem 1.5rem;}
-        }
-        @media(max-width:768px){
-            nav{padding:1rem 1.5rem;}
-            nav ul{gap:1.2rem;}
-            .page-title{font-size:2.2rem;}
-            .content-section{padding:1.5rem;}
-        }
-    </style>
+    <link rel="stylesheet" href="learning-pages.css">
 </head>
-<body>
+<body class="learning-page">
+    <a href="#main-content" class="skip-link">Skip to main content</a>
     <nav>
-        <div class="logo">🎨 Color Learning</div>
+        <div class="logo">🎨</div>
+        <button class="nav-toggle" aria-label="Toggle navigation">☰</button>
         <ul>
-            <li><a href="index.html">Homepage</a></li>
-            <li><a href="learning.html" class="active">Learning</a></li>
-            <li><a href="game.html">Game</a></li>
-            <li><a href="test.html">Test</a></li>
-            <li><a href="community.html">Community</a></li>
-        </ul>
-        <div class="nav-right">
-            <button class="lang-btn" id="langBtn">EN</button>
-            <button class="font-btn" id="fontSmaller">A-</button>
-            <button class="font-btn" id="fontBigger">A+</button>
-            <button class="contrast-btn" id="contrastBtn">Contrast</button>
-        </div>
-    </nav>
+        <li><a href="index.html">Homepage</a></li>
+        <li><a href="learning.html" class="active">Learning</a></li>
+        <li><a href="game.html">Game</a></li>
+        <li><a href="test.html">Test</a></li>
+        <li><a href="community.html">Community</a></li>
+    </ul>
+    <div class="nav-right">
+        <button class="font-btn" id="fontSmaller">A-</button>
+        <button class="font-btn" id="fontBigger">A+</button>
+        <button class="font-btn" id="contrastToggle" aria-label="Toggle high contrast mode">◐</button>
+        <button class="lang-btn" id="langBtn">EN</button>
+    </div>
+</nav>
 
-    <div class="container">
-        <div class="breadcrumbs">
-            <a href="index.html">Home</a><span>&gt;</span><span>Learning Center</span>
-        </div>
-        <h1 class="page-title">Complete Color Encoding Course</h1>
+    <div class="breadcrumb">
+        <a href="index.html">Home</a>
+        <span class="breadcrumb-sep">/</span>
+        <span class="breadcrumb-current">Learning</span>
+    </div>
+
+    <div class="container" id="main-content">
+        <h1 class="page-title">Enjoy Your Colour Encoding Learning！</h1>
         <p class="page-subtitle">Master Light Physics, Human Vision, RGB/CMYK/HSV/YUV/YCbCr — Full Professional Knowledge System</p>
-
         <div class="main-tabs">
             <button class="main-tab active" id="tab-basics">Colour Basics & Colour Vision</button>
             <button class="main-tab" id="tab-models">Colour Models</button>
         </div>
-
         <div class="sub-tabs" id="sub-basics">
             <button class="sub-tab active" id="sub-color-basics">Colour Basics</button>
             <button class="sub-tab" id="sub-color-vision">Colour Vision</button>
         </div>
-
         <div class="sub-tabs" id="sub-models" style="display:none;">
             <button class="sub-tab" id="sub-rgb">RGB</button>
             <button class="sub-tab" id="sub-yuv">YUV/YCbCr</button>
             <button class="sub-tab" id="sub-cmyk">CMYK</button>
             <button class="sub-tab" id="sub-hsv">HSV</button>
         </div>
-
-        <div class="content-section" id="content-color-basics">
+        <!-- 英文内容 -->
+        <div class="content-section lang-en" id="content-color-basics">
             <h2>1. The Ultimate Nature of Color</h2>
             <p>Color is <strong>not an inherent physical property of objects</strong>. It is a <strong>subjective visual perception</strong> produced when visible light interacts with objects, is captured by photoreceptor cells in the eyes, and is interpreted by the brain.</p>
             <p>Objects themselves have no color. They only possess the ability to <strong>absorb</strong> and <strong>reflect</strong> specific wavelengths of light. The reflected light enters our eyes, and our brain processes it into the colors we perceive.</p>
             <div class="key-box">
                 <p>Core Physical Law: <strong>Objects reflect the light we see; they absorb the light we do not see.</strong></p>
             </div>
-
             <h2>2. Visible Light Spectrum & Wavelengths</h2>
             <p>Visible light is a tiny part of the entire electromagnetic spectrum. The wavelength range visible to humans is approximately <strong>400 nm (nanometers) to 700 nm</strong>.</p>
             <ul>
@@ -419,38 +67,32 @@
                 <li>620–700 nm: Red</li>
             </ul>
             <div class="img-box">
-                <img src="https://i.imgur.com/KSWlJz9.png" alt="Visible Light Spectrum 400-700nm">
-                <p>Visible light spectrum: wavelength distribution, color regions, and electromagnetic spectrum position</p>
+                <img src="images/spectrum.jpg" alt="Visible Light Spectrum">
+                <p>Visible Light Spectrum</p>
             </div>
-
-            <h2>3. Three Core Color Attributes (HSL/HSV Foundation)</h2>
-            <h3>3.1 Hue (色相)</h3>
+            <h2>3. Three Core Color Attributes</h2>
+            <h3>3.1 Hue</h3>
             <p>Hue is the <strong>basic identity of a color</strong>, determined by the <strong>dominant wavelength</strong> of the incoming light. It corresponds to color names like red, green, blue, and yellow.</p>
             <p>Example: A blue sky reflects light with a dominant wavelength of ~450–495 nm.</p>
-
-            <h3>3.2 Saturation (饱和度)</h3>
+            <h3>3.2 Saturation</h3>
             <p>Saturation describes the <strong>purity and vividness</strong> of a color. It represents how much white light is mixed into the hue.</p>
             <ul>
                 <li>100% saturation: Pure color, no white light mixed</li>
                 <li>0% saturation: Completely gray, no color</li>
             </ul>
             <p>Example: Pure red (high saturation) vs. pale pink (low saturation).</p>
-
-            <h3>3.3 Brightness / Lightness / Value (明度)</h3>
+            <h3>3.3 Brightness / Lightness / Value</h3>
             <p>Brightness is the <strong>subjective perceived intensity</strong> of light emitted or reflected from a surface.</p>
-
             <h2>4. Brightness vs Luminance: Critical Distinction</h2>
             <p><strong>Brightness</strong>: Subjective human visual experience; no precise mathematical formula.</p>
             <p><strong>Luminance</strong>: Objective physical quantity; calculated based on light wavelength, radiant power, and human eye sensitivity curve.</p>
             <div class="warning-box">
                 <p>Human eyes are <strong>most sensitive to green light (~555 nm)</strong>. Two light sources with identical physical power can have drastically different perceived brightness.</p>
             </div>
-
             <h2>5. Human Perception of Relative Intensity</h2>
             <p>Humans cannot accurately judge absolute light intensity. We only perceive <strong>relative changes</strong> in brightness.</p>
             <p>A small change in luminance in dark areas causes a large perceived brightness change. A large luminance change in bright areas causes only a small perceived change.</p>
-
-            <h2>6. Key Summary of Color Basics</h2>
+            <h2>6. Summary</h2>
             <ul>
                 <li>Color comes from light, not objects</li>
                 <li>Visible light = 400–700 nm wavelength</li>
@@ -458,41 +100,36 @@
                 <li>Perception is relative, not absolute</li>
             </ul>
         </div>
-
-        <div class="content-section" id="content-color-vision" style="display:none;">
+        <div class="content-section lang-en" id="content-color-vision" style="display:none;">
             <h2>1. Human Eye & Color Vision System</h2>
             <p>Color vision occurs in the <strong>retina</strong> at the back of the eye. The retina contains two types of photoreceptor cells: rods and cones.</p>
             <div class="img-box">
-                <img src="https://i.imgur.com/D0X2qL9.png" alt="Human Eye Retina Structure">
-                <p>Anatomical structure of the human eye: cornea, lens, iris, retina, fovea, optic nerve</p>
+                <img src="images/human-eye.jpg" alt="Anatomy of the Human Eye">
+                <p>Anatomy of the Human Eye</p>
             </div>
             <ul>
-                <li><strong>Rods (杆状细胞)</strong>: Operate in low light (night vision); cannot distinguish colors.</li>
-                <li><strong>Cones (锥状细胞)</strong>: Operate in bright light; responsible for sharp vision and color perception.</li>
+                <li><strong>Rods</strong>: Operate in low light (night vision); cannot distinguish colors.</li>
+                <li><strong>Cones</strong>: Operate in bright light; responsible for sharp vision and color perception.</li>
             </ul>
-
-            <h2>2. Three Types of Cone Cells (The Basis of Trichromacy)</h2>
+            <h2>2. Three Types of Cone Cells</h2>
             <p>Human eyes have three distinct types of cones, each tuned to a different wavelength range:</p>
             <ul>
-                <li><strong>L-cones (Red)</strong>: Peak sensitivity at ~610 nm (long wavelengths)</li>
-                <li><strong>M-cones (Green)</strong>: Peak sensitivity at ~560 nm (medium wavelengths)</li>
-                <li><strong>S-cones (Blue)</strong>: Peak sensitivity at ~430 nm (short wavelengths)</li>
+                <li><strong>L-cones</strong>: Peak sensitivity at ~610 nm (long wavelengths)</li>
+                <li><strong>M-cones</strong>: Peak sensitivity at ~560 nm (medium wavelengths)</li>
+                <li><strong>S-cones</strong>: Peak sensitivity at ~430 nm (short wavelengths)</li>
             </ul>
             <div class="warning-box">
                 <p><strong>Color Blindness</strong> is caused by missing or defective cone cells. Red-green color blindness is the most common form.</p>
             </div>
-
-            <h2>3. Tristimulus Theory (Three-Color Theory)</h2>
+            <h2>3. Tristimulus Theory</h2>
             <p>All colors perceived by humans can be reproduced by mixing <strong>three primary colors: Red, Green, Blue (RGB)</strong> in appropriate proportions.</p>
             <p>This theory is the scientific foundation of all digital color systems: displays, cameras, projectors, and image sensors.</p>
-
             <h2>4. Metamers: Same Color, Different Spectra</h2>
             <p><strong>Metamers</strong> are pairs of light stimuli with <strong>completely different wavelength spectra</strong> that produce <strong>identical color perception</strong> in the human eye.</p>
             <p><strong>Spectrum (spectra)</strong>: The distribution of light energy across different wavelengths.</p>
             <div class="info-box">
                 <p>Two different wavelength combinations can look exactly the same color to humans. This is the basis of digital color reproduction.</p>
             </div>
-
             <h2>5. Subjectivity of Color Perception</h2>
             <p>Color perception is not purely physical—it is highly subjective and affected by:</p>
             <ul>
@@ -502,29 +139,25 @@
                 <li>Visual adaptation and prior experience</li>
                 <li>Brain cognitive processing (Stroop Effect)</li>
             </ul>
-
-            <h2>6. Complete Color Vision Knowledge Summary</h2>
+            <h2>6. Summary</h2>
             <ul>
                 <li>Cones = color vision; rods = night vision</li>
-                <li>Three cone types: L(M/R), M(G), S(B)</li>
+                <li>Three cone types: L, M, S</li>
                 <li>Tristimulus theory: any color = R+G+B mixture</li>
                 <li>Metamers: different spectra → same perceived color</li>
                 <li>Color perception is a joint product of eyes and brain</li>
             </ul>
         </div>
-
-        <div class="content-section" id="content-rgb" style="display:none;">
+        <div class="content-section lang-en" id="content-rgb" style="display:none;">
             <h2>RGB Color Model: Additive System for Digital Displays</h2>
             <p>RGB is an <strong>additive color model</strong> designed for <strong>light-emitting devices</strong>: computer monitors, smartphones, TVs, projectors, and LED screens.</p>
             <p>Colors are created by <strong>emitting</strong> red, green, and blue light.</p>
-
             <h3>1. Additive Color Mixing Principle</h3>
             <p>Adding light increases brightness. Full mixture of R+G+B produces white light.</p>
             <div class="img-box">
-                <img src="https://i.imgur.com/9vQfH9G.png" alt="RGB Additive Color Mixing">
-                <p>RGB additive mixing: R+G=Yellow, G+B=Cyan, B+R=Magenta, R+G+B=White</p>
+                <img src="images/rgb-additive.jpg" alt="RGB Additive Color Mixing">
+                <p>RGB Additive Color Mixing</p>
             </div>
-
             <h3>2. 8-bit Digital RGB Encoding</h3>
             <p>Standard digital RGB uses 8 bits per channel, with values ranging from <strong>0 to 255</strong>.</p>
             <ul>
@@ -535,17 +168,14 @@
                 <li>(0, 0, 255) → Pure Blue</li>
                 <li>(128, 128, 128) → Middle Gray</li>
             </ul>
-
             <h3>3. RGB to Grayscale Conversion</h3>
             <div class="formula-box">
                 L = 0.30 × R + 0.59 × G + 0.11 × B
             </div>
             <p>Green has the highest weight because human eyes are most sensitive to green light.</p>
-
             <h3>4. RGB Color Cube & Grayscale Axis</h3>
             <p>RGB forms a 3D cube. The straight line from (0,0,0) to (255,255,255) is the <strong>grayscale axis</strong>.</p>
             <p>All points on this axis have equal R, G, and B values and are shades of gray.</p>
-
             <h3>5. RGB Color Examples & Preview</h3>
             <div class="color-grid">
                 <div class="color-item">
@@ -573,7 +203,6 @@
                     <div class="color-label">Magenta<br>(255,0,255)</div>
                 </div>
             </div>
-
             <h3>6. Why RGB Is Used for Screens</h3>
             <ul>
                 <li>Matches human trichromatic vision</li>
@@ -581,34 +210,37 @@
                 <li>Wide color gamut</li>
                 <li>Direct hardware support</li>
             </ul>
+            <h3>6. Summary</h3>
+            <ul>
+                <li>Additive model for light-emitting screens</li>
+                <li>8-bit per channel: 0–255 value range</li>
+                <li>Grayscale conversion uses weighted RGB</li>
+                <li>Matches human eye’s three-cone vision system</li>
+                <li>Standard for all digital display devices</li>
+            </ul>
         </div>
-
-        <div class="content-section" id="content-yuv" style="display:none;">
+        <div class="content-section lang-en" id="content-yuv" style="display:none;">
             <h2>YUV / YCbCr: Luma-Chroma Separation Model</h2>
             <p>YUV and YCbCr are color models that <strong>separate luminance (brightness) from chrominance (color)</strong>.</p>
             <p><strong>YUV</strong>: Analog color system (traditional TV).</p>
             <p><strong>YCbCr</strong>: Digital version for image/video compression (JPEG, MPEG, H.264/265).</p>
-
             <h3>1. Core Purpose: Why Separate Luma and Chroma?</h3>
             <div class="key-box">
                 <p>Human vision is <strong>far more sensitive to brightness (luma) than to color (chroma)</strong>. We can reduce chrominance data by 50%–75% without noticeable quality loss.</p>
             </div>
             <p>This is the foundational principle of all digital image and video compression standards.</p>
-
             <h3>2. Component Definitions</h3>
             <ul>
                 <li><strong>Y</strong>: Luminance (brightness signal)</li>
                 <li><strong>U / Cb</strong>: Blue-difference chrominance</li>
                 <li><strong>V / Cr</strong>: Red-difference chrominance</li>
             </ul>
-
             <h3>3. RGB to YUV Conversion Formula</h3>
             <div class="formula-box">
                 Y = 0.299R + 0.587G + 0.114B<br>
                 U = -0.147R - 0.289G + 0.436B<br>
                 V = 0.615R - 0.515G - 0.100B
             </div>
-
             <h3>4. RGB to YCbCr Conversion Formula</h3>
             <div class="formula-box">
                 Y = 0.299R + 0.587G + 0.114B<br>
@@ -616,14 +248,12 @@
                 Cr = 0.500R - 0.419G - 0.081B + 128<br><br>
                 Range: Y ∈ [0,255], Cb ∈ [0,255], Cr ∈ [0,255]
             </div>
-
             <h3>5. YCbCr to RGB Reverse Conversion</h3>
             <div class="formula-box">
                 R = Y + 1.402 × (Cr - 128)<br>
                 G = Y - 0.34414 × (Cb - 128) - 0.71414 × (Cr - 128)<br>
                 B = Y + 1.772 × (Cb - 128)
             </div>
-
             <h3>6. Main Applications</h3>
             <ul>
                 <li>JPEG / PNG image compression</li>
@@ -631,8 +261,7 @@
                 <li>Digital TV and streaming media</li>
                 <li>Camera image sensors</li>
             </ul>
-
-            <h3>7. Complete Summary</h3>
+            <h3>7. Summary</h2>
             <ul>
                 <li>Y = brightness; Cb/Cr = color</li>
                 <li>Separation enables high-efficiency compression</li>
@@ -640,11 +269,9 @@
                 <li>Human eye insensitivity to color enables data reduction</li>
             </ul>
         </div>
-
-        <div class="content-section" id="content-cmyk" style="display:none;">
+        <div class="content-section lang-en" id="content-cmyk" style="display:none;">
             <h2>CMYK Color Model: Subtractive System for Printing</h2>
             <p>CMYK is a <strong>subtractive color model</strong> exclusively used for <strong>printing</strong>. Unlike RGB (emitting light), CMYK works by <strong>absorbing light</strong> using inks on white paper.</p>
-
             <h3>1. Subtractive Color Mixing Principle</h3>
             <p>White paper reflects all light. Inks subtract (absorb) primary colors:</p>
             <ul>
@@ -653,23 +280,20 @@
                 <li><strong>Y (Yellow)</strong>: Absorbs blue light</li>
             </ul>
             <div class="img-box">
-                <img src="https://i.imgur.com/5yFZ7bJ.png" alt="CMY Subtractive Color Mixing">
-                <p>CMY subtractive mixing for printing: C absorbs red, M absorbs green, Y absorbs blue</p>
+                <img src="images/cmy-subtractive.jpg" alt="CMY Subtractive Color Mixing">
+                <p>CMY Subtractive Color Mixing</p>
             </div>
-
             <h3>2. Why Add K (Black Ink)?</h3>
             <div class="warning-box">
-                <p>Real-world CMY inks <strong>cannot produce pure black</strong> — they only create a muddy dark brown. Black ink (K = Key plate) is added for true black, deeper shadows, text clarity, and cost savings.</p>
+                <p>Real-world CMY inks <strong>cannot produce pure black</strong> — they only create a muddy dark brown. Black ink (K) is added for true black, deeper shadows, text clarity, and cost savings.</p>
             </div>
-
             <h3>3. CMYK Component Meaning</h3>
             <ul>
-                <li><strong>C</strong>: Cyan (青)</li>
-                <li><strong>M</strong>: Magenta (品红)</li>
-                <li><strong>Y</strong>: Yellow (黄)</li>
-                <li><strong>K</strong>: Key / Black (黑)</li>
+                <li><strong>C</strong>: Cyan</li>
+                <li><strong>M</strong>: Magenta</li>
+                <li><strong>Y</strong>: Yellow</li>
+                <li><strong>K</strong>: Key / Black</li>
             </ul>
-
             <h3>4. Standard CMYK Color Values</h3>
             <ul>
                 <li>Pure Red: C=0, M=100, Y=100, K=0</li>
@@ -678,7 +302,6 @@
                 <li>Black: C=0, M=0, Y=0, K=100</li>
                 <li>White: C=0, M=0, Y=0, K=0</li>
             </ul>
-
             <h3>5. CMYK vs RGB: Full Comparison</h3>
             <table class="compare-table">
                 <tr>
@@ -712,8 +335,7 @@
                     <td>Narrower</td>
                 </tr>
             </table>
-
-            <h3>6. Complete CMYK Summary</h3>
+            <h3>6. Summary</h3>
             <ul>
                 <li>Subtractive model for printing</li>
                 <li>CMY inks cannot produce true black</li>
@@ -721,13 +343,11 @@
                 <li>Smaller gamut than RGB</li>
             </ul>
         </div>
-
-        <div class="content-section" id="content-hsv" style="display:none;">
+        <div class="content-section lang-en" id="content-hsv" style="display:none;">
             <h2>HSV Color Model: Human-Intuitive Designer Space</h2>
             <p>HSV (Hue, Saturation, Value) is a <strong>perceptually uniform color space</strong> designed to match how humans naturally think about color. It is widely used in design, image editing, and art.</p>
-
             <h3>1. Three Core Components</h3>
-            <h4>1.1 Hue (H) — 色相</h4>
+            <h4>1.1 Hue</h4>
             <p>Represents the color type, measured as an angle on a circular color wheel: <strong>0° to 360°</strong>.</p>
             <ul>
                 <li>0° → Red</li>
@@ -737,28 +357,24 @@
                 <li>240° → Blue</li>
                 <li>300° → Magenta</li>
             </ul>
-
-            <h4>1.2 Saturation (S) — 饱和度</h4>
+            <h4>1.2 Saturation</h4>
             <p>Measures color purity: <strong>0% to 100%</strong>.</p>
             <ul>
                 <li>100%: Fully saturated pure color</li>
                 <li>0%: Completely grayscale (no color)</li>
             </ul>
             <p>Example: Pure red (100% saturation) vs. pastel pink (30% saturation).</p>
-
-            <h4>1.3 Value (V) — 明度</h4>
+            <h4>1.3 Value</h4>
             <p>Measures brightness: <strong>0% to 100%</strong>.</p>
             <ul>
                 <li>100%: Brightest</li>
                 <li>0%: Pure black</li>
             </ul>
-
             <h3>2. HSV Color Cone Structure</h3>
             <div class="img-box">
-                <img src="https://i.imgur.com/Z5V8X9H.png" alt="HSV Color Cone Model">
-                <p>HSV color cone: Hue (angle), Saturation (radius), Value (height)</p>
+                <img src="images/hsv-cone.jpg" alt="HSV Color Cone Model">
+                <p>HSV Color Cone Model</p>
             </div>
-
             <h3>3. Classic HSV Color Examples</h3>
             <ul>
                 <li>Bright Red: H=0°, S=100%, V=100%</li>
@@ -768,14 +384,12 @@
                 <li>White: Any H, S=0%, V=100%</li>
                 <li>Black: Any H, Any S, V=0%</li>
             </ul>
-
             <h3>4. HSV vs RGB vs CMYK: Usage Comparison</h3>
             <ul>
                 <li><strong>HSV</strong>: Design, art, color selection</li>
                 <li><strong>RGB</strong>: Screens, digital display</li>
                 <li><strong>CMYK</strong>: Printing, paper output</li>
             </ul>
-
             <h3>5. Why Designers Love HSV</h3>
             <ul>
                 <li>Intuitive: matches human color thinking</li>
@@ -783,8 +397,7 @@
                 <li>Simple to create tints and shades</li>
                 <li>Perfect for color picking tools</li>
             </ul>
-
-            <h3>6. Complete HSV Summary</h3>
+            <h3>6. Summary</h3>
             <ul>
                 <li>Hue = color type (0–360°)</li>
                 <li>Saturation = purity (0–100%)</li>
@@ -792,24 +405,428 @@
                 <li>Ideal for human-centric color design</li>
             </ul>
         </div>
+        <!-- 中文内容 -->
+        <div class="content-section lang-cn" id="content-color-basics-cn" style="display:none;">
+            <h2>1. 色彩的本质</h2>
+            <p>色彩<strong>并非物体的固有物理属性</strong>。它是可见光与物体相互作用后，被人眼感光细胞捕获并由大脑解读而产生的<strong>主观视觉感知</strong>。</p>
+            <p>物体本身没有颜色，它们只具备<strong>吸收</strong>与<strong>反射</strong>特定波长光线的能力。反射光进入人眼，大脑将其处理为我们所感知的颜色。</p>
+            <div class="key-box">
+                <p>核心物理规律：<strong>我们看到的是物体反射的光，看不到的是物体吸收的光。</strong></p>
+            </div>
+            <h2>2. 可见光谱与波长</h2>
+            <p>可见光只是整个电磁波谱的一小部分，人类可见的波长范围约为<strong>400纳米～700纳米</strong>。</p>
+            <ul>
+                <li>400–450 nm：紫色 / 蓝色</li>
+                <li>450–570 nm：绿色</li>
+                <li>570–620 nm：黄色 / 橙色</li>
+                <li>620–700 nm：红色</li>
+            </ul>
+            <div class="img-box">
+                <img src="images/spectrum.jpg" alt="可见光谱">
+                <p>可见光谱</p>
+            </div>
+            <h2>3. 色彩三大核心属性</h2>
+            <h3>3.1 色相</h3>
+            <p>色相是色彩的<strong>基本身份</strong>，由入射光的<strong>主波长</strong>决定，对应红、绿、蓝、黄等色彩名称。</p>
+            <p>示例：蓝天反射的光主波长约为450–495 nm。</p>
+            <h3>3.2 饱和度</h3>
+            <p>饱和度描述色彩的<strong>纯净度与鲜艳度</strong>，表示色相中混入了多少白光。</p>
+            <ul>
+                <li>100% 饱和度：纯色，无白光混入</li>
+                <li>0% 饱和度：完全灰色，无色彩</li>
+            </ul>
+            <p>示例：纯红（高饱和度）vs 淡粉色（低饱和度）。</p>
+            <h3>3.3 明度</h3>
+            <p>明度是物体表面发射或反射光的<strong>主观感知强度</strong>。</p>
+            <h2>4. 明度与亮度：关键区别</h2>
+            <p><strong>明度</strong>：人类视觉主观感受，无精确数学公式。</p>
+            <p><strong>亮度</strong>：客观物理量，基于光波长、辐射功率与人眼敏感曲线计算。</p>
+            <div class="warning-box">
+                <p>人眼对<strong>绿光（约555 nm）最敏感</strong>。物理功率相同的两个光源，感知明度可能差异巨大。</p>
+            </div>
+            <h2>5. 人类对相对光强的感知</h2>
+            <p>人类无法准确判断绝对光强，只能感知明度的<strong>相对变化</strong>。</p>
+            <p>暗区中亮度微小变化会带来明显明度改变；亮区中亮度大幅变化仅带来微弱感知差异。</p>
+            <h2>6. 总结</h2>
+            <ul>
+                <li>色彩来自光，而非物体</li>
+                <li>可见光 = 400–700 nm 波长</li>
+                <li>色相=主波长；饱和度=纯净度；明度=强度</li>
+                <li>感知是相对的，而非绝对的</li>
+            </ul>
+        </div>
+        <div class="content-section lang-cn" id="content-color-vision-cn" style="display:none;">
+            <h2>1. 人眼与色彩视觉系统</h2>
+            <p>色彩视觉产生于人眼后部的<strong>视网膜</strong>。视网膜包含两类感光细胞：杆状细胞与锥状细胞。</p>
+            <div class="img-box">
+                <img src="images/human-eye.jpg" alt="人眼解剖结构">
+                <p>人眼解剖结构</p>
+            </div>
+            <ul>
+                <li><strong>杆状细胞</strong>：弱光环境工作（夜视），无法分辨色彩。</li>
+                <li><strong>锥状细胞</strong>：强光环境工作，负责清晰视觉与色彩感知。</li>
+            </ul>
+            <h2>2. 三类锥状细胞</h2>
+            <p>人眼有三种不同类型的锥状细胞，分别对应不同波长范围：</p>
+            <ul>
+                <li><strong>L锥状细胞</strong>：峰值敏感度约610 nm（长波）</li>
+                <li><strong>M锥状细胞</strong>：峰值敏感度约560 nm（中波）</li>
+                <li><strong>S锥状细胞</strong>：峰值敏感度约430 nm（短波）</li>
+            </ul>
+            <div class="warning-box">
+                <p><strong>色盲</strong>由锥状细胞缺失或缺陷导致，红绿色盲最为常见。</p>
+            </div>
+            <h2>3. 三色理论</h2>
+            <p>人类感知的所有颜色均可通过按适当比例混合<strong>红、绿、蓝（RGB）三原色</strong>复现。</p>
+            <p>该理论是所有数字色彩系统（显示器、相机、投影仪、图像传感器）的科学基础。</p>
+            <h2>4. 同色异谱：相同色彩，不同光谱</h2>
+            <p><strong>同色异谱</strong>指波长光谱<strong>完全不同</strong>，但在人眼中产生<strong>相同色彩感知</strong>的光刺激组合。</p>
+            <p><strong>光谱</strong>：光能量在不同波长上的分布。</p>
+            <div class="info-box">
+                <p>两种不同波长组合在人眼中可呈现完全相同的颜色，这是数字色彩复现的基础。</p>
+            </div>
+            <h2>5. 色彩感知的主观性</h2>
+            <p>色彩感知并非纯物理过程，而是高度主观的，受以下因素影响：</p>
+            <ul>
+                <li>周围色彩（同时对比效应）</li>
+                <li>光照条件与色温</li>
+                <li>锥状细胞个体差异</li>
+                <li>视觉适应与经验</li>
+                <li>大脑认知处理（斯特鲁普效应）</li>
+            </ul>
+            <h2>6. 总结</h2>
+            <ul>
+                <li>锥状细胞=色彩视觉；杆状细胞=夜视</li>
+                <li>三类锥状细胞：L、M、S</li>
+                <li>三色理论：任何颜色=R+G+B混合</li>
+                <li>同色异谱：不同光谱→相同感知色</li>
+                <li>色彩感知是眼脑协同产物</li>
+            </ul>
+        </div>
+        <div class="content-section lang-cn" id="content-rgb-cn" style="display:none;">
+            <h2>RGB色彩模型：数字显示加色系统</h2>
+            <p>RGB是专为<strong>发光设备</strong>（电脑显示器、手机、电视、投影仪、LED屏）设计的<strong>加色模型</strong>。</p>
+            <p>色彩通过<strong>发射</strong>红、绿、蓝光生成。</p>
+            <h3>1. 加色混合原理</h3>
+            <p>叠加光线会提升亮度，R+G+B全混合产生白光。</p>
+            <div class="img-box">
+                <img src="images/rgb-additive.jpg" alt="RGB加色混合">
+                <p>RGB加色混合</p>
+            </div>
+            <h3>2. 8位数字RGB编码</h3>
+            <p>标准数字RGB每通道8位，取值范围<strong>0～255</strong>。</p>
+            <ul>
+                <li>(0, 0, 0) → 纯黑</li>
+                <li>(255, 255, 255) → 纯白</li>
+                <li>(255, 0, 0) → 纯红</li>
+                <li>(0, 255, 0) → 纯绿</li>
+                <li>(0, 0, 255) → 纯蓝</li>
+                <li>(128, 128, 128) → 中灰</li>
+            </ul>
+            <h3>3. RGB转灰度公式</h3>
+            <div class="formula-box">
+                L = 0.30 × R + 0.59 × G + 0.11 × B
+            </div>
+            <p>绿光权重最高，因为人眼对绿光最敏感。</p>
+            <h3>4. RGB色彩立方体与灰度轴</h3>
+            <p>RGB构成三维立方体，从(0,0,0)到(255,255,255)的直线为<strong>灰度轴</strong>。</p>
+            <p>该轴上所有点R、G、B值相等，均为灰色调。</p>
+            <h3>5. RGB色彩示例与预览</h3>
+            <div class="color-grid">
+                <div class="color-item">
+                    <div class="color-swatch" style="background-color:rgb(255,0,0);"></div>
+                    <div class="color-label">红<br>(255,0,0)</div>
+                </div>
+                <div class="color-item">
+                    <div class="color-swatch" style="background-color:rgb(0,255,0);"></div>
+                    <div class="color-label">绿<br>(0,255,0)</div>
+                </div>
+                <div class="color-item">
+                    <div class="color-swatch" style="background-color:rgb(0,0,255);"></div>
+                    <div class="color-label">蓝<br>(0,0,255)</div>
+                </div>
+                <div class="color-item">
+                    <div class="color-swatch" style="background-color:rgb(255,255,0);"></div>
+                    <div class="color-label">黄<br>(255,255,0)</div>
+                </div>
+                <div class="color-item">
+                    <div class="color-swatch" style="background-color:rgb(0,255,255);"></div>
+                    <div class="color-label">青<br>(0,255,255)</div>
+                </div>
+                <div class="color-item">
+                    <div class="color-swatch" style="background-color:rgb(255,0,255);"></div>
+                    <div class="color-label">品红<br>(255,0,255)</div>
+                </div>
+            </div>
+            <h3>6. 屏幕使用RGB的原因</h3>
+            <ul>
+                <li>匹配人类三色视觉</li>
+                <li>发光设备效率高</li>
+                <li>色域宽广</li>
+                <li>硬件直接支持</li>
+            </ul>
+            <h3>7. 总结</h3>
+            <ul>
+                <li>发光屏幕专用加色模型</li>
+                <li>8位单通道：0–255取值范围</li>
+                <li>灰度转换采用加权RGB</li>
+                <li>匹配人眼三锥视觉系统</li>
+                <li>所有数字显示设备标准</li>
+            </ul>
+        </div>
+        <div class="content-section lang-cn" id="content-yuv-cn" style="display:none;">
+            <h2>YUV / YCbCr：亮度色度分离模型</h2>
+            <p>YUV与YCbCr是将<strong>亮度</strong>与<strong>色度</strong>分离的色彩模型。</p>
+            <p><strong>YUV</strong>：模拟色彩系统（传统电视）。</p>
+            <p><strong>YCbCr</strong>：用于图像/视频压缩的数字版本（JPEG、MPEG、H.264/265）。</p>
+            <h3>1. 核心目的：为何分离亮度与色度？</h3>
+            <div class="key-box">
+                <p>人类视觉对<strong>亮度远比对色度敏感</strong>，可将色度数据压缩50%–75%而无明显画质损失。</p>
+            </div>
+            <p>这是所有数字图像与视频压缩标准的核心原理。</p>
+            <h3>2. 分量定义</h3>
+            <ul>
+                <li><strong>Y</strong>：亮度信号</li>
+                <li><strong>U / Cb</strong>：蓝色差色度</li>
+                <li><strong>V / Cr</strong>：红色差色度</li>
+            </ul>
+            <h3>3. RGB转YUV公式</h3>
+            <div class="formula-box">
+                Y = 0.299R + 0.587G + 0.114B<br>
+                U = -0.147R - 0.289G + 0.436B<br>
+                V = 0.615R - 0.515G - 0.100B
+            </div>
+            <h3>4. RGB转YCbCr公式</h3>
+            <div class="formula-box">
+                Y = 0.299R + 0.587G + 0.114B<br>
+                Cb = -0.169R - 0.331G + 0.500B + 128<br>
+                Cr = 0.500R - 0.419G - 0.081B + 128<br><br>
+                范围：Y ∈ [0,255]，Cb ∈ [0,255]，Cr ∈ [0,255]
+            </div>
+            <h3>5. YCbCr转RGB逆转换</h3>
+            <div class="formula-box">
+                R = Y + 1.402 × (Cr - 128)<br>
+                G = Y - 0.34414 × (Cb - 128) - 0.71414 × (Cr - 128)<br>
+                B = Y + 1.772 × (Cb - 128)
+            </div>
+            <h3>6. 主要应用</h3>
+            <ul>
+                <li>JPEG / PNG 图像压缩</li>
+                <li>MPEG / H.264 / H.265 视频压缩</li>
+                <li>数字电视与流媒体</li>
+                <li>相机图像传感器</li>
+            </ul>
+            <h3>7. 总结</h3>
+            <ul>
+                <li>Y=亮度；Cb/Cr=色彩</li>
+                <li>分离实现高效压缩</li>
+                <li>YCbCr是媒体数字标准</li>
+                <li>人眼对色彩不敏感实现数据缩减</li>
+            </ul>
+        </div>
+        <div class="content-section lang-cn" id="content-cmyk-cn" style="display:none;">
+            <h2>CMYK色彩模型：印刷减色系统</h2>
+            <p>CMYK是专用于<strong>印刷</strong>的<strong>减色模型</strong>。与RGB（发光）不同，CMYK通过白纸油墨<strong>吸收光线</strong>工作。</p>
+            <h3>1. 减色混合原理</h3>
+            <p>白纸反射所有光线，油墨减色（吸收）原色：</p>
+            <ul>
+                <li><strong>C（青）</strong>：吸收红光</li>
+                <li><strong>M（品红）</strong>：吸收绿光</li>
+                <li><strong>Y（黄）</strong>：吸收蓝光</li>
+            </ul>
+            <div class="img-box">
+                <img src="images/cmy-subtractive.jpg" alt="CMY减色混合印刷">
+                <p>CMY减色混合印刷</p>
+            </div>
+            <h3>2. 为何增加K（黑墨）？</h3>
+            <div class="warning-box">
+                <p>现实中CMY油墨<strong>无法产生纯黑</strong>，只会形成浑浊深棕色。黑墨（K）用于纯正黑色、加深阴影、清晰文字与节约成本。</p>
+            </div>
+            <h3>3. CMYK分量含义</h3>
+            <ul>
+                <li><strong>C</strong>：青</li>
+                <li><strong>M</strong>：品红</li>
+                <li><strong>Y</strong>：黄</li>
+                <li><strong>K</strong>：黑</li>
+            </ul>
+            <h3>4. 标准CMYK色彩值</h3>
+            <ul>
+                <li>纯红：C=0, M=100, Y=100, K=0</li>
+                <li>纯绿：C=100, M=0, Y=100, K=0</li>
+                <li>纯蓝：C=100, M=100, Y=0, K=0</li>
+                <li>黑色：C=0, M=0, Y=0, K=100</li>
+                <li>白色：C=0, M=0, Y=0, K=0</li>
+            </ul>
+            <h3>5. CMYK与RGB完整对比</h3>
+            <table class="compare-table">
+                <tr>
+                    <th>项目</th>
+                    <th>RGB</th>
+                    <th>CMYK</th>
+                </tr>
+                <tr>
+                    <td>类型</td>
+                    <td>加色</td>
+                    <td>减色</td>
+                </tr>
+                <tr>
+                    <td>用途</td>
+                    <td>屏幕/显示</td>
+                    <td>印刷/纸张</td>
+                </tr>
+                <tr>
+                    <td>原色</td>
+                    <td>红、绿、蓝</li>
+                    <td>青、品红、黄、黑</li>
+                </tr>
+                <tr>
+                    <td>黑色</td>
+                    <td>(0,0,0)</li>
+                    <td>K=100</li>
+                </tr>
+                <tr>
+                    <td>色域</td>
+                    <td>宽广</li>
+                    <td>较窄</li>
+                </tr>
+            </table>
+            <h3>6. 总结</h3>
+            <ul>
+                <li>印刷用减色模型</li>
+                <li>CMY油墨无法生成纯黑</li>
+                <li>K（黑）对文字与阴影至关重要</li>
+                <li>色域小于RGB</li>
+            </ul>
+        </div>
+        <div class="content-section lang-cn" id="content-hsv-cn" style="display:none;">
+            <h2>HSV色彩模型：人类直觉设计空间</h2>
+            <p>HSV（色相、饱和度、明度）是匹配人类自然色彩思维的<strong>感知均匀色彩空间</strong>，广泛用于设计、图像编辑与艺术创作。</p>
+            <h3>1. 三大核心分量</h3>
+            <h4>1.1 色相</h4>
+            <p>表示色彩类型，以色环角度度量：<strong>0°～360°</strong>。</p>
+            <ul>
+                <li>0° → 红</li>
+                <li>60° → 黄</li>
+                <li>120° → 绿</li>
+                <li>180° → 青</li>
+                <li>240° → 蓝</li>
+                <li>300° → 品红</li>
+            </ul>
+            <h4>1.2 饱和度</h4>
+            <p>衡量色彩纯净度：<strong>0%～100%</strong>。</p>
+            <ul>
+                <li>100%：全饱和纯色</li>
+                <li>0%：完全灰度（无色彩）</li>
+            </ul>
+            <p>示例：纯红（100%饱和度）vs 浅粉（30%饱和度）。</p>
+            <h4>1.3 明度</h4>
+            <p>衡量亮度：<strong>0%～100%</strong>。</p>
+            <ul>
+                <li>100%：最亮</li>
+                <li>0%：纯黑</li>
+            </ul>
+            <h3>2. HSV色彩圆锥结构</h3>
+            <div class="img-box">
+                <img src="images/hsv-cone.jpg" alt="HSV色彩圆锥">
+                <p>HSV色彩圆锥</p>
+            </div>
+            <h3>3. 经典HSV色彩示例</h3>
+            <ul>
+                <li>亮红：H=0°, S=100%, V=100%</li>
+                <li>粉色：H=0°, S=50%, V=100%</li>
+                <li>深红：H=0°, S=100%, V=50%</li>
+                <li>中灰：任意H，S=0%，V=50%</li>
+                <li>白色：任意H，S=0%，V=100%</li>
+                <li>黑色：任意H，任意S，V=0%</li>
+            </ul>
+            <h3>4. HSV、RGB、CMYK用途对比</h3>
+            <ul>
+                <li><strong>HSV</strong>：设计、艺术、选色</li>
+                <li><strong>RGB</strong>：屏幕、数字显示</li>
+                <li><strong>CMYK</strong>：印刷、纸张输出</li>
+            </ul>
+            <h3>5. 设计师偏爱HSV的原因</h3>
+            <ul>
+                <li>直观：匹配人类色彩思维</li>
+                <li>可调亮度而不变色相</li>
+                <li>轻松创建深浅色调</li>
+                <li>完美适配取色工具</li>
+            </ul>
+            <h3>6. 总结</h3>
+            <ul>
+                <li>色相=色彩类型（0–360°）</li>
+                <li>饱和度=纯净度（0–100%）</li>
+                <li>明度=亮度（0–100%）</li>
+                <li>理想的人本色彩设计模型</li>
+            </ul>
+        </div>
     </div>
-
     <footer>
         <p>© 2026 Color Learning Website | EBU5303 Multimedia Fundamentals | Queen Mary University of London</p>
         <p>Complete Color Encoding Learning System | Bilingual Support | Accessibility Certified</p>
-        <p><a href="#">Privacy Policy</a> | <a href="#">Terms of Use</a> | <a href="#">Accessibility Statement</a> | <a href="#">Contact Us</a></p>
+        <p><a href="privacy.html">Privacy Policy</a> | <a href="#">Terms of Use</a> | <a href="#">Accessibility Statement</a> | <a href="#">Contact Us</a></p>
     </footer>
-
     <script>
         let currentFontSize = 100;
-        const body = document.body;
-
+        const root = document.documentElement;
         const mainTabs = document.querySelectorAll('.main-tab');
         const subBasics = document.getElementById('sub-basics');
         const subModels = document.getElementById('sub-models');
         const subTabs = document.querySelectorAll('.sub-tab');
         const contents = document.querySelectorAll('.content-section');
-
+        let isChinese = false;
+        // 标签文字双语配置
+        const tabTexts = {
+            en: {
+                basics: "Colour Basics & Colour Vision",
+                models: "Colour Models",
+                colorBasics: "Colour Basics",
+                colorVision: "Colour Vision"
+            },
+            cn: {
+                basics: "色彩基础与视觉原理",
+                models: "色彩模型",
+                colorBasics: "色彩基础",
+                colorVision: "色彩视觉"
+            }
+        };
+        // 页面标题双语配置
+        const pageTexts = {
+            en: {
+                title: "Enjoy Your Colour Encoding Learning！",
+                subtitle: "Master Light Physics, Human Vision, RGB/CMYK/HSV/YUV/YCbCr — Full Professional Knowledge System",
+                breadcrumb: "Learning Center"
+            },
+            cn: {
+                title: "让你乐在其中的色彩编码学习！",
+                subtitle: "光物理、人类视觉、RGB/CMYK/HSV/YUV/YCbCr — 完整专业知识体系尽在掌握",
+                breadcrumb: "学习中心"
+            }
+        };
+        // 语言切换函数
+        function switchLanguage() {
+            isChinese = !isChinese;
+            const lang = isChinese ? 'cn' : 'en';
+            const btn = document.getElementById('langBtn');
+            btn.textContent = isChinese ? '中' : 'EN';
+            // 切换 é¡µé¢æ é¢ãå¯æ é¢ãé¢åå±
+            document.querySelector('.page-title').textContent = pageTexts[lang].title;
+            document.querySelector('.page-subtitle').textContent = pageTexts[lang].subtitle;
+            // åæ¢ä¸»æ ç­¾ä¸å­æ ç­¾æå­
+            document.getElementById('tab-basics').textContent = tabTexts[lang].basics;
+            document.getElementById('tab-models').textContent = tabTexts[lang].models;
+            document.getElementById('sub-color-basics').textContent = tabTexts[lang].colorBasics;
+            document.getElementById('sub-color-vision').textContent = tabTexts[lang].colorVision;
+            // éèææåå®¹
+            document.querySelectorAll('.lang-en, .lang-cn').forEach(el => {
+                el.style.display = 'none';
+            });
+            // æ¾ç¤ºå½åè¯­è¨å¯¹åºæ¿æ´»åå®¹
+            const activeSub = document.querySelector('.sub-tab.active').id.replace('sub-', '');
+            const targetId = `content-${activeSub}${isChinese ? '-cn' : ''}`;
+            const targetEl = document.getElementById(targetId);
+            if (targetEl) targetEl.style.display = 'block';
+        }
         mainTabs.forEach(tab => {
             tab.addEventListener('click', () => {
                 mainTabs.forEach(t => t.classList.remove('active'));
@@ -823,43 +840,46 @@
                 }
             });
         });
-
         subTabs.forEach(tab => {
             tab.addEventListener('click', () => {
                 subTabs.forEach(t => t.classList.remove('active'));
                 tab.classList.add('active');
                 contents.forEach(c => c.style.display = 'none');
-                const target = document.getElementById('content-' + tab.id.replace('sub-', ''));
-                if (target) {
-                    target.style.display = 'block';
-                }
+                const suffix = isChinese ? '-cn' : '';
+                const target = document.getElementById('content-' + tab.id.replace('sub-', '') + suffix);
+                if (target) target.style.display = 'block';
             });
         });
+document.getElementById('fontBigger').addEventListener('click', () => {
+    if (currentFontSize < 160) {
+        currentFontSize += 10;
+        root.style.fontSize = currentFontSize + '%';
+    }
+});
+document.getElementById('fontSmaller').addEventListener('click', () => { if(currentFontSize > 60) { currentFontSize -= 10; root.style.fontSize = currentFontSize + '%'; } });
+        document.getElementById('langBtn').addEventListener('click', switchLanguage);
+function playClickSound() {
+    const audio = new Audio('./click.mp3');
+    audio.volume = 0.3;
+    audio.play().catch(e => console.log('音效播放失败:', e));
+}
 
-        document.getElementById('fontBigger').addEventListener('click', () => {
-            if (currentFontSize < 160) {
-                currentFontSize += 10;
-                body.style.fontSize = currentFontSize + '%';
-            }
-        });
-        document.getElementById('fontSmaller').addEventListener('click', () => {
-            if (currentFontSize > 60) {
-                currentFontSize -= 10;
-                body.style.fontSize = currentFontSize + '%';
-            }
+const themeButtons = document.querySelectorAll('.main-tab, .sub-tab');
+themeButtons.forEach(btn => {
+    btn.addEventListener('click', playClickSound);
+});
+        window.addEventListener('load', () => { document.getElementById('content-color-basics').style.display = 'block'; });
+
+        document.getElementById('contrastToggle').addEventListener('click', function() {
+            document.body.classList.toggle('high-contrast');
+            this.classList.toggle('active');
         });
 
-        document.getElementById('contrastBtn').addEventListener('click', () => {
-            body.classList.toggle('high-contrast');
-        });
-
-        document.getElementById('langBtn').addEventListener('click', (e) => {
-            e.target.textContent = e.target.textContent === 'EN' ? '中' : 'EN';
-        });
-
-        window.addEventListener('load', () => {
-            document.getElementById('content-color-basics').style.display = 'block';
-        });
+        var logoEl = document.querySelector('nav .logo');
+        if (logoEl) {
+            logoEl.style.cursor = 'pointer';
+            logoEl.addEventListener('click', function() { window.location.href = 'index.html'; });
+        }
     </script>
 </body>
 </html>
