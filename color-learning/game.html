@@ -6,7 +6,7 @@
     <title>Game - Colour Encoding Lab World</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="game.css">
-    <link rel="stylesheet" href="game-upgrade.css">
+    <link rel="stylesheet" href="game-upgrade.css?v=latest-20260512d">
 </head>
 <body>
     <a href="#main-content" class="skip-link">Skip to main content</a>
@@ -348,6 +348,7 @@
                         <span data-i18n="time_left_label">Time Left</span>
                         <strong id="hue-time-text">80s</strong>
                     </div>
+                    <button class="cg-button cg-button-secondary" type="button" id="hue-pause-button" data-i18n="dispatch_pause">Pause</button>
                     <button class="cg-button cg-button-secondary" type="button" id="restart-hue" data-i18n="hue_restart">Restart Bench</button>
                 </div>
             </div>
@@ -468,6 +469,10 @@
                     <p id="hue-feedback-text"></p>
                 </div>
             </div>
+
+            <div class="cg-cafe-overlay" id="hue-overlay">
+                <div class="cg-cafe-overlay-card" id="hue-overlay-card"></div>
+            </div>
         </div>
     </div>
 
@@ -490,7 +495,7 @@
     </div>
 
     <script src="game.js"></script>
-    <script src="game-upgrade.js"></script>
+    <script src="game-upgrade.js?v=latest-20260512d"></script>
     <script>
     (function() {
         var navToggle = document.querySelector('.nav-toggle');
