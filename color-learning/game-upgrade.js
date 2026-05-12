@@ -1,57 +1,361 @@
-(function () {
-    if (typeof gameCopy === "undefined" || typeof worldState === "undefined") {
+(() => {
+    if (typeof window === "undefined" || typeof document === "undefined") {
         return;
     }
 
-    Object.assign(worldState, {
-        showHints: worldState.showHints ?? true,
-        reducedMotion: worldState.reducedMotion ?? false
-    });
+    const lanePercents = [18, 50, 82];
 
-    Object.assign(gameCopy.en, {
+    const cafeTemplates = [
+        {
+            scenarioType: "screen",
+            label: { en: "Phone Banner", zh: "手机横幅" },
+            hint: { en: "Glowing screen asset", zh: "发光屏幕素材" },
+            correctModel: "RGB",
+            feedback: {
+                en: "RGB fits glowing screens.",
+                zh: "RGB 适合发光屏幕。"
+            }
+        },
+        {
+            scenarioType: "print",
+            label: { en: "Magazine Cover", zh: "杂志封面" },
+            hint: { en: "Ink on paper output", zh: "纸张油墨输出" },
+            correctModel: "CMYK",
+            feedback: {
+                en: "CMYK fits ink on paper.",
+                zh: "CMYK 适合纸张印刷。"
+            }
+        },
+        {
+            scenarioType: "tuning",
+            label: { en: "UI Colour Picker", zh: "界面取色器" },
+            hint: { en: "Human-readable colour tuning", zh: "更适合人类调色" },
+            correctModel: "HSV",
+            feedback: {
+                en: "HSV is strong for interactive tuning.",
+                zh: "HSV 更适合交互调色。"
+            }
+        },
+        {
+            scenarioType: "video",
+            label: { en: "Video Stream", zh: "视频流" },
+            hint: { en: "Separate luma and chroma", zh: "亮度与色差信号分离" },
+            correctModel: "YCbCr",
+            feedback: {
+                en: "YCbCr works for video encoding.",
+                zh: "YCbCr 更适合视频编码。"
+            }
+        }
+    ];
+
+    const printOrders = [
+        {
+            title: { en: "Poster Print", zh: "海报印刷" },
+            clue: { en: "Paper stock for an ink poster.", zh: "纸张海报，需要油墨输出。" },
+            hint: { en: "Think paper, CMYK, and ink-based print.", zh: "想想纸张、CMYK 和油墨输出。" },
+            art: "assets/print-poster-cartoon.svg",
+            medium: "paper",
+            model: "CMYK",
+            output: "ink",
+            feedback: {
+                en: "CMYK plus ink on paper completes the poster press job.",
+                zh: "纸张 + CMYK + 油墨输出，完成海报印刷。"
+            }
+        },
+        {
+            title: { en: "LED Event Screen", zh: "活动大屏" },
+            clue: { en: "Screen display with emitted light.", zh: "屏幕显示，依赖发光像素。" },
+            hint: { en: "Think glowing pixels and screen display workflow.", zh: "想想发光像素和屏幕显示流程。" },
+            art: "assets/print-screen-cartoon.svg",
+            medium: "screen",
+            model: "RGB",
+            output: "display",
+            feedback: {
+                en: "RGB is best when the result glows on a screen.",
+                zh: "屏幕发光显示时，RGB 更合适。"
+            }
+        },
+        {
+            title: { en: "Palette Guide", zh: "调色指南" },
+            clue: { en: "A colour-picking helper for creators.", zh: "给创作者看的调色辅助卡。" },
+            hint: { en: "Think human-readable tuning and preview tools.", zh: "想想人类可读的调色与预览工具。" },
+            art: "assets/print-palette-cartoon.svg",
+            medium: "palette",
+            model: "HSV",
+            output: "preview",
+            feedback: {
+                en: "HSV is ideal for readable colour tuning previews.",
+                zh: "HSV 适合可读性强的调色预览。"
+            }
+        },
+        {
+            title: { en: "Broadcast Card", zh: "播出片头卡" },
+            clue: { en: "Signal-focused video delivery.", zh: "面向视频信号传输的任务。" },
+            hint: { en: "Think luma/chroma separation in video delivery.", zh: "想想视频传输中的亮度与色差分离。" },
+            art: "assets/print-broadcast-cartoon.svg",
+            medium: "signal",
+            model: "YCbCr",
+            output: "encode",
+            feedback: {
+                en: "YCbCr supports luma/chroma-friendly video delivery.",
+                zh: "YCbCr 适合亮度/色差分离的视频流程。"
+            }
+        },
+        {
+            title: { en: "Flyer Pack", zh: "宣传单套组" },
+            clue: { en: "Handout flyers for an offline event booth.", zh: "线下展位发放的纸质宣传单。" },
+            hint: { en: "A physical handout still belongs to the print pipeline.", zh: "实体发放的纸质单页仍属于印刷流程。" },
+            art: "assets/print-poster-cartoon.svg",
+            medium: "paper",
+            model: "CMYK",
+            output: "ink",
+            feedback: {
+                en: "Printed flyers still rely on CMYK ink on paper.",
+                zh: "纸质宣传单仍然依赖纸张、CMYK 和油墨输出。"
+            }
+        },
+        {
+            title: { en: "Booklet Cover", zh: "手册封面" },
+            clue: { en: "A folded paper booklet for visitors to take home.", zh: "给观众带走的折页纸质手册。" },
+            hint: { en: "Folded paper and take-home print both point to CMYK + ink.", zh: "折页纸张和带走的印刷品都指向 CMYK 与油墨。" },
+            art: "assets/print-poster-cartoon.svg",
+            medium: "paper",
+            model: "CMYK",
+            output: "ink",
+            feedback: {
+                en: "A paper booklet cover belongs in the CMYK print workflow.",
+                zh: "纸质手册封面属于典型的 CMYK 印刷流程。"
+            }
+        },
+        {
+            title: { en: "Kiosk Screen", zh: "展台屏幕" },
+            clue: { en: "A bright display looping on a booth monitor.", zh: "在展位显示器上循环播放的明亮画面。" },
+            hint: { en: "This is meant to glow on a display, not on paper.", zh: "它是要在屏幕上发光显示，而不是印在纸上。" },
+            art: "assets/print-screen-cartoon.svg",
+            medium: "screen",
+            model: "RGB",
+            output: "display",
+            feedback: {
+                en: "Booth screens need RGB and display output.",
+                zh: "展位屏幕需要 RGB 和显示输出。"
+            }
+        },
+        {
+            title: { en: "Tablet Menu", zh: "平板菜单" },
+            clue: { en: "An interactive tablet interface with glowing colours.", zh: "带有发光色彩的交互式平板界面。" },
+            hint: { en: "Interactive glowing interfaces belong to the screen pipeline.", zh: "会发光的交互界面属于屏幕显示流程。" },
+            art: "assets/print-screen-cartoon.svg",
+            medium: "screen",
+            model: "RGB",
+            output: "display",
+            feedback: {
+                en: "Interactive tablet visuals fit the RGB display pipeline.",
+                zh: "交互式平板视觉最适合 RGB 显示流程。"
+            }
+        },
+        {
+            title: { en: "Theme Picker", zh: "主题取色器" },
+            clue: { en: "A tool that helps a designer tweak colours by eye.", zh: "帮助设计师按视觉感受调整颜色的工具。" },
+            hint: { en: "The key is readable colour adjustment, not final physical output.", zh: "重点是易于调色，而不是最终实体输出。" },
+            art: "assets/print-palette-cartoon.svg",
+            medium: "palette",
+            model: "HSV",
+            output: "preview",
+            feedback: {
+                en: "HSV stays readable when the goal is colour tuning.",
+                zh: "当目标是调色时，HSV 更容易被人理解。"
+            }
+        },
+        {
+            title: { en: "Mood Board Card", zh: "氛围配色卡" },
+            clue: { en: "A preview card showing colour options for a concept board.", zh: "展示概念板配色选项的预览卡片。" },
+            hint: { en: "This order is about previewing and tuning palette options.", zh: "这个订单强调配色预览和调色逻辑。" },
+            art: "assets/print-palette-cartoon.svg",
+            medium: "palette",
+            model: "HSV",
+            output: "preview",
+            feedback: {
+                en: "Palette previews work well with HSV-based tuning logic.",
+                zh: "配色预览卡很适合用 HSV 逻辑来组织。"
+            }
+        },
+        {
+            title: { en: "Streaming Lower Third", zh: "直播字幕条" },
+            clue: { en: "A video graphics asset delivered inside a streaming signal.", zh: "在直播信号中传输的视频图形素材。" },
+            hint: { en: "Streaming signal delivery points toward video encoding logic.", zh: "直播信号传输更接近视频编码逻辑。" },
+            art: "assets/print-broadcast-cartoon.svg",
+            medium: "signal",
+            model: "YCbCr",
+            output: "encode",
+            feedback: {
+                en: "Signal-delivered stream graphics point to YCbCr encoding.",
+                zh: "通过视频信号传输的直播图形更贴近 YCbCr 编码流程。"
+            }
+        },
+        {
+            title: { en: "TV Intro Card", zh: "电视片头卡" },
+            clue: { en: "A broadcast-ready title card for a TV package.", zh: "用于电视播出的片头标题卡。" },
+            hint: { en: "Broadcast packages often separate luma and chroma.", zh: "广播包装常常要区分亮度与色差。" },
+            art: "assets/print-broadcast-cartoon.svg",
+            medium: "signal",
+            model: "YCbCr",
+            output: "encode",
+            feedback: {
+                en: "Broadcast packages commonly separate luma and chroma with YCbCr.",
+                zh: "广播包装常通过 YCbCr 处理亮度与色差信号。"
+            }
+        }
+    ];
+
+    const printClearGoal = 5;
+
+    const printCatalog = {
+        medium: [
+            { key: "paper", accent: "paper", label: { en: "Paper Stock", zh: "纸张" } },
+            { key: "screen", accent: "screen", label: { en: "Screen Panel", zh: "屏幕" } },
+            { key: "palette", accent: "palette", label: { en: "Palette Sheet", zh: "调色卡" } },
+            { key: "signal", accent: "feed", label: { en: "Signal Feed", zh: "信号源" } }
+        ],
+        model: modelTokens.map((token) => ({
+            key: token.key,
+            accent: token.accent,
+            label: { en: token.key, zh: token.key }
+        })),
+        output: [
+            { key: "ink", accent: "ink", label: { en: "Ink Output", zh: "油墨输出" } },
+            { key: "display", accent: "display", label: { en: "Display Output", zh: "显示输出" } },
+            { key: "preview", accent: "preview", label: { en: "Preview Card", zh: "预览卡" } },
+            { key: "encode", accent: "encode", label: { en: "Encode Pack", zh: "编码包" } }
+        ]
+    };
+
+    const cafeState = {
+        running: false,
+        paused: false,
+        ended: false,
+        duration: 95,
+        timeLeft: 95,
+        score: 0,
+        streak: 0,
+        completed: 0,
+        missed: 0,
+        target: 10,
+        guests: [],
+        nextGuestId: 1,
+        selectedGuestId: null,
+        selectedModel: null,
+        playerLane: 1,
+        tickHandle: null,
+        prompt: ""
+    };
+
+    const printState = {
+        running: false,
+        paused: false,
+        ended: false,
+        duration: 85,
+        timeLeft: 85,
+        score: 0,
+        streak: 0,
+        completedOrders: 0,
+        failedOrders: 0,
+        targetOrders: 8,
+        currentStep: "medium",
+        activeOrder: null,
+        selectedParts: { medium: null, model: null, output: null },
+        orderDeck: [],
+        orderCursor: 0,
+        tickHandle: null,
+        message: "",
+        hintVisible: false,
+        hintLevel: 0,
+        hintUsesRound: 0,
+        currentOrderHintUses: 0,
+        feedbackState: "ready",
+        feedbackText: "",
+        feedbackArt: "",
+        rewardTimer: null
+    };
+
+    const ui = {};
+    const audioState = {
+        context: null,
+        masterGain: null,
+        bgmGain: null,
+        sfxGain: null,
+        unlocked: false,
+        loopTimer: null,
+        nextBeatTime: 0,
+        beatIndex: 0
+    };
+
+    const baseApplyStaticTranslations = applyStaticTranslations;
+    const baseOpenModal = openModal;
+    const baseInteractWithStation = interactWithStation;
+    const baseStopDispatchRound = typeof stopDispatchRound === "function" ? stopDispatchRound : () => {};
+    const baseStopWorkbenchRound = typeof stopWorkbenchRound === "function" ? stopWorkbenchRound : () => {};
+    const baseStartWorkbenchRound = typeof startWorkbenchRound === "function" ? startWorkbenchRound : () => {};
+
+    const englishPatch = {
         task_model_visit: "Reach Chromatic Cafe",
         task_model_clear: "Clear enough cafe orders in one round",
-        task_hue_clear: "Finish Hue Lab with a strong average score",
-        task_gate_visit: "Reach the exit gate for site links",
-        active_model_text: "Serve guests one by one inside Chromatic Cafe. Pick the right recipe bottle, cook the order, and clear the round before the main timer ends.",
-        active_hue_text: "Tune hue, saturation, and lightness on the mixing bench, then submit each recipe to build a stronger average score.",
-        dispatch_orders_title: "Serve one guest at a time before the round clock ends",
-        dispatch_legend_line_4: "Wrong recipes waste round time and break your chain.",
-        dispatch_scene_help: "Move with A / D or Left / Right. Press E or Enter near a guest, then choose the matching colour model.",
-        dispatch_scene_hold_label: "Selected model",
-        dispatch_scene_hold_none: "No model selected",
-        dispatch_scene_selected_label: "Current guest",
-        dispatch_scene_selected_none: "No guest selected",
-        dispatch_scene_prompt_guest: "Talk to a guest to lock in the order",
-        dispatch_scene_prompt_bottle: "Choose the matching colour model for the selected guest",
-        dispatch_scene_prompt_kitchen: "Serve the right answer before the guest timer ends",
-        dispatch_scene_prompt_serve: "Serve the selected guest before the timer runs out",
-        dispatch_scene_prompt_floor: "Move across the cafe floor and serve the right guest",
-        dispatch_scene_station: "Cafe Floor",
-        dispatch_scene_order_ready: "Dish ready",
-        dispatch_scene_select_action: "Talk",
-        dispatch_scene_serve_action: "Serve",
-        dispatch_missed_label: "Missed",
-        gate_heading: "Choose your next learning path",
-        gate_policy_eyebrow: "Local Play Policy",
-        gate_policy_title: "How this page uses your data",
-        gate_policy_body: "This page does not use accounts, ads, or tracking. Scores and settings stay in this browser only and reset when the page reloads.",
-        pref_local: "All gameplay data stays local to this browser tab.",
-        pref_sound: "Sound effects",
-        pref_hints: "World hints",
-        pref_motion: "Decorative motion",
-        toggle_on: "On",
-        toggle_off: "Off",
-        confirm_restart_dispatch: "Restart the current cafe round? Your current progress in this round will be lost.",
-        confirm_skip_dispatch: "Skip this guest? You can only skip one guest per round.",
-        confirm_restart_hue: "Restart the current Hue Lab round? Your current bench progress will be lost.",
-        confirm_reset_hue: "Reset the current mix back to the default values?",
-        feedback_ready: "Waiting for your next move",
-        feedback_correct: "Great progress",
-        feedback_retry: "Try a cleaner fix"
-    });
+        task_print_clear: "Complete a longer Poster Press run",
+        print_hint: "Hint",
+        print_hint_hide: "Hide Hint",
+        station_model: "Chromatic Cafe",
+        station_print: "Poster Press",
+        prompt_model: "Press Enter to enter Chromatic Cafe",
+        prompt_print: "Press Enter to enter Poster Press",
+        active_model_type: "Cafe Floor",
+        active_model_title: "Chromatic Cafe",
+        active_model_text: "Move between guests, lock an order, then click the matching model bottle on the shelf.",
+        active_print_type: "Poster Press",
+        active_print_title: "Poster Press",
+        active_print_text: "Assemble a print job in the right order: medium, colour pipeline, then output.",
+        dispatch_pause: "Pause",
+        dispatch_resume: "Resume",
+        dispatch_selected_guest: "Current guest",
+        dispatch_selected_model: "Selected model",
+        dispatch_no_guest: "No guest selected",
+        dispatch_no_model: "No model selected",
+        dispatch_pause_title: "Cafe Pause",
+        dispatch_pause_tutorial: "Move with A / D or Left / Right. Press E or Enter near a guest to lock the order, then click the matching bottle on the shelf.",
+        dispatch_pause_tips: "Guests leave after 15 seconds. Wrong models keep the order active, but you lose rhythm and score.",
+        hue_pause_title: "Hue Lab Pause",
+        hue_pause_tutorial: "Adjust hue, saturation, and lightness, then confirm the mix. Use Next Target after a scored attempt.",
+        hue_pause_tips: "Match hue first, then saturation, then lightness to keep the average score high.",
+        dispatch_end_title: "Cafe round result",
+        dispatch_end_score: "Round score",
+        dispatch_end_cleared: "Orders cleared",
+        dispatch_end_missed: "Guests missed",
+        dispatch_play_again: "Play again",
+        dispatch_back_world: "Back to world",
+        dispatch_scene_prompt: "Move to a guest, lock the order, then click the correct colour model on the shelf.",
+        print_eyebrow: "Mini-game 3",
+        print_heading: "Poster Press",
+        print_time_left: "Time Left",
+        print_restart: "Restart Press",
+        print_goal: "Posters Printed",
+        print_failed: "Misprints",
+        print_order_title: "Guest Brief",
+        print_hint_uses: "Hint Uses",
+        print_supply_title: "Supply Shelf",
+        print_machine_title: "Press Machine",
+        print_medium: "Medium",
+        print_model: "Colour Model",
+        print_output: "Output",
+        print_lever: "Pull Press Lever",
+        print_clear: "Clear Build",
+        print_pause: "Pause",
+        print_resume: "Resume",
+        print_pause_title: "Poster Press Pause",
+        print_pause_tutorial: "Build each job in order: medium, colour model, then output. Pull the press lever only when all three slots are ready.",
+        print_pause_tips: "Follow the highlighted rack as your next step. Click a filled slot if you want to go back and rebuild.",
+        print_scene_prompt: "Pick the correct medium, model, and output to complete the poster job.",
+        print_end_title: "Poster Press result"
+    };
 
-    gameCopy.zh = {
+    const chinesePatch = {
         nav_home: "首页",
         nav_learning: "学习",
         nav_game: "游戏",
@@ -67,2136 +371,1836 @@
         stat_status: "状态",
         status_ready: "准备中",
         status_correct: "节奏很好",
-        status_retry: "正在调整",
+        status_retry: "继续调整",
         mission_progress: "任务进度",
         panel_eyebrow: "任务列表",
         panel_title: "这个世界里的目标",
         panel_title_short: "任务板",
         task_model_visit: "到达 Chromatic Cafe",
-        task_model_clear: "在一轮咖啡馆挑战中完成足够订单",
-        task_hue_clear: "在 Hue Lab 中获得较高平均分",
-        task_gate_visit: "到达出口传送门查看跳转页面",
+        task_model_clear: "在一轮咖啡馆中完成足够订单",
+        task_hue_clear: "在 Hue Lab 中完成高平均分",
+        task_print_clear: "在 Poster Press 中完成更长的一轮订单",
+        print_hint: "提示",
+        print_hint_hide: "收起提示",
+        task_gate_visit: "到达出口门查看其他页面",
         station_idle: "待机中",
         station_title_idle: "先靠近一个地点",
         station_text_idle: "使用 WASD 或方向键移动角色，也可以直接点击场景模块。",
         controls_title: "操作方式",
-        controls_text: "使用 WASD / 方向键移动，靠近站点后按 Enter 进入互动。",
+        controls_text: "使用 WASD / 方向键移动，靠近站点后按 Enter 进入。",
         link_learning: "前往 Learning 页面复习理论",
         link_test: "前往 Test 页面进行正式自测",
         link_community: "前往 Community 页面查看分享与排行",
         station_model: "Chromatic Cafe",
         station_hue: "Hue Lab",
+        station_print: "Poster Press",
         station_gate: "出口门",
         prompt_idle: "靠近一个站点开始互动",
         prompt_plaza: "按 Enter 查看广场说明",
         prompt_quest: "按 Enter 打开任务板",
         prompt_model: "按 Enter 进入 Chromatic Cafe",
         prompt_hue: "按 Enter 进入 Hue Lab",
+        prompt_print: "按 Enter 进入 Poster Press",
         prompt_gate: "按 Enter 打开出口门",
         active_plaza_type: "欢迎点",
         active_plaza_title: "色彩广场",
-        active_plaza_text: "这里是整张游戏地图的起点。沿着发光路径探索站点，并完成两个高互动小游戏。",
+        active_plaza_text: "这里是整个游戏世界的起点，沿着路径去完成每个互动站点。",
         active_quest_type: "任务板",
         active_quest_title: "任务板",
-        active_quest_text: "打开任务板可以查看当前路线与已经完成的学习目标。",
-        active_model_type: "咖啡馆柜台",
+        active_quest_text: "打开这里可以查看当前进度和你还没完成的学习目标。",
+        active_model_type: "Cafe Floor",
         active_model_title: "Chromatic Cafe",
-        active_model_text: "顾客会按顺序来到店里下单。选对配方瓶，下锅后再上菜，在整局倒计时结束前尽量完成更多订单。",
+        active_model_text: "移动到客人面前锁定订单，然后点击货架上的正确颜色模型。",
         active_hue_type: "调色台",
         active_hue_title: "Hue Lab",
-        active_hue_text: "像操作实验工作台一样调节色相、饱和度和明度，再提交结果，尽量把平均分拉高。",
-        active_gate_type: "传送门",
+        active_hue_text: "像工作台一样调节色相、饱和度和明度，追求更高的平均分。",
+        active_print_type: "Poster Press",
+        active_print_title: "Poster Press",
+        active_print_text: "按顺序完成印刷拼装：介质、颜色模型、输出方式。",
+        active_gate_type: "出口门",
         active_gate_title: "出口门",
-        active_gate_text: "完成当前游戏后，你可以从这里跳转去 Learning、Test 或 Community。",
+        active_gate_text: "完成当前游戏后，可以从这里跳转到 Learning、Test 和 Community。",
         match_eyebrow: "小游戏 1",
         match_heading: "Chromatic Cafe",
         hue_eyebrow: "小游戏 2",
         hue_heading: "Hue Lab 调色台",
-        time_left_label: "剩余时间",
-        dispatch_restart: "重新开始",
-        dispatch_goal_label: "已完成订单",
         dispatch_score_label: "本局得分",
         dispatch_chain_label: "连击",
         dispatch_rating_label: "评级",
-        dispatch_skip_label: "跳过",
-        dispatch_legend_eyebrow: "玩法流程",
-        dispatch_legend_title: "先选顾客，再配方下锅，最后出餐上菜",
-        dispatch_legend_line_1: "先从顾客队列中选中一位客人的订单。",
-        dispatch_legend_line_2: "把正确的配方瓶拖进搅拌锅。",
-        dispatch_legend_line_3: "先烹饪，再把成品送给顾客。",
-        dispatch_legend_line_4: "错误配方会浪费整局时间，并打断连击。",
-        dispatch_tokens_eyebrow: "配方瓶架",
-        dispatch_tokens_title: "为当前客人选择正确的配方底料",
-        dispatch_orders_eyebrow: "顾客队列",
-        dispatch_orders_title: "按顺序服务客人，在整局倒计时内完成更多订单",
-        dispatch_scene_help: "使用 A / D 或左右方向键移动。靠近客人后按 E 或 Enter 选中，再选择匹配的颜色模型。",
-        dispatch_scene_hold_label: "当前选择",
-        dispatch_scene_hold_none: "还没有选择模型",
-        dispatch_scene_selected_label: "当前客人",
-        dispatch_scene_selected_none: "还没有选中客人",
-        dispatch_scene_prompt_guest: "先和客人互动，锁定当前订单",
-        dispatch_scene_prompt_bottle: "为当前客人选择匹配的颜色模型",
-        dispatch_scene_prompt_kitchen: "在客人倒计时结束前完成正确送餐",
-        dispatch_scene_prompt_serve: "尽快把正确答案送给这位客人",
-        dispatch_scene_prompt_floor: "沿着咖啡馆吧台移动，给正确的客人送上正确答案",
-        dispatch_scene_station: "咖啡馆动线",
-        dispatch_scene_order_ready: "菜品已完成",
-        dispatch_scene_select_action: "交谈",
-        dispatch_scene_serve_action: "上菜",
-        dispatch_missed_label: "错过",
-        dispatch_kitchen_eyebrow: "料理台",
-        dispatch_kitchen_title: "备料、烹饪、装盘后再上菜",
-        dispatch_pot_label: "把一个配方瓶拖进锅里",
-        dispatch_plate_label: "当前还没有出餐",
-        dispatch_cook: "开始烹饪",
-        dispatch_clear_prep: "清空锅具",
-        dispatch_skip: "跳过客人",
-        feedback_title: "游戏反馈",
-        feedback_ready: "等待你的下一步操作",
-        feedback_correct: "进度很好",
-        feedback_retry: "再调整一下",
-        hue_restart: "重开本轮",
+        hue_restart: "重开调色台",
         hue_goal_label: "完成目标",
         hue_average_label: "平均分",
-        hue_recipe_eyebrow: "目标简报",
+        hue_recipe_eyebrow: "目标说明",
         target_label: "目标颜色",
-        current_label: "当前调色",
+        current_label: "当前颜色",
         meter_label: "匹配分数",
         slider_h: "色相",
         slider_s: "饱和度",
         slider_l: "明度",
         hue_check: "提交调色",
-        hue_next: "下一个目标",
+        hue_next: "下一目标",
         hue_reset: "重置调色",
         gate_eyebrow: "出口门",
-        gate_heading: "选择下一条学习路径",
-        gate_policy_eyebrow: "本地游玩说明",
-        gate_policy_title: "这个页面如何使用你的数据",
-        gate_policy_body: "本页面不使用账号、广告或追踪。分数和设置只保存在当前浏览器中，刷新页面后会重置。",
-        pref_local: "所有游戏数据都只保留在当前浏览器标签页中。",
-        pref_sound: "音效",
-        pref_hints: "世界提示",
-        pref_motion: "装饰动效",
-        toggle_on: "开启",
-        toggle_off: "关闭",
-        confirm_restart_dispatch: "要重新开始当前咖啡馆回合吗？本轮进度会被清空。",
-        confirm_skip_dispatch: "要跳过当前客人吗？每轮只能跳过一次。",
-        confirm_restart_hue: "要重新开始当前 Hue Lab 回合吗？本轮调色进度会被清空。",
-        confirm_reset_hue: "要把当前调色重置为默认值吗？"
+        gate_heading: "选择下一个页面",
+        time_left_label: "剩余时间",
+        feedback_title: "游戏反馈",
+        feedback_ready: "等待你的操作",
+        feedback_correct: "答对了",
+        feedback_retry: "继续尝试",
+        dispatch_pause: "暂停",
+        dispatch_resume: "继续",
+        dispatch_selected_guest: "当前客人",
+        dispatch_selected_model: "当前模型",
+        dispatch_no_guest: "尚未选择客人",
+        dispatch_no_model: "尚未选择模型",
+        dispatch_pause_title: "咖啡馆暂停",
+        dispatch_pause_tutorial: "用 A / D 或左右键移动到客人面前，按 E 或 Enter 锁定订单，再点击货架上正确的颜色模型。",
+        dispatch_pause_tips: "每位客人会等待 15 秒。选错不会消失，但会影响节奏和分数。",
+        hue_pause_title: "Hue Lab 暂停",
+        hue_pause_tutorial: "调节色相、饱和度和明度后提交结果。每次得分后再进入下一个目标。",
+        hue_pause_tips: "先尽量贴近目标色相，再微调饱和度和明度，这样平均分会更高。",
+        dispatch_end_title: "咖啡馆结算",
+        dispatch_end_score: "本局得分",
+        dispatch_end_cleared: "完成订单",
+        dispatch_end_missed: "错过客人",
+        dispatch_play_again: "再玩一局",
+        dispatch_back_world: "返回世界",
+        dispatch_scene_prompt: "移动到客人面前锁定订单，再点击货架上的正确颜色模型。",
+        print_eyebrow: "小游戏 3",
+        print_heading: "Poster Press",
+        print_time_left: "剩余时间",
+        print_restart: "重开印刷台",
+        print_goal: "完成海报",
+        print_failed: "失败次数",
+        print_order_title: "客人需求",
+        print_hint_uses: "提示次数",
+        print_supply_title: "素材架",
+        print_machine_title: "印刷机",
+        print_medium: "介质",
+        print_model: "颜色模型",
+        print_output: "输出方式",
+        print_lever: "拉动印刷杆",
+        print_clear: "清空拼装",
+        print_pause: "暂停",
+        print_resume: "继续",
+        print_pause_title: "Poster Press 暂停",
+        print_pause_tutorial: "每张订单按顺序完成：介质、颜色模型、输出方式。三项齐全后再拉动印刷杆。",
+        print_pause_tips: "跟着高亮素材架一步步操作。点已经填入的槽位可以退回重选。",
+        print_scene_prompt: "依次选择正确的介质、颜色模型和输出方式。",
+        print_end_title: "Poster Press 结算"
     };
 
-    Object.assign(gameCopy.en, {
-        active_model_text: "Move across Chromatic Cafe, talk to seated guests, take the correct recipe bottle, cook it, and walk the finished dish back to the matching guest.",
-        dispatch_orders_title: "Handle several seated guests by moving to the right customer and serving the correct dish",
-        dispatch_legend_title: "Move, pick the right recipe, cook it, then deliver it to the matching guest",
-        dispatch_legend_line_1: "Walk to a guest and interact to lock in that order.",
-        dispatch_legend_line_2: "Move to the shelf and pick the colour recipe that matches the guest's task.",
-        dispatch_legend_line_3: "Bring the held recipe to the kitchen station and cook it.",
-        dispatch_legend_line_4: "Walk the finished dish back to the correct guest before moving on."
-    });
+    Object.assign(gameCopy.en, englishPatch);
+    Object.assign(gameCopy.zh, chinesePatch);
 
-    Object.assign(gameCopy.zh, {
-        active_model_text: "在 Chromatic Cafe 里沿吧台移动，先和坐着的客人互动，再拿正确配方、去厨房处理，最后把成品送回对应客人。",
-        dispatch_orders_title: "在多位坐席客人之间穿梭，把正确菜品送给对应客人",
-        dispatch_legend_title: "移动、拿对配方、完成烹饪，再把菜送给对应客人",
-        dispatch_legend_line_1: "先走到某位客人面前互动，确认这位客人的订单。",
-        dispatch_legend_line_2: "再走到配方架，选择与该任务匹配的颜色配方。",
-        dispatch_legend_line_3: "把当前配方带去厨房站点完成烹饪。",
-        dispatch_legend_line_4: "再把做好的菜送回给正确客人，继续处理下一单。"
-    });
-
-    dispatchTemplates.splice(0, dispatchTemplates.length, {
-        scenarioType: "screen",
-        icon: "📱",
-        label: { en: "Phone Banner", zh: "手机横幅" },
-        hint: { en: "Glowing display asset", zh: "发光屏幕素材" },
-        correctModel: "RGB",
-        explanation: {
-            en: "RGB fits screen work because displays emit red, green, and blue light.",
-            zh: "RGB 适合屏幕任务，因为显示器直接发出红、绿、蓝三色光。"
-        }
-    }, {
-        scenarioType: "print",
-        icon: "🖨️",
-        label: { en: "Magazine Cover", zh: "杂志封面" },
-        hint: { en: "Ink on paper output", zh: "纸张油墨输出" },
-        correctModel: "CMYK",
-        explanation: {
-            en: "CMYK is used for print because cyan, magenta, yellow, and black inks build the final page.",
-            zh: "CMYK 用于印刷，因为青、品红、黄、黑四种油墨会在纸面上组合出最终颜色。"
-        }
-    }, {
-        scenarioType: "tuning",
-        icon: "🎛️",
-        label: { en: "UI Colour Picker", zh: "界面取色器" },
-        hint: { en: "Human-readable colour tuning", zh: "更适合人的直观调色" },
-        correctModel: "HSV",
-        explanation: {
-            en: "HSV exposes hue, saturation, and value directly, so it is easier for interactive tuning.",
-            zh: "HSV 直接暴露色相、饱和度和明度，更适合交互式调色。"
-        }
-    }, {
-        scenarioType: "video",
-        icon: "🎬",
-        label: { en: "Video Stream", zh: "视频流" },
-        hint: { en: "Separate luma and chroma", zh: "亮度与色差信息分离" },
-        correctModel: "YCbCr",
-        explanation: {
-            en: "YCbCr separates luma from chroma, which makes video encoding and transmission more efficient.",
-            zh: "YCbCr 会把亮度和色差信息分开，因此更适合视频编码和传输。"
-        }
-    });
-
-    hueRecipes.splice(0, hueRecipes.length, {
-        name: { en: "Soft UI Sky", zh: "柔和界面天蓝" },
-        scenarioTag: { en: "Landing page hero accent", zh: "首页主视觉高光" },
-        lesson: {
-            en: "Cool hues stay friendly when saturation is lively but lightness is raised.",
-            zh: "冷色相在保留一定饱和度时，只要提高明度，就会显得更轻盈友好。"
-        },
-        h: 208, s: 82, l: 70
-    }, {
-        name: { en: "Print Warm Bloom", zh: "印刷暖粉高光" },
-        scenarioTag: { en: "Print-friendly feature sticker", zh: "适合印刷的暖色贴纸" },
-        lesson: {
-            en: "Warm accents can feel printable when vividness is controlled and brightness stays soft.",
-            zh: "暖色高光想更适合印刷，通常要控制鲜艳度，并保持柔和亮度。"
-        },
-        h: 340, s: 68, l: 72
-    }, {
-        name: { en: "Video Safe Aqua", zh: "视频安全青色" },
-        scenarioTag: { en: "Motion graphic overlay", zh: "动态图形叠加色" },
-        lesson: {
-            en: "Balanced saturation helps colour stay vivid without exploding on motion content.",
-            zh: "适中的饱和度能让颜色在动态内容里既鲜明又不过于刺眼。"
-        },
-        h: 170, s: 62, l: 56
-    }, {
-        name: { en: "Playful Lab Grape", zh: "实验室葡萄紫" },
-        scenarioTag: { en: "Cute interaction reward colour", zh: "可爱互动奖励色" },
-        lesson: {
-            en: "A richer hue can still feel cute when lightness stays above the midpoint.",
-            zh: "较浓的色相只要明度保持在中位以上，依然会显得可爱而轻快。"
-        },
-        h: 286, s: 70, l: 64
-    });
-
-    function tt(key) {
-        return gameCopy[worldState.language]?.[key] ?? gameCopy.en[key] ?? key;
+    if (!("printClear" in tasks)) {
+        tasks.printClear = false;
     }
 
-    t = tt;
+    stations.print = {
+        key: "print",
+        radius: 126,
+        promptKey: "prompt_print",
+        badgeKey: "active_print_type",
+        titleKey: "active_print_title",
+        textKey: "active_print_text"
+    };
 
-    function injectGatePolicyPanel() {
-        const gatePanel = document.querySelector("#modal-gate .cg-modal-panel");
-        if (!gatePanel || gatePanel.querySelector(".cg-gate-policy")) {
-            return;
-        }
-
-        const panel = document.createElement("section");
-        panel.className = "cg-gate-policy";
-        panel.innerHTML = `
-            <div class="cg-panel-heading">
-                <p class="cg-eyebrow" data-i18n="gate_policy_eyebrow">Local Play Policy</p>
-                <h3 data-i18n="gate_policy_title">How this page uses your data</h3>
-            </div>
-            <p class="cg-brief-line" data-i18n="gate_policy_body">This page does not use accounts, ads, or tracking. Scores and settings stay in this browser only and reset when the page reloads.</p>
-            <div class="cg-pref-grid">
-                <button class="cg-pref-toggle" type="button" id="pref-sound"></button>
-                <button class="cg-pref-toggle" type="button" id="pref-hints"></button>
-                <button class="cg-pref-toggle" type="button" id="pref-motion"></button>
-            </div>
-            <p class="cg-local-pill" data-i18n="pref_local">All gameplay data stays local to this browser tab.</p>
-        `;
-        gatePanel.appendChild(panel);
+    function getLang() {
+        return worldState.language === "zh" ? "zh" : "en";
     }
 
-    function fixStaticNodes() {
-        const zhButton = document.querySelector('[data-language="zh"]');
-        if (zhButton) {
-            zhButton.textContent = "中文";
-        }
-        document.querySelectorAll(".cg-modal-close").forEach((button) => {
-            button.textContent = "×";
-        });
+    function getCopy(record) {
+        return record[getLang()] || record.en;
     }
-
-    function renderPreferenceButtons() {
-        const prefSound = document.getElementById("pref-sound");
-        const prefHints = document.getElementById("pref-hints");
-        const prefMotion = document.getElementById("pref-motion");
-        if (!prefSound || !prefHints || !prefMotion) {
-            return;
-        }
-
-        [
-            { node: prefSound, key: "pref_sound", active: worldState.soundEnabled },
-            { node: prefHints, key: "pref_hints", active: worldState.showHints },
-            { node: prefMotion, key: "pref_motion", active: !worldState.reducedMotion }
-        ].forEach((item) => {
-            item.node.classList.toggle("is-on", item.active);
-            item.node.innerHTML = `
-                <span class="cg-pref-label">${tt(item.key)}</span>
-                <span class="cg-pref-state">${item.active ? tt("toggle_on") : tt("toggle_off")}</span>
-            `;
-        });
-    }
-
-    function syncPreferenceState() {
-        document.body.classList.toggle("is-reduced-motion", worldState.reducedMotion);
-        if (elements.worldPrompt) {
-            elements.worldPrompt.classList.toggle("is-hidden", !worldState.showHints);
-        }
-        if (!worldState.showHints && elements.inspectorPanel) {
-            elements.inspectorPanel.classList.remove("is-visible");
-            elements.inspectorPanel.setAttribute("aria-hidden", "true");
-        }
-        renderPreferenceButtons();
-    }
-
-    const originalApplyStaticTranslations = applyStaticTranslations;
-    applyStaticTranslations = function () {
-        originalApplyStaticTranslations();
-        fixStaticNodes();
-        syncPreferenceState();
-    };
-
-    const originalRenderWorldPanels = renderWorldPanels;
-    renderWorldPanels = function () {
-        originalRenderWorldPanels();
-        if (!worldState.showHints && elements.inspectorPanel) {
-            elements.inspectorPanel.classList.remove("is-visible");
-            elements.inspectorPanel.setAttribute("aria-hidden", "true");
-        }
-    };
-
-    const originalUpdateStationPrompt = updateStationPrompt;
-    updateStationPrompt = function () {
-        originalUpdateStationPrompt();
-        if (elements.worldPrompt) {
-            elements.worldPrompt.classList.toggle("is-hidden", !worldState.showHints);
-        }
-    };
-
-    renderDispatchKitchen = function () {
-        if (dispatchState.prepModel) {
-            elements.dispatchPotLiquid.style.background = getDishPalette(dispatchState.prepModel);
-            elements.dispatchPotLiquid.classList.add("is-filled");
-            elements.dispatchPotLabel.textContent = worldState.language === "en"
-                ? `${dispatchState.prepModel} recipe in pot`
-                : `${dispatchState.prepModel} 配方已下锅`;
-        } else {
-            elements.dispatchPotLiquid.style.background = "transparent";
-            elements.dispatchPotLiquid.classList.remove("is-filled");
-            elements.dispatchPotLabel.textContent = tt("dispatch_pot_label");
-        }
-
-        const platedOrder = dispatchState.activeOrders.find((item) => item.id === dispatchState.platedOrderId);
-        if (platedOrder) {
-            elements.dispatchServeDish.style.background = getDishPalette(platedOrder.correctModel);
-            elements.dispatchServeDish.className = `cg-serve-dish is-visible is-${platedOrder.scenarioType}`;
-            elements.dispatchPlateLabel.textContent = worldState.language === "en"
-                ? `${platedOrder.label.en} is plated and ready to serve`
-                : `${platedOrder.label.zh} 已经装盘，准备上菜`;
-        } else {
-            elements.dispatchServeDish.className = "cg-serve-dish";
-            elements.dispatchServeDish.style.background = "transparent";
-            elements.dispatchPlateLabel.textContent = tt("dispatch_plate_label");
-        }
-
-        const selectedOrder = dispatchState.activeOrders.find((item) => item.id === dispatchState.selectedOrderId);
-        if (!dispatchState.platedOrderId && selectedOrder) {
-            elements.dispatchPlateLabel.textContent = worldState.language === "en"
-                ? `Current guest: ${selectedOrder.label.en}`
-                : `当前客人：${selectedOrder.label.zh}`;
-        }
-    };
-
-    renderDispatchOrders = function () {
-        elements.dispatchOrderGrid.innerHTML = "";
-        dispatchState.activeOrders.forEach((order) => {
-            const card = document.createElement("article");
-            const isSelected = dispatchState.selectedOrderId === order.id;
-            const isCooked = dispatchState.platedOrderId === order.id;
-            card.className = `cg-order-card is-${order.scenarioType}${isSelected ? " is-selected" : ""}${isCooked ? " is-cooked" : ""}`;
-            card.innerHTML = `
-                <div class="cg-order-top">
-                    <div class="cg-customer-avatar is-${order.scenarioType}">
-                        <span class="cg-customer-head"></span>
-                        <span class="cg-customer-face"></span>
-                        <span class="cg-customer-body"></span>
-                    </div>
-                    <div class="cg-order-copy">
-                        <strong>${order.label[worldState.language]}</strong>
-                        <p>${order.hint[worldState.language]}</p>
-                    </div>
-                </div>
-                <div class="cg-order-dish">
-                    <span class="cg-order-dish-plate is-${order.scenarioType}"></span>
-                    <span class="cg-order-dish-icon">${order.icon}</span>
-                </div>
-                <div class="cg-order-actions">
-                    <button class="cg-order-action" data-action="select" data-order-id="${order.id}">
-                        ${worldState.language === "en" ? (isSelected ? "Selected" : "Take Order") : (isSelected ? "已选中" : "接单")}
-                    </button>
-                    <button class="cg-order-action cg-order-action-serve${isCooked ? " is-live" : ""}" data-action="serve" data-order-id="${order.id}" ${isCooked ? "" : "disabled"}>
-                        ${worldState.language === "en" ? "Serve Dish" : "上菜"}
-                    </button>
-                </div>
-            `;
-
-            card.querySelector('[data-action="select"]').addEventListener("click", () => selectDispatchOrder(order.id));
-            card.querySelector('[data-action="serve"]').addEventListener("click", () => serveDispatchOrder(order.id));
-            elements.dispatchOrderGrid.appendChild(card);
-        });
-    };
-
-    renderWorkbench = function () {
-        const target = getCurrentRecipe();
-        const current = getCurrentMix();
-        const average = workbenchState.submissions === 0 ? 0 : Math.round(workbenchState.totalScore / workbenchState.submissions);
-
-        elements.hueTimeText.textContent = `${workbenchState.timeLeft}s`;
-        updateProgressBar(elements.hueProgressText, elements.hueProgressFill, workbenchState.submissions, workbenchState.targetGoal);
-        elements.hueAverageText.textContent = `${average}%`;
-        elements.hueStreakText.textContent = String(workbenchState.streak);
-        elements.hueRatingText.textContent = getRatingFromScore(average, { s: 92, a: 82, b: 70 });
-        elements.hueTargetTitle.textContent = target.name[worldState.language];
-        elements.hueTargetScenario.textContent = target.scenarioTag[worldState.language];
-        elements.hueTargetLesson.textContent = target.lesson[worldState.language];
-        elements.targetSwatch.style.background = hslString(target);
-        elements.currentSwatch.style.background = hslString(current);
-        elements.targetMeta.textContent = `H ${target.h} | S ${target.s}% | L ${target.l}%`;
-        elements.currentMeta.textContent = `H ${current.h} | S ${current.s}% | L ${current.l}%`;
-        elements.targetLesson.textContent = target.lesson[worldState.language];
-        elements.sliderHValue.textContent = `${current.h}deg`;
-        elements.sliderSValue.textContent = `${current.s}%`;
-        elements.sliderLValue.textContent = `${current.l}%`;
-        elements.vialFill.style.height = `${current.s}%`;
-        elements.matchScore.textContent = `${calculateMatchScore(current, target)}%`;
-        elements.nextTarget.disabled = !workbenchState.canAdvance;
-    };
-
-    startDispatchRound = function () {
-        stopDispatchRound();
-        dispatchState.timeLeft = dispatchState.duration;
-        dispatchState.score = 0;
-        dispatchState.streak = 0;
-        dispatchState.completedOrders = 0;
-        dispatchState.skipsLeft = 1;
-        dispatchState.activeOrders = [];
-        dispatchState.nextOrderId = 1;
-        dispatchState.tickCount = 0;
-        dispatchState.draggingModel = null;
-        dispatchState.selectedOrderId = null;
-        dispatchState.prepModel = null;
-        dispatchState.platedOrderId = null;
-        dispatchState.running = true;
-        resetDispatchFeedback();
-        spawnDispatchOrder();
-        renderDispatchGame();
-
-        dispatchState.tickHandle = setInterval(() => {
-            dispatchState.timeLeft -= 1;
-            if (dispatchState.completedOrders >= dispatchState.targetOrders || dispatchState.timeLeft <= 0) {
-                finishDispatchRound();
-            } else {
-                renderDispatchGame();
-            }
-        }, 1000);
-    };
-
-    cookDispatchOrder = function () {
-        if (!dispatchState.running) {
-            return;
-        }
-        if (!dispatchState.selectedOrderId) {
-            setDispatchFeedback("wrong", {
-                en: "Choose a guest order first, then start cooking.",
-                zh: "先选中一位客人的订单，再开始烹饪。"
-            });
-            return;
-        }
-        if (!dispatchState.prepModel) {
-            setDispatchFeedback("wrong", {
-                en: "Drop one recipe bottle into the pot before cooking.",
-                zh: "先把一个配方瓶拖进锅里，再开始烹饪。"
-            });
-            return;
-        }
-
-        const order = dispatchState.activeOrders.find((item) => item.id === dispatchState.selectedOrderId);
-        if (!order) {
-            return;
-        }
-
-        if (dispatchState.prepModel !== order.correctModel) {
-            const wrongModel = dispatchState.prepModel;
-            dispatchState.streak = 0;
-            dispatchState.prepModel = null;
-            updateGlobalScore(-2, "reset", "status_retry");
-            setDispatchFeedback("wrong", {
-                en: `${wrongModel} does not fit ${order.label.en}. ${order.explanation.en}`,
-                zh: `${wrongModel} 不适合 ${order.label.zh}。${order.explanation.zh}`
-            });
-            playFeedbackTone(260);
-            renderDispatchGame();
-            return;
-        }
-
-        dispatchState.platedOrderId = order.id;
-        setDispatchFeedback("correct", {
-            en: `${order.label.en} is cooked. Serve it while the round clock is still on your side.`,
-            zh: `${order.label.zh} 已经出锅了，快在本局时间结束前完成上菜。`
-        });
-        playFeedbackTone(560);
-        renderDispatchGame();
-    };
-
-    serveDispatchOrder = function (orderId) {
-        if (!dispatchState.running || dispatchState.platedOrderId !== orderId) {
-            return;
-        }
-        const order = dispatchState.activeOrders.find((item) => item.id === orderId);
-        if (!order) {
-            return;
-        }
-
-        dispatchState.score += 10 + Math.min(dispatchState.streak, 4) * 2;
-        dispatchState.streak += 1;
-        dispatchState.completedOrders += 1;
-        dispatchState.activeOrders = dispatchState.activeOrders.filter((item) => item.id !== orderId);
-        dispatchState.selectedOrderId = null;
-        dispatchState.platedOrderId = null;
-        dispatchState.prepModel = null;
-
-        if (dispatchState.completedOrders < dispatchState.targetOrders && dispatchState.running) {
-            spawnDispatchOrder();
-        }
-
-        if (dispatchState.completedOrders >= 8) {
-            tasks.modelClear = true;
-            updateMissionProgress();
-        }
-
-        updateGlobalScore(10, "up", "status_correct");
-        setDispatchFeedback("correct", {
-            en: `Served on time. ${order.explanation.en}`,
-            zh: `成功上菜。${order.explanation.zh}`
-        });
-        playFeedbackTone(640);
-        renderDispatchGame();
-    };
-
-    finishDispatchRound = function () {
-        stopDispatchRound();
-        const rating = getRatingFromScore(dispatchState.score, { s: 120, a: 90, b: 65 });
-        const cleared = dispatchState.completedOrders;
-        const success = cleared >= 8;
-        if (success) {
-            tasks.modelClear = true;
-            updateMissionProgress();
-        }
-        setDispatchFeedback(success ? "correct" : "wrong", {
-            en: success
-                ? `Round clear. You processed ${cleared} orders with a ${rating} rating.`
-                : `Round over. You cleared ${cleared} orders and finished with a ${rating} rating. Try to reach 8 next time.`,
-            zh: success
-                ? `本局完成。你一共处理了 ${cleared} 个订单，评级为 ${rating}。`
-                : `本局结束。你处理了 ${cleared} 个订单，评级为 ${rating}。下次尽量冲到 8 个以上。`
-        });
-        renderDispatchGame();
-    };
-
-    skipDispatchOrder = function () {
-        if (!dispatchState.running || dispatchState.skipsLeft <= 0 || dispatchState.activeOrders.length === 0) {
-            return;
-        }
-
-        const skippedOrder = dispatchState.activeOrders[0];
-        dispatchState.skipsLeft -= 1;
-        dispatchState.activeOrders = [];
-        dispatchState.selectedOrderId = null;
-        dispatchState.platedOrderId = null;
-        dispatchState.prepModel = null;
-
-        if (dispatchState.completedOrders < dispatchState.targetOrders) {
-            spawnDispatchOrder();
-        }
-
-        setDispatchFeedback("ready", {
-            en: `Skipped ${skippedOrder.label.en}. A new guest has taken the seat.`,
-            zh: `已跳过 ${skippedOrder.label.zh}，下一位客人已经入座。`
-        });
-        renderDispatchGame();
-    };
-
-    evaluateWorkbenchMix = function () {
-        if (!workbenchState.running || workbenchState.canAdvance) {
-            return;
-        }
-        const target = getCurrentRecipe();
-        const current = getCurrentMix();
-        const score = calculateMatchScore(current, target);
-
-        workbenchState.totalScore += score;
-        workbenchState.submissions += 1;
-        workbenchState.canAdvance = workbenchState.submissions < workbenchState.targetGoal;
-
-        if (score >= 90) {
-            workbenchState.streak += 1;
-            updateGlobalScore(14, "up", "status_correct");
-            setWorkbenchFeedback("correct", {
-                en: `Perfect mix. ${target.name.en} landed right where the brief needed it.`,
-                zh: `几乎完美。${target.name.zh} 的颜色已经非常接近目标。`
-            });
-            playFeedbackTone(680);
-        } else if (score >= 75) {
-            workbenchState.streak += 1;
-            updateGlobalScore(9, "up", "status_correct");
-            setWorkbenchFeedback("correct", {
-                en: "Good mix. A small tweak could make it even tighter, but this already works.",
-                zh: "这次已经很接近了，再微调一点会更好。"
-            });
-            playFeedbackTone(520);
-        } else {
-            workbenchState.streak = 0;
-            updateGlobalScore(-1, "reset", "status_retry");
-            setWorkbenchFeedback("wrong", {
-                en: "Retry energy. Compare hue first, then saturation, then lightness.",
-                zh: "再试一次。先看色相，再看饱和度，最后修正明度。"
-            });
-            playFeedbackTone(240);
-        }
-
-        const average = Math.round(workbenchState.totalScore / workbenchState.submissions);
-        if (average >= 78 && workbenchState.submissions >= workbenchState.targetGoal) {
-            tasks.hueClear = true;
-            updateMissionProgress();
-        }
-
-        renderWorkbench();
-
-        if (workbenchState.submissions >= workbenchState.targetGoal) {
-            finishWorkbenchRound();
-        }
-    };
-
-    finishWorkbenchRound = function () {
-        stopWorkbenchRound();
-        const average = workbenchState.submissions === 0 ? 0 : Math.round(workbenchState.totalScore / workbenchState.submissions);
-        const rating = getRatingFromScore(average, { s: 92, a: 82, b: 70 });
-        const success = average >= 78 && workbenchState.submissions >= workbenchState.targetGoal;
-        if (success) {
-            tasks.hueClear = true;
-            updateMissionProgress();
-        }
-        setWorkbenchFeedback(success ? "correct" : "wrong", {
-            en: success
-                ? `Bench clear. You finished with a ${average}% average and a ${rating} rating.`
-                : `Bench over. Your average was ${average}% with a ${rating} rating. Push it above 78% next run.`,
-            zh: success
-                ? `调色台完成。你的平均分是 ${average}% ，评级为 ${rating}。`
-                : `本轮结束。你的平均分是 ${average}% ，评级为 ${rating}。下次尽量冲到 78% 以上。`
-        });
-        renderWorkbench();
-    };
-
-    function interceptAction(node, confirmKey, handler) {
-        if (!node) {
-            return;
-        }
-        node.addEventListener("click", (event) => {
-            event.preventDefault();
-            event.stopImmediatePropagation();
-            if (confirmKey && !window.confirm(tt(confirmKey))) {
-                return;
-            }
-            handler();
-        }, true);
-    }
-
-    Object.assign(dispatchState, {
-        scenePlayerX: 420,
-        sceneFocus: null,
-        sceneLastFrame: performance.now(),
-        paused: false,
-        failedOrders: 0,
-        guestLifetime: 15
-    });
-
-    const cafeSceneConfig = {
-        minX: 84,
-        maxX: 860,
-        speed: 330,
-        pantryCenterX: 220,
-        kitchenCenterX: 520,
-        guestSeatXs: [238, 470, 708],
-        bottleXs: [122, 198, 274, 350],
-        interactRadius: 68,
-        bottleRadius: 42
-    };
-
-    function installCafeScene() {
-        const oldLayout = document.querySelector(".cg-dispatch-layout");
-        if (!oldLayout || document.getElementById("dispatch-cafe-sim")) {
-            return;
-        }
-
-        const sim = document.createElement("section");
-        sim.className = "cg-cafe-sim";
-        sim.id = "dispatch-cafe-sim";
-        sim.innerHTML = `
-            <div class="cg-cafe-stage" id="dispatch-cafe-stage">
-                <div class="cg-cafe-backdrop">
-                    <div class="cg-cafe-canopy"></div>
-                    <div class="cg-cafe-water"></div>
-                    <div class="cg-cafe-island cg-cafe-island-a"></div>
-                    <div class="cg-cafe-island cg-cafe-island-b"></div>
-                    <div class="cg-cafe-shelf">
-                    <div class="cg-cafe-decor-bottle-row" aria-hidden="true">
-                        <span class="cg-cafe-decor-bottle is-pink"></span>
-                        <span class="cg-cafe-decor-bottle is-blue"></span>
-                        <span class="cg-cafe-decor-bottle is-mint"></span>
-                        <span class="cg-cafe-decor-bottle is-yellow"></span>
-                            <span class="cg-cafe-decor-bottle is-blue"></span>
-                            <span class="cg-cafe-decor-bottle is-pink"></span>
-                            <span class="cg-cafe-decor-bottle is-mint"></span>
-                            <span class="cg-cafe-decor-bottle is-yellow"></span>
-                        </div>
-                        <div class="cg-cafe-shelf-ui">
-                            <div class="cg-cafe-shelf-head">
-                                <span class="cg-cafe-scene-chip" data-i18n="dispatch_scene_station">${tt("dispatch_scene_station")}</span>
-                                <p class="cg-cafe-shelf-copy" data-i18n="dispatch_scene_help">${tt("dispatch_scene_help")}</p>
-                            </div>
-                            <div class="cg-cafe-answer-buttons cg-cafe-answer-buttons-shelf" id="dispatch-token-rack"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="cg-cafe-topbar">
-                    <div class="cg-cafe-top-pill">
-                        <span data-i18n="time_left_label">Time Left</span>
-                        <strong id="dispatch-time-text">95s</strong>
-                    </div>
-                    <div class="cg-cafe-top-pill">
-                        <span data-i18n="dispatch_goal_label">Orders Cleared</span>
-                        <strong id="dispatch-progress-text">0 / 10</strong>
-                    </div>
-                    <div class="cg-cafe-top-pill">
-                        <span data-i18n="dispatch_score_label">Round Score</span>
-                        <strong id="dispatch-score-text">0</strong>
-                    </div>
-                    <div class="cg-cafe-top-pill">
-                        <span data-i18n="dispatch_chain_label">Chain</span>
-                        <strong id="dispatch-streak-text">0</strong>
-                    </div>
-                    <div class="cg-cafe-top-pill">
-                        <span data-i18n="dispatch_rating_label">Rating</span>
-                        <strong id="dispatch-rating-text">C</strong>
-                    </div>
-                    <div class="cg-cafe-top-pill">
-                        <span data-i18n="dispatch_missed_label">Missed</span>
-                        <strong id="dispatch-missed-text">0</strong>
-                    </div>
-                    <button class="cg-button cg-button-secondary cg-cafe-pause-button" type="button" id="dispatch-pause-toggle">Pause</button>
-                </div>
-
-                <div class="cg-cafe-counter">
-                    <div class="cg-cafe-seat-grid" id="dispatch-order-grid"></div>
-                </div>
-
-                <div class="cg-cafe-floor">
-                    <div class="cg-cafe-player" id="dispatch-player" aria-hidden="true">
-                        <span class="cg-cafe-player-shadow"></span>
-                        <span class="cg-cafe-player-head"></span>
-                        <span class="cg-cafe-player-body"></span>
-                        <span class="cg-cafe-player-apron"></span>
-                    </div>
-                </div>
-
-                <div class="cg-cafe-service-strip">
-                    <div class="cg-cafe-service-card">
-                        <span data-i18n="dispatch_scene_selected_label">${tt("dispatch_scene_selected_label")}</span>
-                        <strong id="dispatch-selected-guest">${tt("dispatch_scene_selected_none")}</strong>
-                    </div>
-                    <div class="cg-cafe-service-card">
-                        <span data-i18n="dispatch_scene_hold_label">${tt("dispatch_scene_hold_label")}</span>
-                        <strong id="dispatch-held-model">${tt("dispatch_scene_hold_none")}</strong>
-                    </div>
-                    <p class="cg-cafe-scene-prompt cg-cafe-scene-prompt-inline" id="dispatch-scene-prompt">${tt("dispatch_scene_prompt_floor")}</p>
-                </div>
-
-                <div class="cg-cafe-overlay" id="dispatch-pause-overlay" aria-hidden="true">
-                    <div class="cg-cafe-overlay-card">
-                        <p class="cg-eyebrow">Paused</p>
-                        <h3>Chromatic Cafe Break</h3>
-                        <details class="cg-cafe-details">
-                            <summary>Tutorial</summary>
-                            <p>Move to a seated guest, lock in that order, then choose the matching colour model.</p>
-                        </details>
-                        <details class="cg-cafe-details">
-                            <summary>Tips</summary>
-                            <p>Each guest has only 15 seconds. If they leave, you lose score and miss that order.</p>
-                        </details>
-                        <button class="cg-button cg-button-primary" type="button" id="dispatch-resume-button">Resume</button>
-                    </div>
-                </div>
-
-                <div class="cg-cafe-overlay" id="dispatch-end-overlay" aria-hidden="true">
-                    <div class="cg-cafe-overlay-card">
-                        <p class="cg-eyebrow">Round Result</p>
-                        <h3 id="dispatch-end-title">Round Over</h3>
-                        <p id="dispatch-end-text"></p>
-                        <div class="cg-cafe-end-grid">
-                            <div class="cg-cafe-end-pill">
-                                <span data-i18n="dispatch_goal_label">Orders Cleared</span>
-                                <strong id="dispatch-end-cleared">0</strong>
-                            </div>
-                            <div class="cg-cafe-end-pill">
-                                <span data-i18n="dispatch_rating_label">Rating</span>
-                                <strong id="dispatch-end-rating">C</strong>
-                            </div>
-                            <div class="cg-cafe-end-pill">
-                                <span>Missed</span>
-                                <strong id="dispatch-end-missed">0</strong>
-                            </div>
-                        </div>
-                        <div class="cg-cafe-end-actions">
-                            <button class="cg-button cg-button-primary" type="button" id="dispatch-restart-overlay">Play Again</button>
-                            <button class="cg-button cg-button-secondary" type="button" id="dispatch-close-overlay">Back to World</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `;
-
-        oldLayout.replaceWith(sim);
-        elements.dispatchTokenRack = document.getElementById("dispatch-token-rack");
-        elements.dispatchOrderGrid = document.getElementById("dispatch-order-grid");
-        elements.dispatchCook = null;
-        elements.dispatchClearPrep = null;
-        elements.dispatchSkip = null;
-        elements.dispatchPotSlot = null;
-        elements.dispatchPotLiquid = null;
-        elements.dispatchPotLabel = null;
-        elements.dispatchServePlate = null;
-        elements.dispatchServeDish = null;
-        elements.dispatchPlateLabel = null;
-        elements.dispatchMissedText = document.getElementById("dispatch-missed-text");
-        elements.dispatchPauseToggle = document.getElementById("dispatch-pause-toggle");
-        elements.dispatchPauseOverlay = document.getElementById("dispatch-pause-overlay");
-        elements.dispatchResumeButton = document.getElementById("dispatch-resume-button");
-        elements.dispatchEndOverlay = document.getElementById("dispatch-end-overlay");
-        elements.dispatchEndTitle = document.getElementById("dispatch-end-title");
-        elements.dispatchEndText = document.getElementById("dispatch-end-text");
-        elements.dispatchEndCleared = document.getElementById("dispatch-end-cleared");
-        elements.dispatchEndRating = document.getElementById("dispatch-end-rating");
-        elements.dispatchEndMissed = document.getElementById("dispatch-end-missed");
-        elements.dispatchRestartOverlay = document.getElementById("dispatch-restart-overlay");
-        elements.dispatchCloseOverlay = document.getElementById("dispatch-close-overlay");
-        elements.dispatchScenePrompt = document.getElementById("dispatch-scene-prompt");
-        elements.dispatchHeldModel = document.getElementById("dispatch-held-model");
-        elements.dispatchSelectedGuest = document.getElementById("dispatch-selected-guest");
-        elements.dispatchPlayer = document.getElementById("dispatch-player");
-    }
-
-    function fillDispatchSeats() {
-        while (dispatchState.activeOrders.length < 3 && dispatchState.completedOrders + dispatchState.failedOrders + dispatchState.activeOrders.length < dispatchState.targetOrders) {
-            const order = makeOrder(pickDispatchTemplate());
-            order.timeLeft = dispatchState.guestLifetime;
-            dispatchState.activeOrders.push(order);
-        }
-    }
-
-    spawnDispatchOrder = function () {
-        fillDispatchSeats();
-    };
-
-    function getActiveSceneGuest() {
-        if (dispatchState.selectedOrderId) {
-            const selected = dispatchState.activeOrders.find((order) => order.id === dispatchState.selectedOrderId);
-            if (selected) {
-                return selected;
-            }
-        }
-
-        if (dispatchState.sceneFocus?.type === "guest") {
-            return dispatchState.activeOrders.find((order) => order.id === dispatchState.sceneFocus.orderId) || null;
-        }
-
-        return null;
-    }
-
-    function getBottleModelByIndex(index) {
-        return modelTokens[index]?.key || null;
-    }
-
-    function getSceneFocus() {
-        let best = { type: "floor", distance: Number.POSITIVE_INFINITY };
-
-        cafeSceneConfig.guestSeatXs.forEach((seatX, index) => {
-            const order = dispatchState.activeOrders[index];
-            if (!order) {
-                return;
-            }
-            const distance = Math.abs(dispatchState.scenePlayerX - seatX);
-            if (distance < cafeSceneConfig.interactRadius && distance < best.distance) {
-                best = { type: "guest", distance, orderId: order.id };
-            }
-        });
-
-        return best.type === "floor" ? null : best;
-    }
-
-    function renderDispatchScenePlayer() {
-        if (elements.dispatchPlayer) {
-            elements.dispatchPlayer.style.transform = `translateX(${dispatchState.scenePlayerX}px)`;
-        }
-    }
-
-    function renderDispatchSceneMeta() {
-        if (!elements.dispatchScenePrompt || !elements.dispatchHeldModel || !elements.dispatchSelectedGuest) {
-            return;
-        }
-
-        const activeGuest = dispatchState.selectedOrderId
-            ? dispatchState.activeOrders.find((order) => order.id === dispatchState.selectedOrderId)
-            : null;
-
-        elements.dispatchHeldModel.textContent = dispatchState.prepModel || tt("dispatch_scene_hold_none");
-        elements.dispatchSelectedGuest.textContent = activeGuest
-            ? activeGuest.label[worldState.language]
-            : tt("dispatch_scene_selected_none");
-
-        let promptKey = "dispatch_scene_prompt_floor";
-        if (dispatchState.sceneFocus?.type === "guest") {
-            promptKey = "dispatch_scene_prompt_guest";
-        } else if (dispatchState.selectedOrderId && dispatchState.prepModel) {
-            promptKey = "dispatch_scene_prompt_serve";
-        } else if (dispatchState.selectedOrderId) {
-            promptKey = "dispatch_scene_prompt_bottle";
-        }
-        elements.dispatchScenePrompt.textContent = tt(promptKey);
-    }
-
-    function handleDispatchSceneInteract() {
-        if (!dispatchState.running) {
-            return;
-        }
-
-        const focus = dispatchState.sceneFocus;
-        if (!focus) {
-            return;
-        }
-
-        if (focus.type === "guest") {
-            if (dispatchState.platedOrderId === focus.orderId) {
-                serveDispatchOrder(focus.orderId);
-                return;
-            }
-
-            selectDispatchOrder(focus.orderId);
-            const order = dispatchState.activeOrders.find((item) => item.id === focus.orderId);
-            if (order) {
-                setDispatchFeedback("ready", {
-                    en: `${order.label.en} is waiting. Go pick the right recipe bottle for this guest.`,
-                    zh: `${order.label.zh} 正在等待，先去拿适合这位客人的正确配方。`
-                });
-                renderDispatchGame();
-            }
-            return;
-        }
-
-        if (focus.type === "bottle" && focus.modelKey) {
-            setDispatchPrepModel(focus.modelKey);
-            setDispatchFeedback("ready", {
-                en: `${focus.modelKey} is in your hands. Take it to the kitchen and cook for the selected guest.`,
-                zh: `你拿起了 ${focus.modelKey} 配方，带去厨房为当前客人处理。`
-            });
-            renderDispatchGame();
-            return;
-        }
-
-        if (focus.type === "kitchen") {
-            cookDispatchOrder();
-        }
-    }
-
-    function moveDispatchScenePlayer(deltaTime) {
-        if (worldState.openModalKey !== "model" || !dispatchState.running) {
-            return;
-        }
-
-        let deltaX = 0;
-        if (worldState.pressedKeys.has("arrowleft") || worldState.pressedKeys.has("a")) {
-            deltaX -= 1;
-        }
-        if (worldState.pressedKeys.has("arrowright") || worldState.pressedKeys.has("d")) {
-            deltaX += 1;
-        }
-
-        if (deltaX !== 0) {
-            dispatchState.scenePlayerX = clamp(
-                dispatchState.scenePlayerX + deltaX * cafeSceneConfig.speed * deltaTime,
-                cafeSceneConfig.minX,
-                cafeSceneConfig.maxX
-            );
-            renderDispatchScenePlayer();
-        }
-
-        dispatchState.sceneFocus = getSceneFocus();
-        renderDispatchSceneMeta();
-    }
-
-    function tickDispatchScene(now) {
-        const deltaTime = Math.min((now - dispatchState.sceneLastFrame) / 1000, 0.032);
-        dispatchState.sceneLastFrame = now;
-        moveDispatchScenePlayer(deltaTime);
-        requestAnimationFrame(tickDispatchScene);
-    }
-
-    renderDispatchSceneMeta = function () {
-        if (!elements.dispatchScenePrompt || !elements.dispatchHeldModel || !elements.dispatchSelectedGuest) {
-            return;
-        }
-
-        const activeGuest = dispatchState.selectedOrderId
-            ? dispatchState.activeOrders.find((order) => order.id === dispatchState.selectedOrderId)
-            : null;
-
-        elements.dispatchHeldModel.textContent = dispatchState.prepModel || tt("dispatch_scene_hold_none");
-        elements.dispatchSelectedGuest.textContent = activeGuest
-            ? activeGuest.label[worldState.language]
-            : tt("dispatch_scene_selected_none");
-
-        let promptKey = "dispatch_scene_prompt_floor";
-        if (dispatchState.selectedOrderId) {
-            promptKey = "dispatch_scene_prompt_bottle";
-        } else if (dispatchState.sceneFocus?.type === "guest") {
-            promptKey = "dispatch_scene_prompt_guest";
-        }
-        elements.dispatchScenePrompt.textContent = tt(promptKey);
-    };
-
-    renderDispatchOrders = function () {
-        if (!elements.dispatchOrderGrid) {
-            return;
-        }
-
-        elements.dispatchOrderGrid.innerHTML = "";
-        dispatchState.activeOrders.forEach((order, index) => {
-            const isSelected = dispatchState.selectedOrderId === order.id;
-            const isNearby = dispatchState.sceneFocus?.type === "guest" && dispatchState.sceneFocus.orderId === order.id;
-            const seat = document.createElement("article");
-            seat.className = `cg-cafe-seat is-${order.scenarioType}${isSelected ? " is-selected" : ""}${isNearby ? " is-near" : ""}`;
-            seat.style.left = `${cafeSceneConfig.guestSeatXs[index]}px`;
-            seat.innerHTML = `
-                <div class="cg-cafe-ticket">
-                    <span class="cg-cafe-ticket-tag">${order.label[worldState.language]}</span>
-                    <p>${order.hint[worldState.language]}</p>
-                    <div class="cg-cafe-guest-timer">
-                        <span class="cg-cafe-guest-timer-fill" style="width:${Math.max(0, (order.timeLeft / dispatchState.guestLifetime) * 100)}%"></span>
-                    </div>
-                </div>
-                <div class="cg-cafe-guest-avatar is-${order.scenarioType}">
-                    <span class="cg-cafe-guest-head"></span>
-                    <span class="cg-cafe-guest-face"></span>
-                    <span class="cg-cafe-guest-body"></span>
-                </div>
-                <div class="cg-cafe-seat-ui">
-                    <span class="cg-cafe-seat-chip">${worldState.language === "en" ? (isSelected ? "Active order" : "Waiting") : (isSelected ? "当前订单" : "等待中")}</span>
-                </div>
-            `;
-            seat.addEventListener("click", () => {
-                selectDispatchOrder(order.id);
-                renderDispatchGame();
-            });
-            elements.dispatchOrderGrid.appendChild(seat);
-        });
-    };
-
-    submitGuestAnswer = function (modelKey) {
-        if (!dispatchState.running || dispatchState.paused) {
-            return;
-        }
-
-        const activeGuest = getActiveSceneGuest();
-        if (!activeGuest) {
-            return;
-        }
-
-        dispatchState.prepModel = modelKey;
-
-        if (modelKey !== activeGuest.correctModel) {
-            dispatchState.streak = 0;
-            activeGuest.timeLeft = Math.max(1, activeGuest.timeLeft - 4);
-            dispatchState.score = Math.max(0, dispatchState.score - 4);
-            updateGlobalScore(-2, "reset", "status_retry");
-            playFeedbackTone(260);
-            renderDispatchGame();
-            return;
-        }
-
-        dispatchState.score += 12 + Math.min(dispatchState.streak, 4) * 2;
-        dispatchState.streak += 1;
-        dispatchState.completedOrders += 1;
-        dispatchState.activeOrders = dispatchState.activeOrders.filter((order) => order.id !== activeGuest.id);
-        dispatchState.selectedOrderId = null;
-        dispatchState.prepModel = null;
-        fillDispatchSeats();
-
-        if (dispatchState.completedOrders >= 8) {
-            tasks.modelClear = true;
-            updateMissionProgress();
-        }
-
-        updateGlobalScore(10, "up", "status_correct");
-        playFeedbackTone(640);
-        renderDispatchGame();
-    };
-
-    decayGuestTimers = function () {
-        const expiredOrders = [];
-        dispatchState.activeOrders.forEach((order) => {
-            order.timeLeft -= 1;
-            if (order.timeLeft <= 0) {
-                expiredOrders.push(order);
-            }
-        });
-
-        if (!expiredOrders.length) {
-            return;
-        }
-
-        expiredOrders.forEach((order) => {
-            dispatchState.failedOrders += 1;
-            dispatchState.score = Math.max(0, dispatchState.score - 6);
-            if (dispatchState.selectedOrderId === order.id) {
-                dispatchState.selectedOrderId = null;
-            }
-        });
-        dispatchState.activeOrders = dispatchState.activeOrders.filter((order) => order.timeLeft > 0);
-        fillDispatchSeats();
-        updateGlobalScore(-2, "reset", "status_retry");
-        renderDispatchGame();
-    };
-
-    renderDispatchTokens = function () {
-        if (!elements.dispatchTokenRack) {
-            return;
-        }
-
-        elements.dispatchTokenRack.innerHTML = "";
-        modelTokens.forEach((token, index) => {
-            const button = document.createElement("button");
-            const isSelected = dispatchState.prepModel === token.key;
-            const isNearby = dispatchState.sceneFocus?.type === "bottle" && dispatchState.sceneFocus.modelKey === token.key;
-            button.type = "button";
-            button.className = `cg-cafe-bottle is-${token.accent}${isSelected ? " is-selected" : ""}${isNearby ? " is-near" : ""}`;
-            button.dataset.model = token.key;
-            button.style.left = `${cafeSceneConfig.bottleXs[index]}px`;
-            button.innerHTML = `
-                <span class="cg-cafe-bottle-cap"></span>
-                <span class="cg-cafe-bottle-core">${token.key}</span>
-            `;
-            button.addEventListener("click", () => {
-                setDispatchPrepModel(token.key);
-                setDispatchFeedback("ready", {
-                    en: `${token.key} recipe selected. Take it to the kitchen.`,
-                    zh: `已选中 ${token.key} 配方，把它带去厨房。`
-                });
-                renderDispatchGame();
-            });
-            elements.dispatchTokenRack.appendChild(button);
-        });
-    };
-
-    renderDispatchOrders = function () {
-        if (!elements.dispatchOrderGrid) {
-            return;
-        }
-
-        elements.dispatchOrderGrid.innerHTML = "";
-        dispatchState.activeOrders.forEach((order, index) => {
-            const isSelected = dispatchState.selectedOrderId === order.id;
-            const isCooked = dispatchState.platedOrderId === order.id;
-            const isNearby = dispatchState.sceneFocus?.type === "guest" && dispatchState.sceneFocus.orderId === order.id;
-            const seat = document.createElement("article");
-            seat.className = `cg-cafe-seat is-${order.scenarioType}${isSelected ? " is-selected" : ""}${isCooked ? " is-cooked" : ""}${isNearby ? " is-near" : ""}`;
-            seat.style.left = `${cafeSceneConfig.guestSeatXs[index]}px`;
-            seat.innerHTML = `
-                <div class="cg-cafe-ticket">
-                    <span class="cg-cafe-ticket-tag">${order.label[worldState.language]}</span>
-                    <p>${order.hint[worldState.language]}</p>
-                </div>
-                <div class="cg-cafe-guest-avatar is-${order.scenarioType}">
-                    <span class="cg-cafe-guest-head"></span>
-                    <span class="cg-cafe-guest-face"></span>
-                    <span class="cg-cafe-guest-body"></span>
-                </div>
-                <div class="cg-cafe-seat-ui">
-                    <span class="cg-cafe-seat-chip">${isCooked ? tt("dispatch_scene_order_ready") : (isSelected ? tt("dispatch_scene_select_action") : tt("dispatch_scene_select_action"))}</span>
-                    <button class="cg-order-action${isCooked ? " cg-order-action-serve is-live" : ""}" type="button">
-                        ${isCooked ? tt("dispatch_scene_serve_action") : tt("dispatch_scene_select_action")}
-                    </button>
-                </div>
-            `;
-            seat.querySelector("button").addEventListener("click", () => {
-                if (isCooked) {
-                    serveDispatchOrder(order.id);
-                } else {
-                    selectDispatchOrder(order.id);
-                    setDispatchFeedback("ready", {
-                        en: `${order.label.en} is waiting. Pick the correct recipe, cook it, then come back to serve.`,
-                        zh: `${order.label.zh} 正在等待。先去拿正确配方、完成烹饪，再回来上菜。`
-                    });
-                    renderDispatchGame();
-                }
-            });
-            elements.dispatchOrderGrid.appendChild(seat);
-        });
-    };
-
-    renderDispatchKitchen = function () {
-        if (!elements.dispatchPotLiquid || !elements.dispatchPotLabel || !elements.dispatchServeDish || !elements.dispatchPlateLabel) {
-            return;
-        }
-
-        if (dispatchState.prepModel) {
-            elements.dispatchPotLiquid.style.background = getDishPalette(dispatchState.prepModel);
-            elements.dispatchPotLiquid.classList.add("is-filled");
-            elements.dispatchPotLabel.textContent = worldState.language === "en"
-                ? `${dispatchState.prepModel} recipe ready for the stove`
-                : `${dispatchState.prepModel} 配方已拿在手里，可以去烹饪`;
-        } else {
-            elements.dispatchPotLiquid.style.background = "transparent";
-            elements.dispatchPotLiquid.classList.remove("is-filled");
-            elements.dispatchPotLabel.textContent = tt("dispatch_pot_label");
-        }
-
-        const platedOrder = dispatchState.activeOrders.find((item) => item.id === dispatchState.platedOrderId);
-        if (platedOrder) {
-            elements.dispatchServeDish.style.background = getDishPalette(platedOrder.correctModel);
-            elements.dispatchServeDish.className = `cg-serve-dish is-visible is-${platedOrder.scenarioType}`;
-            elements.dispatchPlateLabel.textContent = worldState.language === "en"
-                ? `Dish for ${platedOrder.label.en} is ready. Walk it back to the right guest.`
-                : `${platedOrder.label.zh} 的菜已经做好了，把它送回正确的客人。`;
-        } else {
-            elements.dispatchServeDish.className = "cg-serve-dish";
-            elements.dispatchServeDish.style.background = "transparent";
-            elements.dispatchPlateLabel.textContent = tt("dispatch_plate_label");
-        }
-    };
-
-    renderDispatchGame = function () {
-        elements.dispatchTimeText.textContent = `${dispatchState.timeLeft}s`;
-        updateProgressBar(elements.dispatchProgressText, elements.dispatchProgressFill, dispatchState.completedOrders, dispatchState.targetOrders);
-        elements.dispatchScoreText.textContent = String(dispatchState.score);
-        elements.dispatchStreakText.textContent = String(dispatchState.streak);
-        elements.dispatchRatingText.textContent = getRatingFromScore(dispatchState.score, { s: 120, a: 90, b: 65 });
-        if (elements.dispatchSkipText) {
-            elements.dispatchSkipText.textContent = String(dispatchState.skipsLeft);
-        }
-        if (elements.dispatchSkip) {
-            elements.dispatchSkip.disabled = dispatchState.skipsLeft <= 0 || !dispatchState.running;
-        }
-        renderDispatchTokens();
-        renderDispatchKitchen();
-        renderDispatchOrders();
-        renderDispatchScenePlayer();
-        dispatchState.sceneFocus = getSceneFocus();
-        renderDispatchSceneMeta();
-    };
-
-    startDispatchRound = function () {
-        stopDispatchRound();
-        dispatchState.timeLeft = dispatchState.duration;
-        dispatchState.score = 0;
-        dispatchState.streak = 0;
-        dispatchState.completedOrders = 0;
-        dispatchState.skipsLeft = 1;
-        dispatchState.activeOrders = [];
-        dispatchState.nextOrderId = 1;
-        dispatchState.tickCount = 0;
-        dispatchState.draggingModel = null;
-        dispatchState.selectedOrderId = null;
-        dispatchState.prepModel = null;
-        dispatchState.platedOrderId = null;
-        dispatchState.scenePlayerX = 420;
-        dispatchState.running = true;
-        resetDispatchFeedback();
-        fillDispatchSeats();
-        renderDispatchGame();
-
-        dispatchState.tickHandle = setInterval(() => {
-            dispatchState.timeLeft -= 1;
-            if (dispatchState.completedOrders >= dispatchState.targetOrders || dispatchState.timeLeft <= 0) {
-                finishDispatchRound();
-            } else {
-                renderDispatchGame();
-            }
-        }, 1000);
-    };
-
-    setDispatchPrepModel = function (tokenKey) {
-        if (!dispatchState.running) {
-            return;
-        }
-        dispatchState.prepModel = tokenKey;
-        dispatchState.draggingModel = tokenKey;
-        renderDispatchGame();
-    };
-
-    cookDispatchOrder = function () {
-        if (!dispatchState.running) {
-            return;
-        }
-        const order = getActiveSceneGuest();
-        if (!order) {
-            setDispatchFeedback("wrong", {
-                en: "Talk to a guest first so you know which order to prepare.",
-                zh: "先和一位客人互动，这样你才知道要做哪一单。"
-            });
-            return;
-        }
-        if (!dispatchState.prepModel) {
-            setDispatchFeedback("wrong", {
-                en: "Pick one recipe bottle from the shelf before cooking.",
-                zh: "先去配方架拿一个正确的配方，再开始烹饪。"
-            });
-            return;
-        }
-        if (dispatchState.prepModel !== order.correctModel) {
-            const wrongModel = dispatchState.prepModel;
-            dispatchState.streak = 0;
-            dispatchState.prepModel = null;
-            updateGlobalScore(-2, "reset", "status_retry");
-            setDispatchFeedback("wrong", {
-                en: `${wrongModel} does not fit ${order.label.en}. ${order.explanation.en}`,
-                zh: `${wrongModel} 不适合 ${order.label.zh}。${order.explanation.zh}`
-            });
-            playFeedbackTone(260);
-            renderDispatchGame();
-            return;
-        }
-
-        dispatchState.platedOrderId = order.id;
-        setDispatchFeedback("correct", {
-            en: `${order.label.en} is cooked. Walk it back to the matching guest.`,
-            zh: `${order.label.zh} 已经做好了，把它送回给对应的客人。`
-        });
-        playFeedbackTone(560);
-        renderDispatchGame();
-    };
-
-    serveDispatchOrder = function (orderId) {
-        if (!dispatchState.running || dispatchState.platedOrderId !== orderId) {
-            return;
-        }
-        const order = dispatchState.activeOrders.find((item) => item.id === orderId);
-        if (!order) {
-            return;
-        }
-
-        dispatchState.score += 10 + Math.min(dispatchState.streak, 4) * 2;
-        dispatchState.streak += 1;
-        dispatchState.completedOrders += 1;
-        dispatchState.activeOrders = dispatchState.activeOrders.filter((item) => item.id !== orderId);
-        dispatchState.selectedOrderId = null;
-        dispatchState.platedOrderId = null;
-        dispatchState.prepModel = null;
-        fillDispatchSeats();
-
-        if (dispatchState.completedOrders >= 8) {
-            tasks.modelClear = true;
-            updateMissionProgress();
-        }
-
-        updateGlobalScore(10, "up", "status_correct");
-        setDispatchFeedback("correct", {
-            en: `Served to the right guest. ${order.explanation.en}`,
-            zh: `成功送到了正确客人。${order.explanation.zh}`
-        });
-        playFeedbackTone(640);
-        renderDispatchGame();
-    };
-
-    skipDispatchOrder = function () {
-        if (!dispatchState.running || dispatchState.skipsLeft <= 0 || dispatchState.activeOrders.length === 0) {
-            return;
-        }
-
-        const target = getActiveSceneGuest();
-        if (!target) {
-            return;
-        }
-
-        dispatchState.skipsLeft -= 1;
-        dispatchState.activeOrders = dispatchState.activeOrders.filter((order) => order.id !== target.id);
-        dispatchState.selectedOrderId = null;
-        dispatchState.platedOrderId = null;
-        dispatchState.prepModel = null;
-        fillDispatchSeats();
-
-        setDispatchFeedback("ready", {
-            en: `Skipped ${target.label.en}. A new guest has taken the seat.`,
-            zh: `已跳过 ${target.label.zh}，新的客人已经坐下。`
-        });
-        renderDispatchGame();
-    };
-
-    function setDispatchOverlayState(isPaused, showEnd) {
-        dispatchState.paused = isPaused;
-        if (elements.dispatchPauseOverlay) {
-            elements.dispatchPauseOverlay.classList.toggle("is-visible", isPaused && !showEnd);
-            elements.dispatchPauseOverlay.setAttribute("aria-hidden", isPaused && !showEnd ? "false" : "true");
-        }
-        if (elements.dispatchEndOverlay) {
-            elements.dispatchEndOverlay.classList.toggle("is-visible", !!showEnd);
-            elements.dispatchEndOverlay.setAttribute("aria-hidden", showEnd ? "false" : "true");
-        }
-        if (elements.dispatchPauseToggle) {
-            elements.dispatchPauseToggle.textContent = isPaused && !showEnd ? "Resume" : "Pause";
-        }
-    }
-
-    function submitGuestAnswer(modelKey) {
-        if (!dispatchState.running || dispatchState.paused) {
-            return;
-        }
-
-        const activeGuest = getActiveSceneGuest();
-        if (!activeGuest) {
-            setDispatchFeedback("ready", {
-                en: "Move to a guest first, then choose the matching colour model.",
-                zh: "先移动到一位客人旁边，再选择对应的颜色模型。"
-            });
-            return;
-        }
-
-        dispatchState.prepModel = modelKey;
-
-        if (modelKey !== activeGuest.correctModel) {
-            dispatchState.streak = 0;
-            activeGuest.timeLeft = Math.max(1, activeGuest.timeLeft - 4);
-            dispatchState.score = Math.max(0, dispatchState.score - 4);
-            updateGlobalScore(-2, "reset", "status_retry");
-            setDispatchFeedback("wrong", {
-                en: `${modelKey} is not right for ${activeGuest.label.en}. ${activeGuest.explanation.en}`,
-                zh: `${modelKey} 不适合 ${activeGuest.label.zh}。${activeGuest.explanation.zh}`
-            });
-            playFeedbackTone(260);
-            renderDispatchGame();
-            return;
-        }
-
-        dispatchState.score += 12 + Math.min(dispatchState.streak, 4) * 2;
-        dispatchState.streak += 1;
-        dispatchState.completedOrders += 1;
-        dispatchState.activeOrders = dispatchState.activeOrders.filter((order) => order.id !== activeGuest.id);
-        dispatchState.selectedOrderId = null;
-        dispatchState.prepModel = null;
-        fillDispatchSeats();
-
-        if (dispatchState.completedOrders >= 8) {
-            tasks.modelClear = true;
-            updateMissionProgress();
-        }
-
-        updateGlobalScore(10, "up", "status_correct");
-        setDispatchFeedback("correct", {
-            en: `${activeGuest.label.en} was served correctly. ${activeGuest.explanation.en}`,
-            zh: `${activeGuest.label.zh} 已经成功送达。${activeGuest.explanation.zh}`
-        });
-        playFeedbackTone(640);
-        renderDispatchGame();
-    }
-
-    function decayGuestTimers() {
-        const expiredOrders = [];
-        dispatchState.activeOrders.forEach((order) => {
-            order.timeLeft -= 1;
-            if (order.timeLeft <= 0) {
-                expiredOrders.push(order);
-            }
-        });
-
-        if (!expiredOrders.length) {
-            return;
-        }
-
-        expiredOrders.forEach((order) => {
-            dispatchState.failedOrders += 1;
-            dispatchState.score = Math.max(0, dispatchState.score - 6);
-            if (dispatchState.selectedOrderId === order.id) {
-                dispatchState.selectedOrderId = null;
-            }
-        });
-        dispatchState.activeOrders = dispatchState.activeOrders.filter((order) => order.timeLeft > 0);
-        fillDispatchSeats();
-        updateGlobalScore(-2, "reset", "status_retry");
-        setDispatchFeedback("wrong", {
-            en: "A guest left before being served. Move faster to protect your score.",
-            zh: "有客人在等待结束前离开了。下次需要更快地完成对应送餐。"
-        });
-    }
-
-    handleDispatchSceneInteract = function () {
-        if (!dispatchState.running || dispatchState.paused) {
-            return;
-        }
-
-        const focus = dispatchState.sceneFocus;
-        if (!focus || focus.type !== "guest") {
-            return;
-        }
-
-        selectDispatchOrder(focus.orderId);
-        renderDispatchGame();
-    };
-
-    renderDispatchSceneMeta = function () {
-        if (!elements.dispatchScenePrompt || !elements.dispatchHeldModel || !elements.dispatchSelectedGuest) {
-            return;
-        }
-
-        const activeGuest = dispatchState.selectedOrderId
-            ? dispatchState.activeOrders.find((order) => order.id === dispatchState.selectedOrderId)
-            : null;
-
-        elements.dispatchHeldModel.textContent = dispatchState.prepModel || tt("dispatch_scene_hold_none");
-        elements.dispatchSelectedGuest.textContent = activeGuest
-            ? activeGuest.label[worldState.language]
-            : tt("dispatch_scene_selected_none");
-
-        let promptKey = "dispatch_scene_prompt_floor";
-        if (dispatchState.selectedOrderId) {
-            promptKey = "dispatch_scene_prompt_bottle";
-        } else if (dispatchState.sceneFocus?.type === "guest") {
-            promptKey = "dispatch_scene_prompt_guest";
-        }
-        elements.dispatchScenePrompt.textContent = tt(promptKey);
-    };
-
-    renderDispatchTokens = function () {
-        if (!elements.dispatchTokenRack) {
-            return;
-        }
-
-        elements.dispatchTokenRack.innerHTML = "";
-        modelTokens.forEach((token) => {
-            const button = document.createElement("button");
-            const isSelected = dispatchState.prepModel === token.key;
-            button.type = "button";
-            button.className = `cg-cafe-answer-button is-${token.accent}${isSelected ? " is-selected" : ""}`;
-            button.dataset.model = token.key;
-            button.innerHTML = `
-                <span class="cg-cafe-answer-chip">${token.key}</span>
-                <span class="cg-cafe-answer-copy">${token.key}</span>
-            `;
-            button.addEventListener("click", () => {
-                submitGuestAnswer(token.key);
-            });
-            elements.dispatchTokenRack.appendChild(button);
-        });
-    };
-
-    renderDispatchOrders = function () {
-        if (!elements.dispatchOrderGrid) {
-            return;
-        }
-
-        elements.dispatchOrderGrid.innerHTML = "";
-        dispatchState.activeOrders.forEach((order, index) => {
-            const isSelected = dispatchState.selectedOrderId === order.id;
-            const isNearby = dispatchState.sceneFocus?.type === "guest" && dispatchState.sceneFocus.orderId === order.id;
-            const seat = document.createElement("article");
-            seat.className = `cg-cafe-seat is-${order.scenarioType}${isSelected ? " is-selected" : ""}${isNearby ? " is-near" : ""}`;
-            seat.style.left = `${cafeSceneConfig.guestSeatXs[index]}px`;
-            seat.innerHTML = `
-                <div class="cg-cafe-ticket">
-                    <span class="cg-cafe-ticket-tag">${order.label[worldState.language]}</span>
-                    <p>${order.hint[worldState.language]}</p>
-                    <div class="cg-cafe-guest-timer">
-                        <span class="cg-cafe-guest-timer-fill" style="width:${Math.max(0, (order.timeLeft / dispatchState.guestLifetime) * 100)}%"></span>
-                    </div>
-                </div>
-                <div class="cg-cafe-guest-avatar is-${order.scenarioType}">
-                    <span class="cg-cafe-guest-head"></span>
-                    <span class="cg-cafe-guest-face"></span>
-                    <span class="cg-cafe-guest-body"></span>
-                </div>
-                <div class="cg-cafe-seat-ui">
-                    <span class="cg-cafe-seat-chip">${worldState.language === "en" ? (isSelected ? "Active order" : "Waiting") : (isSelected ? "当前订单" : "等待中")}</span>
-                </div>
-            `;
-            seat.addEventListener("click", () => {
-                selectDispatchOrder(order.id);
-                setDispatchFeedback("ready", {
-                    en: `${order.label.en} is active. Choose the matching colour model now.`,
-                    zh: `${order.label.zh} 已锁定。现在为这位客人选择匹配的颜色模型。`
-                });
-                renderDispatchGame();
-            });
-            elements.dispatchOrderGrid.appendChild(seat);
-        });
-    };
-
-    renderDispatchKitchen = function () {
-        renderDispatchSceneMeta();
-    };
-
-    renderDispatchGame = function () {
-        if (elements.dispatchTimeText) {
-            elements.dispatchTimeText.textContent = `${dispatchState.timeLeft}s`;
-        }
-        if (elements.dispatchProgressText) {
-            elements.dispatchProgressText.textContent = `${dispatchState.completedOrders} / ${dispatchState.targetOrders}`;
-        }
-        if (elements.dispatchScoreText) {
-            elements.dispatchScoreText.textContent = String(dispatchState.score);
-        }
-        if (elements.dispatchStreakText) {
-            elements.dispatchStreakText.textContent = String(dispatchState.streak);
-        }
-        if (elements.dispatchRatingText) {
-            elements.dispatchRatingText.textContent = getRatingFromScore(dispatchState.score, { s: 120, a: 90, b: 65 });
-        }
-        if (elements.dispatchMissedText) {
-            elements.dispatchMissedText.textContent = String(dispatchState.failedOrders);
-        }
-        renderDispatchTokens();
-        renderDispatchOrders();
-        renderDispatchScenePlayer();
-        dispatchState.sceneFocus = getSceneFocus();
-        renderDispatchSceneMeta();
-    };
-
-    startDispatchRound = function () {
-        stopDispatchRound();
-        dispatchState.timeLeft = dispatchState.duration;
-        dispatchState.score = 0;
-        dispatchState.streak = 0;
-        dispatchState.completedOrders = 0;
-        dispatchState.failedOrders = 0;
-        dispatchState.activeOrders = [];
-        dispatchState.nextOrderId = 1;
-        dispatchState.selectedOrderId = null;
-        dispatchState.prepModel = null;
-        dispatchState.platedOrderId = null;
-        dispatchState.scenePlayerX = 420;
-        dispatchState.running = true;
-        dispatchState.paused = false;
-        resetDispatchFeedback();
-        setDispatchOverlayState(false, false);
-        fillDispatchSeats();
-        renderDispatchGame();
-
-        dispatchState.tickHandle = setInterval(() => {
-            if (dispatchState.paused) {
-                return;
-            }
-            dispatchState.timeLeft -= 1;
-            decayGuestTimers();
-            if (dispatchState.completedOrders + dispatchState.failedOrders >= dispatchState.targetOrders || dispatchState.timeLeft <= 0) {
-                finishDispatchRound();
-            } else {
-                renderDispatchGame();
-            }
-        }, 1000);
-    };
-
-    skipDispatchOrder = function () {
-        return;
-    };
-
-    finishDispatchRound = function () {
-        stopDispatchRound();
-        setDispatchOverlayState(false, true);
-        const rating = getRatingFromScore(dispatchState.score, { s: 120, a: 90, b: 65 });
-        const cleared = dispatchState.completedOrders;
-        const missed = dispatchState.failedOrders;
-        const success = cleared >= 8;
-        if (success) {
-            tasks.modelClear = true;
-            updateMissionProgress();
-        }
-        setDispatchFeedback(success ? "correct" : "wrong", {
-            en: success
-                ? `Cafe clear. You served ${cleared} guests and missed ${missed}.`
-                : `Round over. You served ${cleared} guests and missed ${missed}. Try to protect more timers next run.`,
-            zh: success
-                ? `咖啡馆挑战完成。你成功服务了 ${cleared} 位客人，错过了 ${missed} 位。`
-                : `本轮结束。你成功服务了 ${cleared} 位客人，错过了 ${missed} 位。下次要尽量保护更多等待条。`
-        });
-        if (elements.dispatchEndTitle) {
-            elements.dispatchEndTitle.textContent = success ? "Cafe Round Clear" : "Cafe Round Over";
-        }
-        if (elements.dispatchEndText) {
-            elements.dispatchEndText.textContent = elements.matchFeedbackText?.textContent || "";
-        }
-        if (elements.dispatchEndCleared) {
-            elements.dispatchEndCleared.textContent = String(cleared);
-        }
-        if (elements.dispatchEndRating) {
-            elements.dispatchEndRating.textContent = rating;
-        }
-        if (elements.dispatchEndMissed) {
-            elements.dispatchEndMissed.textContent = String(missed);
-        }
-        renderDispatchGame();
-    };
-
-    finishDispatchRound = function () {
-        stopDispatchRound();
-        setDispatchOverlayState(false, true);
-        const rating = getRatingFromScore(dispatchState.score, { s: 120, a: 90, b: 65 });
-        const cleared = dispatchState.completedOrders;
-        const missed = dispatchState.failedOrders;
-        const success = cleared >= 8;
-        if (success) {
-            tasks.modelClear = true;
-            updateMissionProgress();
-        }
-        if (elements.dispatchEndTitle) {
-            elements.dispatchEndTitle.textContent = worldState.language === "en"
-                ? (success ? "Cafe Round Clear" : "Cafe Round Over")
-                : (success ? "咖啡馆挑战完成" : "咖啡馆本轮结束");
-        }
-        if (elements.dispatchEndText) {
-            elements.dispatchEndText.textContent = worldState.language === "en"
-                ? (success
-                    ? `You served ${cleared} guests and only missed ${missed}.`
-                    : `You served ${cleared} guests and missed ${missed}. Keep more customer timers alive next round.`)
-                : (success
-                    ? `你成功服务了 ${cleared} 位客人，只错过了 ${missed} 位。`
-                    : `你成功服务了 ${cleared} 位客人，错过了 ${missed} 位。下一轮尽量保护更多客人的倒计时。`);
-        }
-        if (elements.dispatchEndCleared) {
-            elements.dispatchEndCleared.textContent = String(cleared);
-        }
-        if (elements.dispatchEndRating) {
-            elements.dispatchEndRating.textContent = rating;
-        }
-        if (elements.dispatchEndMissed) {
-            elements.dispatchEndMissed.textContent = String(missed);
-        }
-        renderDispatchGame();
-    };
-
-    moveDispatchScenePlayer = function (deltaTime) {
-        if (worldState.openModalKey !== "model" || !dispatchState.running || dispatchState.paused) {
-            return;
-        }
-
-        let deltaX = 0;
-        if (worldState.pressedKeys.has("arrowleft") || worldState.pressedKeys.has("a")) {
-            deltaX -= 1;
-        }
-        if (worldState.pressedKeys.has("arrowright") || worldState.pressedKeys.has("d")) {
-            deltaX += 1;
-        }
-
-        if (deltaX !== 0) {
-            dispatchState.scenePlayerX = clamp(
-                dispatchState.scenePlayerX + deltaX * cafeSceneConfig.speed * deltaTime,
-                cafeSceneConfig.minX,
-                cafeSceneConfig.maxX
-            );
-            renderDispatchScenePlayer();
-        }
-
-        dispatchState.sceneFocus = getSceneFocus();
-        renderDispatchSceneMeta();
-    };
-
-    function bindPreferenceEvents() {
-        const prefSound = document.getElementById("pref-sound");
-        const prefHints = document.getElementById("pref-hints");
-        const prefMotion = document.getElementById("pref-motion");
-
-        if (prefSound && !prefSound.dataset.bound) {
-            prefSound.dataset.bound = "true";
-            prefSound.addEventListener("click", () => {
-                worldState.soundEnabled = !worldState.soundEnabled;
-                applyStaticTranslations();
-                syncAudioState();
-            });
-        }
-        if (prefHints && !prefHints.dataset.bound) {
-            prefHints.dataset.bound = "true";
-            prefHints.addEventListener("click", () => {
-                worldState.showHints = !worldState.showHints;
-                renderWorldPanels();
-                updateStationPrompt();
-                syncPreferenceState();
-            });
-        }
-        if (prefMotion && !prefMotion.dataset.bound) {
-            prefMotion.dataset.bound = "true";
-            prefMotion.addEventListener("click", () => {
-                worldState.reducedMotion = !worldState.reducedMotion;
-                syncPreferenceState();
-            });
-        }
-    }
-
-    const audioState = {
-        context: null,
-        masterGain: null,
-        bgmGain: null,
-        sfxGain: null,
-        started: false,
-        schedulerHandle: null,
-        nextNoteTime: 0,
-        stepIndex: 0
-    };
-
-    const bgmLeadPattern = [
-        "E5", "G5", "A5", "G5",
-        "E5", "D5", "C5", "D5",
-        "G5", "A5", "B5", "A5",
-        "G5", "E5", "D5", null
-    ];
-
-    const bgmBassPattern = [
-        "C3", null, "G3", null,
-        "A3", null, "E3", null,
-        "F3", null, "C3", null,
-        "G3", null, "C3", null
-    ];
-
-    const bgmChordPattern = [
-        ["C4", "E4", "G4"],
-        ["C4", "E4", "G4"],
-        ["A3", "C4", "E4"],
-        ["A3", "C4", "E4"],
-        ["F3", "A3", "C4"],
-        ["F3", "A3", "C4"],
-        ["G3", "B3", "D4"],
-        ["G3", "B3", "D4"]
-    ];
-
-    const noteFrequencies = {
-        C3: 130.81,
-        D3: 146.83,
-        E3: 164.81,
-        F3: 174.61,
-        G3: 196.0,
-        A3: 220.0,
-        B3: 246.94,
-        C4: 261.63,
-        D4: 293.66,
-        E4: 329.63,
-        F4: 349.23,
-        G4: 392.0,
-        A4: 440.0,
-        B4: 493.88,
-        C5: 523.25,
-        D5: 587.33,
-        E5: 659.25,
-        G5: 783.99,
-        A5: 880.0,
-        B5: 987.77
-    };
 
     function ensureAudioContext() {
-        if (audioState.context) {
-            return audioState.context;
-        }
-
         const AudioContextRef = window.AudioContext || window.webkitAudioContext;
         if (!AudioContextRef) {
             return null;
         }
+        if (!audioState.context) {
+            const context = new AudioContextRef();
+            const masterGain = context.createGain();
+            const bgmGain = context.createGain();
+            const sfxGain = context.createGain();
 
-        const context = new AudioContextRef();
-        const masterGain = context.createGain();
-        const bgmGain = context.createGain();
-        const sfxGain = context.createGain();
+            masterGain.gain.value = 0.22;
+            bgmGain.gain.value = 0.18;
+            sfxGain.gain.value = 0.34;
 
-        masterGain.gain.value = 0.34;
-        bgmGain.gain.value = 0.22;
-        sfxGain.gain.value = 0.24;
+            bgmGain.connect(masterGain);
+            sfxGain.connect(masterGain);
+            masterGain.connect(context.destination);
 
-        bgmGain.connect(masterGain);
-        sfxGain.connect(masterGain);
-        masterGain.connect(context.destination);
-
-        audioState.context = context;
-        audioState.masterGain = masterGain;
-        audioState.bgmGain = bgmGain;
-        audioState.sfxGain = sfxGain;
-        return context;
+            audioState.context = context;
+            audioState.masterGain = masterGain;
+            audioState.bgmGain = bgmGain;
+            audioState.sfxGain = sfxGain;
+        }
+        return audioState.context;
     }
 
-    function playSynthNote(frequency, startTime, duration, type, volume, targetGain) {
+    function beep({ time, frequency, duration = 0.12, type = "triangle", gain = 0.08, target = "sfx" }) {
         const context = ensureAudioContext();
-        if (!context || !frequency) {
+        if (!context) {
             return;
         }
-
         const oscillator = context.createOscillator();
         const gainNode = context.createGain();
         oscillator.type = type;
-        oscillator.frequency.setValueAtTime(frequency, startTime);
-        gainNode.gain.setValueAtTime(0.0001, startTime);
-        gainNode.gain.exponentialRampToValueAtTime(volume, startTime + 0.02);
-        gainNode.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
+        oscillator.frequency.setValueAtTime(frequency, time);
+        gainNode.gain.setValueAtTime(0.0001, time);
+        gainNode.gain.linearRampToValueAtTime(gain, time + 0.02);
+        gainNode.gain.exponentialRampToValueAtTime(0.0001, time + duration);
         oscillator.connect(gainNode);
-        gainNode.connect(targetGain);
-        oscillator.start(startTime);
-        oscillator.stop(startTime + duration + 0.03);
+        gainNode.connect(target === "bgm" ? audioState.bgmGain : audioState.sfxGain);
+        oscillator.start(time);
+        oscillator.stop(time + duration + 0.02);
     }
 
-    function playClickSound() {
-        if (!worldState.soundEnabled) {
-            return;
-        }
+    function unlockAudio() {
         const context = ensureAudioContext();
         if (!context) {
             return;
         }
-        const now = context.currentTime + 0.001;
-        playSynthNote(920, now, 0.045, "triangle", 0.11, audioState.sfxGain);
-        playSynthNote(1240, now + 0.018, 0.04, "sine", 0.06, audioState.sfxGain);
+        if (context.state === "suspended") {
+            context.resume().catch(() => {});
+        }
+        audioState.unlocked = true;
+        syncAudioState();
     }
 
-    function playStartupJingle() {
-        if (!worldState.soundEnabled) {
-            return;
-        }
+    function scheduleCafeBgm() {
         const context = ensureAudioContext();
-        if (!context) {
+        if (!context || !audioState.unlocked || !worldState.soundEnabled) {
             return;
         }
-        const now = context.currentTime + 0.02;
-        playSynthNote(noteFrequencies.C5, now, 0.12, "triangle", 0.11, audioState.sfxGain);
-        playSynthNote(noteFrequencies.E5, now + 0.08, 0.12, "triangle", 0.11, audioState.sfxGain);
-        playSynthNote(noteFrequencies.G5, now + 0.16, 0.14, "triangle", 0.11, audioState.sfxGain);
-    }
+        const melody = [659, 784, 880, 784, 698, 784, 988, 784];
+        const bass = [220, 220, 196, 196, 247, 247, 196, 196];
+        const bell = [1318, 0, 1174, 0, 1046, 0, 1174, 0];
+        const step = 0.32;
+        const horizon = context.currentTime + 1.4;
 
-    function stopBgmLoop() {
-        if (audioState.schedulerHandle) {
-            clearInterval(audioState.schedulerHandle);
-            audioState.schedulerHandle = null;
-        }
-    }
-
-    function scheduleBgmWindow() {
-        const context = ensureAudioContext();
-        if (!context || !worldState.soundEnabled) {
-            return;
+        if (!audioState.nextBeatTime || audioState.nextBeatTime < context.currentTime) {
+            audioState.nextBeatTime = context.currentTime + 0.05;
         }
 
-        const lookAhead = 0.6;
-        const stepDuration = 60 / 126 / 2;
-
-        while (audioState.nextNoteTime < context.currentTime + lookAhead) {
-            const step = audioState.stepIndex % bgmLeadPattern.length;
-            const lead = bgmLeadPattern[step];
-            const bass = bgmBassPattern[step];
-            const chord = bgmChordPattern[Math.floor(step / 2) % bgmChordPattern.length];
-            const startTime = audioState.nextNoteTime;
-
-            if (lead) {
-                playSynthNote(noteFrequencies[lead], startTime, stepDuration * 0.86, "triangle", 0.075, audioState.bgmGain);
+        while (audioState.nextBeatTime < horizon) {
+            const i = audioState.beatIndex % melody.length;
+            beep({ time: audioState.nextBeatTime, frequency: melody[i], duration: 0.18, type: "triangle", gain: 0.06, target: "bgm" });
+            beep({ time: audioState.nextBeatTime, frequency: bass[i], duration: 0.24, type: "sine", gain: 0.04, target: "bgm" });
+            if (bell[i]) {
+                beep({ time: audioState.nextBeatTime + 0.02, frequency: bell[i], duration: 0.1, type: "square", gain: 0.03, target: "bgm" });
             }
-            if (bass) {
-                playSynthNote(noteFrequencies[bass], startTime, stepDuration * 0.95, "sine", 0.05, audioState.bgmGain);
-            }
-
-            if (chord && step % 2 === 0) {
-                chord.forEach((note, index) => {
-                    playSynthNote(noteFrequencies[note], startTime + index * 0.006, stepDuration * 1.55, "sawtooth", 0.016, audioState.bgmGain);
-                });
-            }
-
-            if (step % 4 === 0) {
-                playSynthNote(98, startTime, 0.08, "sine", 0.028, audioState.bgmGain);
-                playSynthNote(1567.98, startTime + 0.02, 0.05, "sine", 0.028, audioState.bgmGain);
-            } else if (step % 2 === 1) {
-                playSynthNote(1318.51, startTime, 0.03, "triangle", 0.018, audioState.bgmGain);
-            }
-
-            audioState.nextNoteTime += stepDuration;
-            audioState.stepIndex += 1;
+            audioState.nextBeatTime += step;
+            audioState.beatIndex += 1;
         }
     }
 
     function startBgmLoop() {
-        const context = ensureAudioContext();
-        if (!context || audioState.schedulerHandle) {
+        if (audioState.loopTimer || !audioState.unlocked || !worldState.soundEnabled) {
             return;
         }
+        const context = ensureAudioContext();
+        if (!context) {
+            return;
+        }
+        audioState.nextBeatTime = context.currentTime + 0.08;
+        audioState.beatIndex = 0;
+        scheduleCafeBgm();
+        audioState.loopTimer = window.setInterval(scheduleCafeBgm, 320);
+    }
 
-        audioState.nextNoteTime = context.currentTime + 0.06;
-        audioState.stepIndex = 0;
-        scheduleBgmWindow();
-        audioState.schedulerHandle = window.setInterval(scheduleBgmWindow, 120);
+    function stopBgmLoop() {
+        if (audioState.loopTimer) {
+            clearInterval(audioState.loopTimer);
+            audioState.loopTimer = null;
+        }
+        audioState.nextBeatTime = 0;
+        audioState.beatIndex = 0;
     }
 
     function syncAudioState() {
         const context = ensureAudioContext();
-        if (!context || !audioState.masterGain || !audioState.bgmGain) {
-            return;
-        }
-
-        const now = context.currentTime;
-        const masterTarget = worldState.soundEnabled ? 0.34 : 0.0001;
-        const bgmTarget = worldState.soundEnabled ? 0.22 : 0.0001;
-        audioState.masterGain.gain.cancelScheduledValues(now);
-        audioState.bgmGain.gain.cancelScheduledValues(now);
-        audioState.masterGain.gain.setTargetAtTime(masterTarget, now, 0.06);
-        audioState.bgmGain.gain.setTargetAtTime(bgmTarget, now, 0.08);
-
-        if (worldState.soundEnabled && audioState.started) {
-            startBgmLoop();
-        } else if (!worldState.soundEnabled) {
-            stopBgmLoop();
-        }
-    }
-
-    async function unlockAudio() {
-        const context = ensureAudioContext();
         if (!context) {
             return;
         }
-
-        try {
-            await context.resume();
-            audioState.started = true;
-            playStartupJingle();
-            syncAudioState();
+        if (!worldState.soundEnabled) {
+            stopBgmLoop();
+            return;
+        }
+        if (audioState.unlocked) {
             startBgmLoop();
-        } catch (error) {
-            console.warn("Audio unlock skipped", error);
         }
     }
 
-    playFeedbackTone = function (frequency) {
+    function playUiClickSound() {
         if (!worldState.soundEnabled) {
             return;
         }
         const context = ensureAudioContext();
-        if (!context) {
+        if (!context || !audioState.unlocked) {
             return;
         }
-        const now = context.currentTime + 0.001;
-        playSynthNote(frequency, now, 0.11, "triangle", 0.085, audioState.sfxGain);
-        playSynthNote(frequency * 1.5, now + 0.02, 0.08, "sine", 0.032, audioState.sfxGain);
-    };
-
-    function bindGlobalAudioInteractions() {
-        const unlockOnce = () => {
-            unlockAudio();
-            document.removeEventListener("pointerdown", unlockOnce);
-            document.removeEventListener("keydown", unlockOnce);
-        };
-
-        document.addEventListener("pointerdown", unlockOnce, { once: true });
-        document.addEventListener("keydown", unlockOnce, { once: true });
-
-        document.addEventListener("click", (event) => {
-            const interactive = event.target.closest("button, a, .cg-order-card, .cg-station, .cg-landmark");
-            if (interactive) {
-                playClickSound();
-            }
-        }, true);
+        const now = context.currentTime;
+        beep({ time: now, frequency: 740, duration: 0.06, type: "triangle", gain: 0.05 });
+        beep({ time: now + 0.03, frequency: 988, duration: 0.05, type: "sine", gain: 0.03 });
     }
 
-    function attachUpgradeEvents() {
-        interceptAction(elements.restartDispatch, "confirm_restart_dispatch", startDispatchRound);
-        interceptAction(elements.dispatchCook, null, cookDispatchOrder);
-        interceptAction(elements.dispatchSkip, "confirm_skip_dispatch", skipDispatchOrder);
-        interceptAction(elements.restartHue, "confirm_restart_hue", startWorkbenchRound);
-        interceptAction(elements.checkHue, null, evaluateWorkbenchMix);
-        interceptAction(elements.resetHue, "confirm_reset_hue", resetWorkbenchMix);
+    playFeedbackTone = function upgradedFeedbackTone(frequency) {
+        if (!worldState.soundEnabled) {
+            return;
+        }
+        const context = ensureAudioContext();
+        if (!context || !audioState.unlocked) {
+            return;
+        }
+        const now = context.currentTime;
+        beep({ time: now, frequency, duration: 0.11, type: "triangle", gain: 0.07 });
+        beep({ time: now + 0.04, frequency: frequency * 1.5, duration: 0.08, type: "sine", gain: 0.04 });
+    };
 
-        if (elements.dispatchClearPrep) {
-            elements.dispatchClearPrep.addEventListener("click", (event) => {
-                event.preventDefault();
-                event.stopImmediatePropagation();
-                dispatchState.prepModel = null;
-                renderDispatchGame();
-            }, true);
+    function safeRating(score, mode) {
+        if (mode === "cafe") {
+            if (score >= 130) return "S";
+            if (score >= 95) return "A";
+            if (score >= 65) return "B";
+            return "C";
+        }
+        if (score >= 85) return "S";
+        if (score >= 65) return "A";
+        if (score >= 45) return "B";
+        return "C";
+    }
+
+    function ensurePrintStation() {
+        if (document.getElementById("station-print")) {
+            return;
+        }
+        const world = document.getElementById("world");
+        const gate = document.getElementById("station-gate");
+        const button = document.createElement("button");
+        button.className = "cg-station cg-station-print";
+        button.id = "station-print";
+        button.dataset.station = "print";
+        button.innerHTML = `
+            <span class="cg-station-art cg-station-art-print-base"></span>
+            <span class="cg-station-art cg-station-art-print-bed"></span>
+            <span class="cg-station-art cg-station-art-print-sheet"></span>
+            <span class="cg-station-art cg-station-art-print-roller"></span>
+            <span class="cg-station-art cg-station-art-print-ink cg-station-art-print-ink-a"></span>
+            <span class="cg-station-art cg-station-art-print-ink cg-station-art-print-ink-b"></span>
+            <span class="cg-station-art cg-station-art-print-ink cg-station-art-print-ink-c"></span>
+            <span class="cg-station-label" data-i18n="station_print">Poster Press</span>
+        `;
+        world.insertBefore(button, gate);
+    }
+
+    function ensurePrintTask() {
+        if (document.getElementById("task-print-clear")) {
+            return;
+        }
+        const list = document.querySelector(".cg-task-list");
+        const item = document.createElement("li");
+        item.className = "cg-task";
+        item.id = "task-print-clear";
+        item.innerHTML = `
+            <span class="cg-task-dot"></span>
+            <span data-i18n="task_print_clear">Complete enough poster jobs in Poster Press</span>
+        `;
+        const gateItem = document.getElementById("task-gate-visit");
+        list.insertBefore(item, gateItem);
+    }
+
+    function buildCafeModal() {
+        const modal = document.getElementById("modal-model");
+        modal.innerHTML = `
+            <div class="cg-modal-backdrop" data-close-modal></div>
+            <div class="cg-modal-panel">
+                <button class="cg-modal-close" type="button" data-close-modal aria-label="Close">×</button>
+                <section class="cg-cafe-sim">
+                    <div class="cg-cafe-stage">
+                        <div class="cg-cafe-backdrop">
+                            <div class="cg-cafe-canopy"></div>
+                            <div class="cg-cafe-water"></div>
+                            <div class="cg-cafe-island cg-cafe-island-a"></div>
+                            <div class="cg-cafe-island cg-cafe-island-b"></div>
+                        </div>
+
+                        <div class="cg-cafe-topbar">
+                            <article class="cg-cafe-top-pill">
+                                <span data-i18n="time_left_label">Time Left</span>
+                                <strong id="cafe-time-text">95s</strong>
+                            </article>
+                            <article class="cg-cafe-top-pill">
+                                <span data-i18n="dispatch_end_cleared">Orders Cleared</span>
+                                <strong id="cafe-cleared-text">0 / 10</strong>
+                            </article>
+                            <article class="cg-cafe-top-pill">
+                                <span data-i18n="dispatch_end_score">Round Score</span>
+                                <strong id="cafe-score-text">0</strong>
+                            </article>
+                            <article class="cg-cafe-top-pill">
+                                <span data-i18n="dispatch_chain_label">Chain</span>
+                                <strong id="cafe-chain-text">0</strong>
+                            </article>
+                            <article class="cg-cafe-top-pill">
+                                <span data-i18n="dispatch_rating_label">Rating</span>
+                                <strong id="cafe-rating-text">C</strong>
+                            </article>
+                            <article class="cg-cafe-top-pill">
+                                <span data-i18n="dispatch_end_missed">Guests Missed</span>
+                                <strong id="cafe-missed-text">0</strong>
+                            </article>
+                            <button class="cg-button cg-button-secondary cg-cafe-pause-button" type="button" id="cafe-pause-button" data-i18n="dispatch_pause">Pause</button>
+                        </div>
+
+                        <div class="cg-cafe-shelf">
+                            <div class="cg-cafe-rack">
+                                <div class="cg-cafe-decor-bottle-row" aria-hidden="true">
+                                    <span class="cg-cafe-decor-bottle is-pink"></span>
+                                    <span class="cg-cafe-decor-bottle is-blue"></span>
+                                    <span class="cg-cafe-decor-bottle is-mint"></span>
+                                    <span class="cg-cafe-decor-bottle is-yellow"></span>
+                                    <span class="cg-cafe-decor-bottle is-blue"></span>
+                                    <span class="cg-cafe-decor-bottle is-pink"></span>
+                                    <span class="cg-cafe-decor-bottle is-mint"></span>
+                                    <span class="cg-cafe-decor-bottle is-yellow"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="cg-cafe-shelf-ui">
+                            <div class="cg-cafe-answer-buttons cg-cafe-answer-buttons-shelf" id="cafe-answer-buttons"></div>
+                        </div>
+
+                        <div class="cg-cafe-counter">
+                            <div class="cg-cafe-seat-grid" id="cafe-seat-grid"></div>
+                        </div>
+                        <div class="cg-cafe-floor"></div>
+
+                        <div class="cg-cafe-player" id="cafe-player" aria-hidden="true">
+                            <span class="cg-cafe-player-shadow"></span>
+                            <span class="cg-cafe-player-head"></span>
+                            <span class="cg-cafe-player-body"></span>
+                            <span class="cg-cafe-player-apron"></span>
+                        </div>
+
+                        <div class="cg-cafe-service-strip">
+                            <div class="cg-cafe-service-card">
+                                <span data-i18n="dispatch_selected_guest">Current guest</span>
+                                <strong id="cafe-current-guest">No guest selected</strong>
+                            </div>
+                            <div class="cg-cafe-service-card">
+                                <span data-i18n="dispatch_selected_model">Selected model</span>
+                                <strong id="cafe-current-model">No model selected</strong>
+                            </div>
+                            <div class="cg-cafe-scene-prompt-inline" id="cafe-scene-prompt" data-i18n="dispatch_scene_prompt">
+                                Move to a guest, lock the order, then click the correct colour model on the shelf.
+                            </div>
+                        </div>
+
+                        <div class="cg-cafe-overlay" id="cafe-overlay">
+                            <div class="cg-cafe-overlay-card" id="cafe-overlay-card"></div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        `;
+    }
+
+    function buildPrintModal() {
+        if (document.getElementById("modal-print")) {
+            return;
+        }
+        const modal = document.createElement("div");
+        modal.className = "cg-modal";
+        modal.id = "modal-print";
+        modal.setAttribute("aria-hidden", "true");
+        modal.innerHTML = `
+            <div class="cg-modal-backdrop" data-close-modal></div>
+            <div class="cg-modal-panel cg-print-modal-panel">
+                <button class="cg-modal-close" type="button" data-close-modal aria-label="Close">×</button>
+                <div class="cg-modal-header">
+                    <div>
+                        <p class="cg-eyebrow" data-i18n="print_eyebrow">Mini-game 3</p>
+                        <h2 data-i18n="print_heading">Poster Press</h2>
+                    </div>
+                <div class="cg-inline-actions">
+                    <div class="cg-round-pill">
+                        <span data-i18n="print_time_left">Time Left</span>
+                        <strong id="print-time-text">85s</strong>
+                    </div>
+                    <button class="cg-button cg-button-secondary" type="button" id="print-pause-button" data-i18n="dispatch_pause">Pause</button>
+                    <button class="cg-button cg-button-secondary" type="button" id="print-restart-button" data-i18n="print_restart">Restart Press</button>
+                </div>
+            </div>
+                <div class="cg-print-shop">
+                    <section class="cg-print-order-board">
+                        <div class="cg-panel-heading">
+                            <p class="cg-eyebrow" data-i18n="print_order_title">Guest Brief</p>
+                            <h3 id="print-order-title">Poster Print</h3>
+                        </div>
+                        <div class="cg-inline-actions cg-print-order-actions">
+                            <button class="cg-button cg-button-secondary" type="button" id="print-hint-button" data-i18n="print_hint">Hint</button>
+                            <div class="cg-print-hint-count">
+                                <span data-i18n="print_hint_uses">Hint Uses</span>
+                                <strong id="print-hint-count">0</strong>
+                            </div>
+                        </div>
+                        <p class="cg-brief-line" id="print-order-clue"></p>
+                        <div class="cg-print-hint-flow" id="print-order-hint" hidden></div>
+                        <div class="cg-mini-stats">
+                            <article class="cg-mini-stat">
+                                <span data-i18n="print_goal">Posters Printed</span>
+                                <strong id="print-progress-text">0 / 4</strong>
+                            </article>
+                            <article class="cg-mini-stat">
+                                <span data-i18n="dispatch_score_label">Round Score</span>
+                                <strong id="print-score-text">0</strong>
+                            </article>
+                            <article class="cg-mini-stat">
+                                <span data-i18n="print_failed">Misprints</span>
+                                <strong id="print-failed-text">0</strong>
+                            </article>
+                        </div>
+                    </section>
+                    <section class="cg-print-workshop">
+                        <div class="cg-print-workshop-window">
+                            <div class="cg-print-workshop-top">
+                                <div class="cg-print-step-card">
+                                    <span class="cg-print-step-tag" id="print-step-tag">Step 1</span>
+                                    <strong id="print-step-title">Medium</strong>
+                                    <p class="cg-brief-line" id="print-step-copy">Choose the correct medium first.</p>
+                                </div>
+                            </div>
+                            <div class="cg-print-machine-state" id="print-machine-state" data-i18n="print_scene_prompt">
+                                Pick the correct medium, model, and output to complete the poster job.
+                            </div>
+                            <div class="cg-print-racks">
+                                <section class="cg-print-rack" id="print-rack-medium">
+                                    <h4 data-i18n="print_medium">Medium</h4>
+                                    <div class="cg-print-rack-grid" id="print-medium-grid"></div>
+                                </section>
+                                <section class="cg-print-rack" id="print-rack-model">
+                                    <h4 data-i18n="print_model">Colour Model</h4>
+                                    <div class="cg-print-rack-grid" id="print-model-grid"></div>
+                                </section>
+                                <section class="cg-print-rack" id="print-rack-output">
+                                    <h4 data-i18n="print_output">Output</h4>
+                                    <div class="cg-print-rack-grid" id="print-output-grid"></div>
+                                </section>
+                            </div>
+                        </div>
+                        <div class="cg-print-machine-card">
+                            <div class="cg-panel-heading">
+                                <p class="cg-eyebrow" data-i18n="print_machine_title">Press Machine</p>
+                                <h3 id="print-machine-title">Medium</h3>
+                            </div>
+                            <div class="cg-print-press-bed">
+                                <div class="cg-print-slot" id="print-slot-medium">
+                                    <span data-i18n="print_medium">Medium</span>
+                                    <strong id="print-slot-medium-text">-</strong>
+                                </div>
+                                <div class="cg-print-slot" id="print-slot-model">
+                                    <span data-i18n="print_model">Colour Model</span>
+                                    <strong id="print-slot-model-text">-</strong>
+                                </div>
+                                <div class="cg-print-slot" id="print-slot-output">
+                                    <span data-i18n="print_output">Output</span>
+                                    <strong id="print-slot-output-text">-</strong>
+                                </div>
+                            </div>
+                            <div class="cg-print-preview" id="print-preview">
+                                <div class="cg-print-preview-sheet" id="print-preview-sheet"></div>
+                                <span class="cg-print-preview-badge" id="print-preview-badge">-</span>
+                            </div>
+                            <div class="cg-print-machine-actions">
+                                <button class="cg-button cg-button-primary cg-print-lever" type="button" id="print-lever-button" data-i18n="print_lever">Pull Press Lever</button>
+                                <button class="cg-button cg-button-secondary" type="button" id="print-clear-button" data-i18n="print_clear">Clear Build</button>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+                <div class="cg-print-reward-toast" id="print-reward-toast" aria-hidden="true">
+                    <div class="cg-print-reward-card" id="print-reward-card">
+                        <div class="cg-feedback-avatar cg-print-feedback-avatar cg-print-reward-avatar" id="print-reward-avatar" data-state="ready">
+                            <span class="cg-avatar-hair"></span>
+                            <span class="cg-avatar-face">
+                                <span class="cg-avatar-eye cg-avatar-eye-left"></span>
+                                <span class="cg-avatar-eye cg-avatar-eye-right"></span>
+                                <span class="cg-avatar-mouth"></span>
+                                <span class="cg-avatar-blush cg-avatar-blush-left"></span>
+                                <span class="cg-avatar-blush cg-avatar-blush-right"></span>
+                            </span>
+                            <span class="cg-avatar-body"></span>
+                            <span class="cg-avatar-arm cg-avatar-arm-left"></span>
+                            <span class="cg-avatar-arm cg-avatar-arm-right"></span>
+                        </div>
+                        <div class="cg-print-reward-copy">
+                            <span class="cg-feedback-status" id="print-reward-status">Reward</span>
+                            <h3 id="print-reward-title">Guest reaction</h3>
+                            <p id="print-reward-text"></p>
+                        </div>
+                        <div class="cg-print-reward-art-shell">
+                            <img class="cg-print-reward-art" id="print-reward-art" alt="Printed product reward">
+                        </div>
+                    </div>
+                </div>
+                <div class="cg-cafe-overlay" id="print-overlay">
+                    <div class="cg-cafe-overlay-card" id="print-overlay-card"></div>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+    }
+
+    function ensureDom() {
+        ensurePrintStation();
+        ensurePrintTask();
+        buildCafeModal();
+        buildPrintModal();
+
+        elements.stationButtons = document.querySelectorAll("[data-station]");
+        elements.modals = document.querySelectorAll(".cg-modal");
+        elements.modalModel = document.getElementById("modal-model");
+        elements.modalPrint = document.getElementById("modal-print");
+        elements.taskPrintClear = document.getElementById("task-print-clear");
+
+        document.querySelectorAll(".cg-modal-close").forEach((button) => {
+            button.textContent = "×";
+        });
+        const zhButton = document.querySelector('[data-language="zh"]');
+        if (zhButton) {
+            zhButton.textContent = "中文";
         }
 
-        if (elements.dispatchPotSlot) {
-            elements.dispatchPotSlot.addEventListener("click", () => {
-                cookDispatchOrder();
+        ui.cafeModal = document.getElementById("modal-model");
+        ui.cafeSeatGrid = document.getElementById("cafe-seat-grid");
+        ui.cafeAnswerButtons = document.getElementById("cafe-answer-buttons");
+        ui.cafePlayer = document.getElementById("cafe-player");
+        ui.cafeTime = document.getElementById("cafe-time-text");
+        ui.cafeCleared = document.getElementById("cafe-cleared-text");
+        ui.cafeScore = document.getElementById("cafe-score-text");
+        ui.cafeChain = document.getElementById("cafe-chain-text");
+        ui.cafeRating = document.getElementById("cafe-rating-text");
+        ui.cafeMissed = document.getElementById("cafe-missed-text");
+        ui.cafeCurrentGuest = document.getElementById("cafe-current-guest");
+        ui.cafeCurrentModel = document.getElementById("cafe-current-model");
+        ui.cafePrompt = document.getElementById("cafe-scene-prompt");
+        ui.cafePauseButton = document.getElementById("cafe-pause-button");
+        ui.cafeOverlay = document.getElementById("cafe-overlay");
+        ui.cafeOverlayCard = document.getElementById("cafe-overlay-card");
+
+        ui.printModal = document.getElementById("modal-print");
+        ui.printTime = document.getElementById("print-time-text");
+        ui.printProgress = document.getElementById("print-progress-text");
+        ui.printScore = document.getElementById("print-score-text");
+        ui.printFailed = document.getElementById("print-failed-text");
+        ui.printOrderTitle = document.getElementById("print-order-title");
+        ui.printOrderClue = document.getElementById("print-order-clue");
+        ui.printOrderHint = document.getElementById("print-order-hint");
+        ui.printHintButton = document.getElementById("print-hint-button");
+        ui.printHintCount = document.getElementById("print-hint-count");
+        ui.printFeedbackAvatar = document.getElementById("print-feedback-avatar");
+        ui.printFeedbackStatus = document.getElementById("print-feedback-status");
+        ui.printFeedbackText = document.getElementById("print-feedback-text");
+        ui.printFeedbackArt = document.getElementById("print-feedback-art");
+        ui.printRewardToast = document.getElementById("print-reward-toast");
+        ui.printRewardAvatar = document.getElementById("print-reward-avatar");
+        ui.printRewardStatus = document.getElementById("print-reward-status");
+        ui.printRewardTitle = document.getElementById("print-reward-title");
+        ui.printRewardText = document.getElementById("print-reward-text");
+        ui.printRewardArt = document.getElementById("print-reward-art");
+        ui.printMachineState = document.getElementById("print-machine-state");
+        ui.printStepTag = document.getElementById("print-step-tag");
+        ui.printStepTitle = document.getElementById("print-step-title");
+        ui.printStepCopy = document.getElementById("print-step-copy");
+        ui.printMachineTitle = document.getElementById("print-machine-title");
+        ui.printRackMedium = document.getElementById("print-rack-medium");
+        ui.printRackModel = document.getElementById("print-rack-model");
+        ui.printRackOutput = document.getElementById("print-rack-output");
+        ui.printMediumGrid = document.getElementById("print-medium-grid");
+        ui.printModelGrid = document.getElementById("print-model-grid");
+        ui.printOutputGrid = document.getElementById("print-output-grid");
+        ui.printSlotMedium = document.getElementById("print-slot-medium");
+        ui.printSlotModel = document.getElementById("print-slot-model");
+        ui.printSlotOutput = document.getElementById("print-slot-output");
+        ui.printSlotMediumText = document.getElementById("print-slot-medium-text");
+        ui.printSlotModelText = document.getElementById("print-slot-model-text");
+        ui.printSlotOutputText = document.getElementById("print-slot-output-text");
+        ui.printPreview = document.getElementById("print-preview");
+        ui.printPreviewBadge = document.getElementById("print-preview-badge");
+        ui.printLever = document.getElementById("print-lever-button");
+        ui.printClear = document.getElementById("print-clear-button");
+        ui.printRestart = document.getElementById("print-restart-button");
+        ui.printPauseButton = document.getElementById("print-pause-button");
+        ui.printOverlay = document.getElementById("print-overlay");
+        ui.printOverlayCard = document.getElementById("print-overlay-card");
+
+        ui.huePauseButton = document.getElementById("hue-pause-button");
+        ui.hueOverlay = document.getElementById("hue-overlay");
+        ui.hueOverlayCard = document.getElementById("hue-overlay-card");
+    }
+
+    function pauseCafe() {
+        if (!cafeState.running || cafeState.ended) {
+            return;
+        }
+        cafeState.paused = true;
+        ui.cafeOverlay.classList.add("is-visible");
+        ui.cafeOverlayCard.innerHTML = `
+            <h3>${t("dispatch_pause_title")}</h3>
+            <details class="cg-cafe-details" open>
+                <summary>${t("controls_title")}</summary>
+                <p>${t("dispatch_pause_tutorial")}</p>
+            </details>
+            <details class="cg-cafe-details" open>
+                <summary>${t("feedback_title")}</summary>
+                <p>${t("dispatch_pause_tips")}</p>
+            </details>
+            <div class="cg-cafe-end-actions">
+                <button class="cg-button cg-button-primary" type="button" id="cafe-resume-button">${t("dispatch_resume")}</button>
+                <button class="cg-button cg-button-secondary" type="button" id="cafe-restart-button">${t("dispatch_play_again")}</button>
+            </div>
+        `;
+        document.getElementById("cafe-resume-button").addEventListener("click", resumeCafe);
+        document.getElementById("cafe-restart-button").addEventListener("click", startCafeRound);
+    }
+
+    function resumeCafe() {
+        cafeState.paused = false;
+        ui.cafeOverlay.classList.remove("is-visible");
+    }
+
+    function hideUpgradeOverlays() {
+        [ui.cafeOverlay, ui.hueOverlay, ui.printOverlay].forEach((node) => {
+            if (node) {
+                node.classList.remove("is-visible");
+            }
+        });
+    }
+
+    function beginHueTick() {
+        if (workbenchState.tickHandle) {
+            clearInterval(workbenchState.tickHandle);
+        }
+        workbenchState.tickHandle = setInterval(() => {
+            if (!workbenchState.running || workbenchState.paused) {
+                return;
+            }
+            workbenchState.timeLeft -= 1;
+            if (workbenchState.timeLeft <= 0 || workbenchState.submissions >= workbenchState.targetGoal) {
+                finishWorkbenchRound();
+            } else {
+                renderWorkbench();
+            }
+        }, 1000);
+    }
+
+    function renderHuePauseState() {
+        if (ui.huePauseButton) {
+            ui.huePauseButton.textContent = workbenchState.paused ? t("dispatch_resume") : t("dispatch_pause");
+        }
+    }
+
+    function pauseHue() {
+        if (!workbenchState.running) {
+            return;
+        }
+        workbenchState.paused = true;
+        if (workbenchState.tickHandle) {
+            clearInterval(workbenchState.tickHandle);
+            workbenchState.tickHandle = null;
+        }
+        renderHuePauseState();
+        if (!ui.hueOverlay || !ui.hueOverlayCard) {
+            return;
+        }
+        ui.hueOverlay.classList.add("is-visible");
+        ui.hueOverlayCard.innerHTML = `
+            <h3>${t("hue_pause_title")}</h3>
+            <details class="cg-cafe-details" open>
+                <summary>${t("controls_title")}</summary>
+                <p>${t("hue_pause_tutorial")}</p>
+            </details>
+            <details class="cg-cafe-details" open>
+                <summary>${t("feedback_title")}</summary>
+                <p>${t("hue_pause_tips")}</p>
+            </details>
+            <div class="cg-cafe-end-actions">
+                <button class="cg-button cg-button-primary" type="button" id="hue-resume-button">${t("dispatch_resume")}</button>
+                <button class="cg-button cg-button-secondary" type="button" id="hue-restart-button">${t("dispatch_play_again")}</button>
+            </div>
+        `;
+        document.getElementById("hue-resume-button")?.addEventListener("click", resumeHue);
+        document.getElementById("hue-restart-button")?.addEventListener("click", () => {
+            resumeHue();
+            baseStartWorkbenchRound();
+            workbenchState.paused = false;
+            beginHueTick();
+            renderHuePauseState();
+        });
+    }
+
+    function resumeHue() {
+        if (!workbenchState.running) {
+            return;
+        }
+        workbenchState.paused = false;
+        ui.hueOverlay?.classList.remove("is-visible");
+        beginHueTick();
+        renderHuePauseState();
+    }
+
+    function renderPrintPauseState() {
+        if (ui.printPauseButton) {
+            ui.printPauseButton.textContent = printState.paused ? t("dispatch_resume") : t("dispatch_pause");
+        }
+    }
+
+    function hidePrintRewardToast() {
+        if (printState.rewardTimer) {
+            clearTimeout(printState.rewardTimer);
+            printState.rewardTimer = null;
+        }
+        if (ui.printRewardToast) {
+            ui.printRewardToast.classList.remove("is-visible");
+            ui.printRewardToast.setAttribute("aria-hidden", "true");
+        }
+    }
+
+    function showPrintRewardToast(kind, order, copy) {
+        if (!ui.printRewardToast || !ui.printRewardAvatar || !ui.printRewardStatus || !ui.printRewardTitle || !ui.printRewardText || !ui.printRewardArt) {
+            return;
+        }
+        hidePrintRewardToast();
+        const success = kind === "correct";
+        const hintUses = printState.currentOrderHintUses;
+        ui.printRewardToast.classList.add("is-visible");
+        ui.printRewardToast.setAttribute("aria-hidden", "false");
+        ui.printRewardAvatar.dataset.state = success ? "correct" : "wrong";
+        ui.printRewardStatus.textContent = success
+            ? (hintUses === 0
+                ? (getLang() === "zh" ? "零提示完成" : "No-Hint Clear")
+                : hintUses === 1
+                    ? (getLang() === "zh" ? "轻提示完成" : "Lightly Guided")
+                    : (getLang() === "zh" ? `使用 ${hintUses} 次提示` : `${hintUses} hints used`))
+            : (hintUses === 0
+                ? (getLang() === "zh" ? "无提示失败" : "Missed Without Hints")
+                : (getLang() === "zh" ? `提示 ${hintUses} 次后仍失败` : `Still missed after ${hintUses} hints`));
+        ui.printRewardTitle.textContent = success
+            ? (getLang() === "zh" ? "成品完成" : "Product delivered")
+            : (getLang() === "zh" ? "订单被退回" : "Order rejected");
+        ui.printRewardText.textContent = copy;
+        ui.printRewardArt.src = success && order?.art ? order.art : "";
+        ui.printRewardArt.style.display = success && order?.art ? "block" : "none";
+        printState.rewardTimer = setTimeout(() => {
+            hidePrintRewardToast();
+        }, 2200);
+    }
+
+    function pausePrint() {
+        if (!printState.running || printState.ended) {
+            return;
+        }
+        printState.paused = true;
+        renderPrintPauseState();
+        if (!ui.printOverlay || !ui.printOverlayCard) {
+            return;
+        }
+        ui.printOverlay.classList.add("is-visible");
+        ui.printOverlayCard.innerHTML = `
+            <h3>${t("print_pause_title")}</h3>
+            <details class="cg-cafe-details" open>
+                <summary>${t("controls_title")}</summary>
+                <p>${t("print_pause_tutorial")}</p>
+            </details>
+            <details class="cg-cafe-details" open>
+                <summary>${t("feedback_title")}</summary>
+                <p>${t("print_pause_tips")}</p>
+            </details>
+            <div class="cg-cafe-end-actions">
+                <button class="cg-button cg-button-primary" type="button" id="print-resume-button">${t("dispatch_resume")}</button>
+                <button class="cg-button cg-button-secondary" type="button" id="print-restart-overlay-button">${t("dispatch_play_again")}</button>
+            </div>
+        `;
+        document.getElementById("print-resume-button")?.addEventListener("click", resumePrint);
+        document.getElementById("print-restart-overlay-button")?.addEventListener("click", () => {
+            resumePrint();
+            startPrintRound();
+        });
+    }
+
+    function resumePrint() {
+        printState.paused = false;
+        ui.printOverlay?.classList.remove("is-visible");
+        renderPrintPauseState();
+        renderPrintStudio();
+    }
+
+    function finishCafeRound() {
+        cafeState.running = false;
+        cafeState.ended = true;
+        if (cafeState.tickHandle) {
+            clearInterval(cafeState.tickHandle);
+            cafeState.tickHandle = null;
+        }
+        tasks.modelClear = cafeState.completed >= 6;
+        updateMissionProgress();
+        ui.cafeOverlay.classList.add("is-visible");
+        ui.cafeOverlayCard.innerHTML = `
+            <h3>${t("dispatch_end_title")}</h3>
+            <div class="cg-cafe-end-grid">
+                <article class="cg-cafe-end-pill">
+                    <span>${t("dispatch_end_score")}</span>
+                    <strong>${cafeState.score}</strong>
+                </article>
+                <article class="cg-cafe-end-pill">
+                    <span>${t("dispatch_end_cleared")}</span>
+                    <strong>${cafeState.completed}</strong>
+                </article>
+                <article class="cg-cafe-end-pill">
+                    <span>${t("dispatch_end_missed")}</span>
+                    <strong>${cafeState.missed}</strong>
+                </article>
+            </div>
+            <p class="cg-cafe-scene-help">${cafeState.completed >= 6 ? t("feedback_correct") : t("feedback_retry")}</p>
+            <div class="cg-cafe-end-actions">
+                <button class="cg-button cg-button-primary" type="button" id="cafe-play-again">${t("dispatch_play_again")}</button>
+                <button class="cg-button cg-button-secondary" type="button" id="cafe-back-world">${t("dispatch_back_world")}</button>
+            </div>
+        `;
+        document.getElementById("cafe-play-again").addEventListener("click", startCafeRound);
+        document.getElementById("cafe-back-world").addEventListener("click", closeModal);
+    }
+
+    function fillCafeSeats() {
+        for (let slot = 0; slot < lanePercents.length; slot += 1) {
+            if (!cafeState.guests.some((guest) => guest.slot === slot)) {
+                const template = cafeTemplates[Math.floor(Math.random() * cafeTemplates.length)];
+                cafeState.guests.push({
+                    id: cafeState.nextGuestId++,
+                    slot,
+                    timeLeft: 15,
+                    maxTime: 15,
+                    scenarioType: template.scenarioType,
+                    label: template.label,
+                    hint: template.hint,
+                    correctModel: template.correctModel,
+                    feedback: template.feedback
+                });
+            }
+        }
+    }
+
+    function setCafePrompt(text) {
+        cafeState.prompt = text;
+        if (ui.cafePrompt) {
+            ui.cafePrompt.textContent = text;
+        }
+    }
+
+    function startCafeRound() {
+        if (cafeState.tickHandle) {
+            clearInterval(cafeState.tickHandle);
+        }
+        cafeState.running = true;
+        cafeState.paused = false;
+        cafeState.ended = false;
+        cafeState.timeLeft = cafeState.duration;
+        cafeState.score = 0;
+        cafeState.streak = 0;
+        cafeState.completed = 0;
+        cafeState.missed = 0;
+        cafeState.guests = [];
+        cafeState.nextGuestId = 1;
+        cafeState.selectedGuestId = null;
+        cafeState.selectedModel = null;
+        cafeState.playerLane = 1;
+        fillCafeSeats();
+        setCafePrompt(t("dispatch_scene_prompt"));
+        ui.cafeOverlay.classList.remove("is-visible");
+        renderCafeScene();
+        cafeState.tickHandle = setInterval(() => {
+            if (!cafeState.running || cafeState.paused) {
+                return;
+            }
+            cafeState.timeLeft = Math.max(0, cafeState.timeLeft - 0.2);
+            cafeState.guests.forEach((guest) => {
+                guest.timeLeft = Math.max(0, guest.timeLeft - 0.2);
             });
+            const expiredIds = cafeState.guests.filter((guest) => guest.timeLeft <= 0).map((guest) => guest.id);
+            if (expiredIds.length) {
+                cafeState.guests = cafeState.guests.filter((guest) => !expiredIds.includes(guest.id));
+                if (expiredIds.includes(cafeState.selectedGuestId)) {
+                    cafeState.selectedGuestId = null;
+                }
+                cafeState.missed += expiredIds.length;
+                cafeState.streak = 0;
+                updateGlobalScore(0, "reset", "status_retry");
+                playFeedbackTone(240);
+                fillCafeSeats();
+            }
+            if (cafeState.timeLeft <= 0 || cafeState.completed >= cafeState.target) {
+                finishCafeRound();
+            } else {
+                renderCafeScene();
+            }
+        }, 200);
+    }
+
+    function stopCafeRound() {
+        cafeState.running = false;
+        cafeState.paused = false;
+        if (cafeState.tickHandle) {
+            clearInterval(cafeState.tickHandle);
+            cafeState.tickHandle = null;
+        }
+        if (ui.cafeOverlay) {
+            ui.cafeOverlay.classList.remove("is-visible");
+        }
+    }
+
+    function selectCafeGuest(slot, force = false) {
+        const guest = cafeState.guests.find((item) => item.slot === slot);
+        if (!guest) {
+            return;
+        }
+        if (!force && slot !== cafeState.playerLane) {
+            setCafePrompt(getLang() === "zh" ? "先移动到这位客人面前，再按 E 或 Enter 接单。" : "Move to this guest first, then press E or Enter.");
+            return;
+        }
+        cafeState.playerLane = slot;
+        cafeState.selectedGuestId = guest.id;
+        setCafePrompt(getLang() === "zh" ? `已锁定 ${guest.label.zh}，现在点击正确的颜色模型。` : `Order locked: ${guest.label.en}. Now click the matching colour model.`);
+        renderCafeScene();
+    }
+
+    function chooseCafeModel(modelKey) {
+        if (!cafeState.running || cafeState.paused || cafeState.ended) {
+            return;
+        }
+        cafeState.selectedModel = modelKey;
+        const guest = cafeState.guests.find((item) => item.id === cafeState.selectedGuestId);
+        if (!guest) {
+            setCafePrompt(getLang() === "zh" ? "先锁定一位客人的订单，再选择颜色模型。" : "Lock a guest order first, then choose a colour model.");
+            renderCafeScene();
+            return;
+        }
+        if (guest.correctModel === modelKey) {
+            cafeState.score += 12 + Math.min(cafeState.streak, 4) * 2;
+            cafeState.streak += 1;
+            cafeState.completed += 1;
+            tasks.modelVisit = true;
+            if (cafeState.completed >= 6) {
+                tasks.modelClear = true;
+            }
+            updateMissionProgress();
+            updateGlobalScore(8, "up", "status_correct");
+            playFeedbackTone(620);
+            setCafePrompt(guest.feedback[getLang()]);
+            cafeState.guests = cafeState.guests.filter((item) => item.id !== guest.id);
+            cafeState.selectedGuestId = null;
+            fillCafeSeats();
+        } else {
+            cafeState.score = Math.max(0, cafeState.score - 3);
+            cafeState.streak = 0;
+            updateGlobalScore(-1, "reset", "status_retry");
+            playFeedbackTone(260);
+            setCafePrompt(getLang() === "zh" ? `${modelKey} 不适合 ${guest.label.zh}。再试一次。` : `${modelKey} does not fit ${guest.label.en}. Try again.`);
+        }
+        renderCafeScene();
+    }
+
+    function moveCafeLane(direction) {
+        if (!cafeState.running || cafeState.paused || cafeState.ended) {
+            return;
+        }
+        cafeState.playerLane = clamp(cafeState.playerLane + direction, 0, lanePercents.length - 1);
+        renderCafeScene();
+    }
+
+    function renderCafeAnswers() {
+        ui.cafeAnswerButtons.innerHTML = "";
+        modelTokens.forEach((token) => {
+            const button = document.createElement("button");
+            button.type = "button";
+            button.className = `cg-cafe-answer-button is-${token.accent}${cafeState.selectedModel === token.key ? " is-selected" : ""}`;
+            button.dataset.model = token.key;
+            button.innerHTML = `<span class="cg-cafe-answer-chip">${token.key}</span>`;
+            button.addEventListener("click", () => chooseCafeModel(token.key));
+            ui.cafeAnswerButtons.appendChild(button);
+        });
+    }
+
+    function renderCafeGuests() {
+        ui.cafeSeatGrid.innerHTML = "";
+        const guests = [...cafeState.guests].sort((a, b) => a.slot - b.slot);
+        guests.forEach((guest) => {
+            const seat = document.createElement("button");
+            const selected = guest.id === cafeState.selectedGuestId;
+            seat.type = "button";
+            seat.className = `cg-cafe-seat${selected ? " is-selected" : ""}${guest.slot === cafeState.playerLane ? " is-near" : ""}`;
+            seat.dataset.guestSlot = String(guest.slot);
+            seat.style.left = `${lanePercents[guest.slot]}%`;
+            const timerWidth = `${(guest.timeLeft / guest.maxTime) * 100}%`;
+            seat.innerHTML = `
+                <div class="cg-cafe-seat-ui">
+                    <div class="cg-cafe-ticket">
+                        <span class="cg-cafe-seat-chip">${getCopy(guest.label)}</span>
+                        <p>${getCopy(guest.hint)}</p>
+                        <div class="cg-cafe-guest-timer">
+                            <span class="cg-cafe-guest-timer-fill" style="width:${timerWidth}"></span>
+                        </div>
+                    </div>
+                    <div class="cg-cafe-guest-avatar is-${guest.scenarioType}">
+                        <span class="cg-cafe-guest-head"></span>
+                        <span class="cg-cafe-guest-face"></span>
+                        <span class="cg-cafe-guest-body"></span>
+                    </div>
+                </div>
+            `;
+            seat.addEventListener("click", () => selectCafeGuest(guest.slot, true));
+            ui.cafeSeatGrid.appendChild(seat);
+        });
+    }
+
+    function renderCafeScene() {
+        if (!ui.cafeModal) {
+            return;
+        }
+        ui.cafeTime.textContent = `${Math.ceil(cafeState.timeLeft)}s`;
+        ui.cafeCleared.textContent = `${cafeState.completed} / ${cafeState.target}`;
+        ui.cafeScore.textContent = String(cafeState.score);
+        ui.cafeChain.textContent = String(cafeState.streak);
+        ui.cafeRating.textContent = safeRating(cafeState.score, "cafe");
+        ui.cafeMissed.textContent = String(cafeState.missed);
+        ui.cafeCurrentGuest.textContent = cafeState.selectedGuestId
+            ? getCopy(cafeState.guests.find((guest) => guest.id === cafeState.selectedGuestId)?.label || { en: t("dispatch_no_guest"), zh: t("dispatch_no_guest") })
+            : t("dispatch_no_guest");
+        ui.cafeCurrentModel.textContent = cafeState.selectedModel || t("dispatch_no_model");
+        ui.cafePauseButton.textContent = cafeState.paused ? t("dispatch_resume") : t("dispatch_pause");
+        ui.cafePlayer.style.left = `${lanePercents[cafeState.playerLane]}%`;
+        renderCafeAnswers();
+        renderCafeGuests();
+        if (!cafeState.prompt) {
+            setCafePrompt(t("dispatch_scene_prompt"));
+        } else {
+            ui.cafePrompt.textContent = cafeState.prompt;
+        }
+    }
+
+    function resetPrintDesk() {
+        printState.selectedParts = { medium: null, model: null, output: null };
+        printState.currentStep = "medium";
+    }
+
+    function shufflePrintOrders() {
+        const deck = [...printOrders];
+        for (let i = deck.length - 1; i > 0; i -= 1) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [deck[i], deck[j]] = [deck[j], deck[i]];
+        }
+        return deck;
+    }
+
+    function getPrintLabel(category, key) {
+        const list = printCatalog[category] || [];
+        const item = list.find((entry) => entry.key === key);
+        return item ? getCopy(item.label) : key;
+    }
+
+    function getPrintHintSteps(order) {
+        const mediumHints = {
+            paper: {
+                en: "This job lives on a physical sheet, so start from a paper-based medium.",
+                zh: "这是实体纸张上的任务，第一步应该先想到纸质介质。"
+            },
+            screen: {
+                en: "The final product glows on a display, so the medium should be a screen panel.",
+                zh: "成品需要在屏幕上发光显示，所以介质应该是屏幕。"
+            },
+            palette: {
+                en: "This brief is about visual colour tuning, so begin with a palette-style medium.",
+                zh: "这个任务强调视觉调色，因此介质应从调色卡一类开始。"
+            },
+            signal: {
+                en: "This order travels inside a video signal, so the source should be a signal feed.",
+                zh: "这个任务要在视频信号里传输，所以介质应是信号源。"
+            }
+        };
+        const modelHints = {
+            RGB: {
+                en: "Glowing displays favour RGB because the colours are emitted as light.",
+                zh: "会发光的显示内容更适合 RGB，因为它基于光的发射。"
+            },
+            CMYK: {
+                en: "Printed ink on paper points toward CMYK rather than screen colour logic.",
+                zh: "纸张上的油墨印刷更指向 CMYK，而不是屏幕色彩逻辑。"
+            },
+            HSV: {
+                en: "Human-friendly colour picking and adjustment usually points toward HSV.",
+                zh: "如果任务强调人类可读的调色与调整，通常会指向 HSV。"
+            },
+            YCbCr: {
+                en: "Video transport often separates brightness from colour difference, which points to YCbCr.",
+                zh: "视频传输常会区分亮度与色差，因此会指向 YCbCr。"
+            }
+        };
+        const outputHints = {
+            ink: {
+                en: "This result should be physically printed, so the final output should be ink-based.",
+                zh: "这个结果要真正印出来，所以最终输出应是油墨输出。"
+            },
+            display: {
+                en: "The result is meant to be shown on a screen, so it should end in display output.",
+                zh: "结果要在屏幕上展示，所以最终输出应是显示输出。"
+            },
+            preview: {
+                en: "This brief is for previewing and adjusting choices, so a preview card fits best.",
+                zh: "这个任务是为了预览与调整方案，所以最合适的是预览卡。"
+            },
+            encode: {
+                en: "This asset is delivered through a signal chain, so an encoded package fits best.",
+                zh: "这个素材要通过信号链交付，所以最合适的是编码包。"
+            }
+        };
+
+        return [
+            mediumHints[order.medium] || order.hint,
+            modelHints[order.model] || order.hint,
+            outputHints[order.output] || order.hint,
+            {
+                en: `Full answer: ${getPrintLabel("medium", order.medium)} -> ${getPrintLabel("model", order.model)} -> ${getPrintLabel("output", order.output)}`,
+                zh: `完整答案：${getPrintLabel("medium", order.medium)} -> ${getPrintLabel("model", order.model)} -> ${getPrintLabel("output", order.output)}`
+            }
+        ];
+    }
+
+    function getPrintHintFeedback(hintUses, success) {
+        if (success) {
+            if (hintUses === 0) {
+                return getLang() === "zh"
+                    ? "零提示完成，客人觉得你判断非常稳。"
+                    : "No hints used. The guest is impressed by your confident judgement.";
+            }
+            if (hintUses === 1) {
+                return getLang() === "zh"
+                    ? "你只看了一层提示，客人觉得你已经很接近独立完成。"
+                    : "Only one hint used. The guest feels you were almost fully independent.";
+            }
+            return getLang() === "zh"
+                ? `你用了 ${hintUses} 次提示完成这单，客人认可结果，但也提醒你下次更独立一些。`
+                : `You used ${hintUses} hints to finish this order. The guest approves the result, but hopes for more independence next time.`;
+        }
+        if (hintUses === 0) {
+            return getLang() === "zh"
+                ? "这次没有提示也没对上，客人建议你重新梳理流程。"
+                : "No hints used and the build still missed. The guest suggests rechecking the workflow.";
+        }
+        return getLang() === "zh"
+            ? `这单已经用了 ${hintUses} 次提示，客人还是摇头，说明链路还没有真正理顺。`
+            : `The guest still shook their head after ${hintUses} hints. The workflow chain is not solved yet.`;
+    }
+
+    function buildPrintOrder() {
+        if (!printState.orderDeck.length || printState.orderCursor >= printState.orderDeck.length) {
+            printState.orderDeck = shufflePrintOrders();
+            printState.orderCursor = 0;
+        }
+        const template = printState.orderDeck[printState.orderCursor];
+        printState.orderCursor += 1;
+        printState.activeOrder = {
+            ...template,
+            selectedParts: { medium: null, model: null, output: null }
+        };
+        resetPrintDesk();
+        printState.hintVisible = false;
+        printState.hintLevel = 0;
+        printState.currentOrderHintUses = 0;
+        printState.message = t("print_scene_prompt");
+        if (!printState.feedbackText) {
+            printState.feedbackState = "ready";
+            printState.feedbackText = getLang() === "zh"
+                ? "瀹㈠杩樺湪绛変綘鎶婃垚鍝佸仛鍑烘潵銆?"
+                : "The guest is waiting to see the finished product.";
+            printState.feedbackArt = "";
+        }
+    }
+
+    function startPrintRound() {
+        if (printState.tickHandle) {
+            clearInterval(printState.tickHandle);
+        }
+        printState.running = true;
+        printState.paused = false;
+        printState.ended = false;
+        printState.timeLeft = printState.duration;
+        printState.score = 0;
+        printState.streak = 0;
+        printState.completedOrders = 0;
+        printState.failedOrders = 0;
+        printState.hintUsesRound = 0;
+        printState.orderDeck = shufflePrintOrders();
+        printState.orderCursor = 0;
+        buildPrintOrder();
+        ui.printOverlay?.classList.remove("is-visible");
+        renderPrintPauseState();
+        renderPrintStudio();
+        printState.tickHandle = setInterval(() => {
+            if (!printState.running || printState.paused) {
+                return;
+            }
+            printState.timeLeft = Math.max(0, printState.timeLeft - 1);
+            if (printState.timeLeft <= 0 || printState.completedOrders >= printState.targetOrders) {
+                finishPrintRound();
+            } else {
+                renderPrintStudio();
+            }
+        }, 1000);
+    }
+
+    function stopPrintRound() {
+        printState.running = false;
+        printState.paused = false;
+        if (printState.tickHandle) {
+            clearInterval(printState.tickHandle);
+            printState.tickHandle = null;
+        }
+        hidePrintRewardToast();
+        renderPrintPauseState();
+    }
+
+    function finishPrintRound() {
+        stopPrintRound();
+        printState.ended = true;
+        if (printState.completedOrders >= printClearGoal) {
+            tasks.printClear = true;
+            updateMissionProgress();
+        }
+        printState.message = getLang() === "zh"
+            ? `本轮完成 ${printState.completedOrders} 张海报，失败 ${printState.failedOrders} 次。`
+            : `Round over. Printed ${printState.completedOrders} posters and missed ${printState.failedOrders} jobs.`;
+        renderPrintStudio();
+    }
+
+    function choosePrintPart(category, key) {
+        if (!printState.running || printState.paused || printState.ended) {
+            return;
+        }
+        if (category !== printState.currentStep) {
+            printState.message = getLang() === "zh"
+                ? "先完成当前高亮步骤，再继续下一步。"
+                : "Finish the highlighted step first.";
+            renderPrintStudio();
+            return;
+        }
+        printState.selectedParts[category] = key;
+        if (category === "medium") {
+            printState.currentStep = "model";
+        } else if (category === "model") {
+            printState.currentStep = "output";
+        } else {
+            printState.currentStep = "ready";
+        }
+        printState.message = getLang() === "zh"
+            ? "很好，继续完成下一步拼装。"
+            : "Good. Move on to the next press step.";
+        renderPrintStudio();
+    }
+
+    function beginPrintEdit(category) {
+        if (!printState.running || printState.paused || printState.ended) {
+            return;
+        }
+        if (category === "medium") {
+            printState.selectedParts.medium = null;
+            printState.selectedParts.model = null;
+            printState.selectedParts.output = null;
+            printState.currentStep = "medium";
+        } else if (category === "model") {
+            printState.selectedParts.model = null;
+            printState.selectedParts.output = null;
+            printState.currentStep = "model";
+        } else {
+            printState.selectedParts.output = null;
+            printState.currentStep = "output";
+        }
+        printState.message = getLang() === "zh"
+            ? "已回到这一步，你可以重新选择。"
+            : "Back to this step. You can choose again.";
+        renderPrintStudio();
+    }
+
+    function togglePrintHint() {
+        if (!printState.running || printState.ended) {
+            return;
+        }
+        const order = printState.activeOrder || printOrders[0];
+        const steps = getPrintHintSteps(order);
+        printState.hintVisible = true;
+        if (printState.hintLevel < steps.length) {
+            printState.hintLevel += 1;
+            printState.hintUsesRound += 1;
+            printState.currentOrderHintUses += 1;
+        } else {
+            printState.hintLevel = 0;
+            printState.hintVisible = false;
+        }
+        renderPrintStudio();
+    }
+
+    function submitPrintOrder() {
+        if (!printState.running || printState.paused || printState.ended || printState.currentStep !== "ready") {
+            return;
+        }
+        const order = printState.activeOrder;
+        const success = order.medium === printState.selectedParts.medium
+            && order.model === printState.selectedParts.model
+            && order.output === printState.selectedParts.output;
+
+        if (success) {
+            printState.score += 16 + Math.min(printState.streak, 4) * 3;
+            printState.streak += 1;
+            printState.completedOrders += 1;
+            if (printState.completedOrders >= printClearGoal) {
+                tasks.printClear = true;
+                updateMissionProgress();
+            }
+            updateGlobalScore(10, "up", "status_correct");
+            playFeedbackTone(640);
+            printState.message = order.feedback[getLang()];
+            printState.feedbackState = "correct";
+            printState.feedbackText = getLang() === "zh"
+                ? `客人很满意：${order.feedback.zh}`
+                : `Guest approved it: ${order.feedback.en}`;
+            printState.feedbackText = getPrintHintFeedback(printState.currentOrderHintUses, true);
+            printState.feedbackArt = order.art;
+            showPrintRewardToast("correct", order, printState.feedbackText);
+            buildPrintOrder();
+        } else {
+            printState.failedOrders += 1;
+            printState.streak = 0;
+            updateGlobalScore(-1, "reset", "status_retry");
+            playFeedbackTone(260);
+            printState.message = getLang() === "zh"
+                ? "这张海报的拼装不对，检查介质、模型和输出方式。"
+                : "That build does not fit the poster brief. Recheck medium, model, and output.";
+            printState.feedbackState = "wrong";
+            printState.feedbackText = getLang() === "zh"
+                ? "客人摇了摇头，这个成品还不能交付。"
+                : "The guest shook their head. This product is not ready yet.";
+            printState.feedbackText = getPrintHintFeedback(printState.currentOrderHintUses, false);
+            printState.feedbackArt = "";
+            showPrintRewardToast("wrong", order, printState.feedbackText);
+            resetPrintDesk();
+        }
+        renderPrintStudio();
+    }
+
+    function renderPrintRack(category, node, items) {
+        node.innerHTML = "";
+        items.forEach((item) => {
+            const selected = printState.selectedParts[category] === item.key;
+            const button = document.createElement("button");
+            button.type = "button";
+            button.className = `cg-print-part is-${item.accent}${selected ? " is-selected" : ""}`;
+            button.innerHTML = `
+                <span class="cg-print-part-chip">${getCopy(item.label)}</span>
+            `;
+            button.addEventListener("click", () => choosePrintPart(category, item.key));
+            node.appendChild(button);
+        });
+    }
+
+    function renderPrintStudio() {
+        if (!ui.printModal) {
+            return;
+        }
+        const order = printState.activeOrder || printOrders[0];
+        ui.printTime.textContent = `${Math.ceil(printState.timeLeft)}s`;
+        ui.printProgress.textContent = `${printState.completedOrders} / ${printState.targetOrders}`;
+        ui.printScore.textContent = String(printState.score);
+        ui.printFailed.textContent = String(printState.failedOrders);
+        renderPrintPauseState();
+        ui.printOrderTitle.textContent = getCopy(order.title);
+        ui.printOrderClue.textContent = getCopy(order.clue);
+        if (ui.printOrderHint) {
+            ui.printOrderHint.hidden = !printState.hintVisible;
+            ui.printOrderHint.textContent = printState.hintVisible ? getCopy(order.hint || order.clue) : "";
+        }
+        if (ui.printHintButton) {
+            ui.printHintButton.textContent = printState.hintVisible ? t("print_hint_hide") : t("print_hint");
+        }
+        if (ui.printFeedbackAvatar) {
+            ui.printFeedbackAvatar.dataset.state = printState.feedbackState;
+        }
+        if (ui.printFeedbackStatus) {
+            ui.printFeedbackStatus.textContent = printState.feedbackState === "correct"
+                ? t("feedback_correct")
+                : printState.feedbackState === "wrong"
+                    ? t("feedback_retry")
+                    : t("feedback_ready");
+        }
+        if (ui.printFeedbackText) {
+            ui.printFeedbackText.textContent = printState.feedbackText;
+        }
+        if (ui.printFeedbackArt) {
+            const showArt = printState.feedbackState === "correct" && printState.feedbackArt;
+            ui.printFeedbackArt.src = showArt ? printState.feedbackArt : "";
+            ui.printFeedbackArt.style.display = showArt ? "block" : "none";
+        }
+        ui.printMachineState.textContent = printState.message;
+        ui.printStepTitle.textContent = printState.currentStep === "ready"
+            ? (getLang() === "zh" ? "准备印刷" : "Ready to Press")
+            : printState.currentStep === "medium"
+                ? t("print_medium")
+                : printState.currentStep === "model"
+                    ? t("print_model")
+                    : t("print_output");
+
+        renderPrintRack("medium", ui.printMediumGrid, printCatalog.medium);
+        renderPrintRack("model", ui.printModelGrid, printCatalog.model);
+        renderPrintRack("output", ui.printOutputGrid, printCatalog.output);
+
+        ui.printSlotMediumText.textContent = printState.selectedParts.medium || "-";
+        ui.printSlotModelText.textContent = printState.selectedParts.model || "-";
+        ui.printSlotOutputText.textContent = printState.selectedParts.output || "-";
+
+        ui.printSlotMedium.classList.toggle("is-next", printState.currentStep === "medium");
+        ui.printSlotModel.classList.toggle("is-next", printState.currentStep === "model");
+        ui.printSlotOutput.classList.toggle("is-next", printState.currentStep === "output");
+        ui.printSlotMedium.classList.toggle("is-filled", Boolean(printState.selectedParts.medium));
+        ui.printSlotModel.classList.toggle("is-filled", Boolean(printState.selectedParts.model));
+        ui.printSlotOutput.classList.toggle("is-filled", Boolean(printState.selectedParts.output));
+
+        ui.printPreview.dataset.model = (printState.selectedParts.model || "").toLowerCase();
+        ui.printPreviewBadge.textContent = printState.selectedParts.model || "—";
+        ui.printLever.disabled = printState.currentStep !== "ready" || printState.ended;
+    }
+
+    function renderPrintStudio() {
+        if (!ui.printModal) {
+            return;
+        }
+        const order = printState.activeOrder || printOrders[0];
+        const stepMeta = {
+            medium: {
+                tag: getLang() === "zh" ? "步骤 1" : "Step 1",
+                title: t("print_medium"),
+                copy: getLang() === "zh" ? "先选择这张订单的介质。" : "Choose the medium for this order first."
+            },
+            model: {
+                tag: getLang() === "zh" ? "步骤 2" : "Step 2",
+                title: t("print_model"),
+                copy: getLang() === "zh" ? "现在选择真正驱动这个任务的颜色模型。" : "Now choose the colour model that drives this task."
+            },
+            output: {
+                tag: getLang() === "zh" ? "步骤 3" : "Step 3",
+                title: t("print_output"),
+                copy: getLang() === "zh" ? "最后决定它的输出方式。" : "Finish by choosing the output method."
+            },
+            ready: {
+                tag: getLang() === "zh" ? "完成" : "Ready",
+                title: getLang() === "zh" ? "准备压印" : "Ready to Press",
+                copy: getLang() === "zh" ? "三步都完成了，现在拉动印刷杆提交。" : "All three steps are done. Pull the press lever to submit."
+            }
+        };
+        const currentStepMeta = stepMeta[printState.currentStep] || stepMeta.medium;
+
+        ui.printTime.textContent = `${Math.ceil(printState.timeLeft)}s`;
+        ui.printProgress.textContent = `${printState.completedOrders} / ${printState.targetOrders}`;
+        ui.printScore.textContent = String(printState.score);
+        ui.printFailed.textContent = String(printState.failedOrders);
+        ui.printOrderTitle.textContent = getCopy(order.title);
+        ui.printOrderClue.textContent = getCopy(order.clue);
+        if (ui.printHintCount) {
+            ui.printHintCount.textContent = String(printState.hintUsesRound);
+        }
+        if (ui.printOrderHint) {
+            const hintSteps = getPrintHintSteps(order);
+            const visibleSteps = hintSteps.slice(0, printState.hintLevel);
+            ui.printOrderHint.hidden = visibleSteps.length === 0;
+            ui.printOrderHint.innerHTML = visibleSteps.map((step, index) => {
+                const arrow = index < visibleSteps.length - 1
+                    ? `<span class="cg-print-hint-arrow">→</span>`
+                    : "";
+                return `
+                    <div class="cg-print-hint-node${index === visibleSteps.length - 1 ? " is-current" : ""}">
+                        <span class="cg-print-hint-node-index">${index + 1}</span>
+                        <span class="cg-print-hint-node-copy">${getCopy(step)}</span>
+                    </div>
+                    ${arrow}
+                `;
+            }).join("");
+        }
+        if (ui.printHintButton) {
+            const totalHintSteps = getPrintHintSteps(order).length;
+            if (printState.hintLevel === 0) {
+                ui.printHintButton.textContent = getLang() === "zh" ? "展开提示 1" : "Reveal Hint 1";
+            } else if (printState.hintLevel < totalHintSteps) {
+                ui.printHintButton.textContent = getLang() === "zh"
+                    ? `下一层提示 ${printState.hintLevel + 1}`
+                    : `Next Hint ${printState.hintLevel + 1}`;
+            } else {
+                ui.printHintButton.textContent = getLang() === "zh" ? "重置提示链" : "Reset Hint Chain";
+            }
+        }
+        ui.printMachineState.textContent = printState.message;
+        if (ui.printStepTag) ui.printStepTag.textContent = currentStepMeta.tag;
+        if (ui.printStepTitle) ui.printStepTitle.textContent = currentStepMeta.title;
+        if (ui.printStepCopy) ui.printStepCopy.textContent = currentStepMeta.copy;
+        if (ui.printMachineTitle) ui.printMachineTitle.textContent = currentStepMeta.title;
+
+        renderPrintRack("medium", ui.printMediumGrid, printCatalog.medium);
+        renderPrintRack("model", ui.printModelGrid, printCatalog.model);
+        renderPrintRack("output", ui.printOutputGrid, printCatalog.output);
+
+        if (ui.printRackMedium) ui.printRackMedium.classList.toggle("is-active-rack", printState.currentStep === "medium");
+        if (ui.printRackModel) ui.printRackModel.classList.toggle("is-active-rack", printState.currentStep === "model");
+        if (ui.printRackOutput) ui.printRackOutput.classList.toggle("is-active-rack", printState.currentStep === "output");
+
+        ui.printSlotMediumText.textContent = printState.selectedParts.medium || "-";
+        ui.printSlotModelText.textContent = printState.selectedParts.model || "-";
+        ui.printSlotOutputText.textContent = printState.selectedParts.output || "-";
+
+        ui.printSlotMedium.classList.toggle("is-next", printState.currentStep === "medium");
+        ui.printSlotModel.classList.toggle("is-next", printState.currentStep === "model");
+        ui.printSlotOutput.classList.toggle("is-next", printState.currentStep === "output");
+        ui.printSlotMedium.classList.toggle("is-filled", Boolean(printState.selectedParts.medium));
+        ui.printSlotModel.classList.toggle("is-filled", Boolean(printState.selectedParts.model));
+        ui.printSlotOutput.classList.toggle("is-filled", Boolean(printState.selectedParts.output));
+
+        ui.printPreview.dataset.model = (printState.selectedParts.model || "").toLowerCase();
+        ui.printPreviewBadge.textContent = printState.selectedParts.model || "—";
+        ui.printLever.disabled = printState.currentStep !== "ready" || printState.ended;
+    }
+
+    function bindUpgradeEvents() {
+        const printStation = document.getElementById("station-print");
+        if (printStation) {
+            printStation.addEventListener("click", () => interactWithStation("print"));
         }
 
-        elements.soundToggle.addEventListener("click", () => {
-            renderPreferenceButtons();
-            syncAudioState();
+        document.addEventListener("pointerdown", unlockAudio, { passive: true });
+        document.addEventListener("keydown", unlockAudio);
+        document.addEventListener("click", (event) => {
+            const target = event.target instanceof Element ? event.target.closest("button, a, [data-station]") : null;
+            if (target) {
+                playUiClickSound();
+            }
+        }, true);
+
+        document.querySelectorAll("#modal-model [data-close-modal], #modal-print [data-close-modal], #modal-hue [data-close-modal]").forEach((button) => {
+            button.addEventListener("click", closeModal);
         });
 
-        if (elements.dispatchPauseToggle && !elements.dispatchPauseToggle.dataset.bound) {
-            elements.dispatchPauseToggle.dataset.bound = "true";
-            elements.dispatchPauseToggle.addEventListener("click", () => {
-                if (!dispatchState.running) {
-                    return;
-                }
-                setDispatchOverlayState(!dispatchState.paused, false);
-                renderDispatchGame();
-            });
-        }
+        ui.cafePauseButton.addEventListener("click", () => {
+            if (cafeState.paused) {
+                resumeCafe();
+            } else {
+                pauseCafe();
+            }
+        });
 
-        if (elements.dispatchResumeButton && !elements.dispatchResumeButton.dataset.bound) {
-            elements.dispatchResumeButton.dataset.bound = "true";
-            elements.dispatchResumeButton.addEventListener("click", () => {
-                setDispatchOverlayState(false, false);
-                renderDispatchGame();
-            });
-        }
+        ui.huePauseButton?.addEventListener("click", () => {
+            if (workbenchState.paused) {
+                resumeHue();
+            } else {
+                pauseHue();
+            }
+        });
+        elements.restartHue?.addEventListener("click", () => {
+            workbenchState.paused = false;
+            ui.hueOverlay?.classList.remove("is-visible");
+            renderHuePauseState();
+        });
 
-        if (elements.dispatchRestartOverlay && !elements.dispatchRestartOverlay.dataset.bound) {
-            elements.dispatchRestartOverlay.dataset.bound = "true";
-            elements.dispatchRestartOverlay.addEventListener("click", () => {
-                startDispatchRound();
-            });
-        }
-
-        if (elements.dispatchCloseOverlay && !elements.dispatchCloseOverlay.dataset.bound) {
-            elements.dispatchCloseOverlay.dataset.bound = "true";
-            elements.dispatchCloseOverlay.addEventListener("click", () => {
-                closeModal();
+        ui.printPauseButton?.addEventListener("click", () => {
+            if (printState.paused) {
+                resumePrint();
+            } else {
+                pausePrint();
+            }
+        });
+        ui.printHintButton?.addEventListener("click", togglePrintHint);
+        ui.printOrderHint?.addEventListener("click", () => {
+            if (printState.hintVisible) {
+                togglePrintHint();
+            }
+        });
+        ui.printRestart.addEventListener("click", startPrintRound);
+        ui.printClear.addEventListener("click", () => {
+            resetPrintDesk();
+            printState.message = t("print_scene_prompt");
+            renderPrintStudio();
+        });
+        ui.printLever.addEventListener("click", submitPrintOrder);
+        ui.printSlotMedium.addEventListener("click", () => beginPrintEdit("medium"));
+        ui.printSlotModel.addEventListener("click", () => beginPrintEdit("model"));
+        ui.printSlotOutput.addEventListener("click", () => beginPrintEdit("output"));
+        if (elements.soundToggle) {
+            elements.soundToggle.addEventListener("click", () => {
+                window.setTimeout(syncAudioState, 0);
             });
         }
 
         document.addEventListener("keydown", (event) => {
-            if (worldState.openModalKey !== "model") {
-                return;
-            }
             const key = event.key.toLowerCase();
-            if (key === "p") {
-                event.preventDefault();
-                setDispatchOverlayState(!dispatchState.paused, false);
-                renderDispatchGame();
+            if (key !== "p") {
                 return;
             }
-            if (key === "enter" || key === "e" || key === " ") {
+            if (worldState.openModalKey === "hue") {
                 event.preventDefault();
-                event.stopPropagation();
-                handleDispatchSceneInteract();
+                event.stopImmediatePropagation();
+                if (workbenchState.paused) {
+                    resumeHue();
+                } else {
+                    pauseHue();
+                }
+            } else if (worldState.openModalKey === "print") {
+                event.preventDefault();
+                event.stopImmediatePropagation();
+                if (printState.paused) {
+                    resumePrint();
+                } else {
+                    pausePrint();
+                }
             }
         }, true);
+
+        document.addEventListener("keydown", (event) => {
+            const key = event.key.toLowerCase();
+            if (worldState.openModalKey === "model") {
+                if (key === "arrowleft" || key === "a") {
+                    event.preventDefault();
+                    moveCafeLane(-1);
+                } else if (key === "arrowright" || key === "d") {
+                    event.preventDefault();
+                    moveCafeLane(1);
+                } else if (key === "e" || key === "enter") {
+                    event.preventDefault();
+                    selectCafeGuest(cafeState.playerLane);
+                } else if (key === "p") {
+                    event.preventDefault();
+                    if (cafeState.paused) {
+                        resumeCafe();
+                    } else {
+                        pauseCafe();
+                    }
+                }
+            } else if (worldState.openModalKey === "print" && key === "p") {
+                event.preventDefault();
+                printState.paused = !printState.paused;
+                printState.message = printState.paused
+                    ? (getLang() === "zh" ? "Poster Press 已暂停。" : "Poster Press paused.")
+                    : t("print_scene_prompt");
+                renderPrintStudio();
+            }
+        });
     }
 
-    injectGatePolicyPanel();
-    installCafeScene();
-    fixStaticNodes();
-    bindPreferenceEvents();
-    bindGlobalAudioInteractions();
-    attachUpgradeEvents();
+    completedTaskCount = function upgradedCompletedTaskCount() {
+        return Object.values(tasks).filter(Boolean).length;
+    };
+
+    updateMissionProgress = function upgradedMissionProgress() {
+        updateProgressBar(elements.missionProgressText, elements.missionProgressFill, completedTaskCount(), 5);
+        elements.taskModelVisit.classList.toggle("is-done", tasks.modelVisit);
+        elements.taskModelClear.classList.toggle("is-done", tasks.modelClear);
+        elements.taskHueClear.classList.toggle("is-done", tasks.hueClear);
+        if (elements.taskPrintClear) {
+            elements.taskPrintClear.classList.toggle("is-done", tasks.printClear);
+        }
+        elements.taskGateVisit.classList.toggle("is-done", tasks.gateVisit);
+    };
+
+    closeModal = function upgradedCloseModal() {
+        baseStopDispatchRound();
+        baseStopWorkbenchRound();
+        stopCafeRound();
+        stopPrintRound();
+        workbenchState.paused = false;
+        hideUpgradeOverlays();
+        worldState.openModalKey = null;
+        document.querySelectorAll(".cg-modal").forEach((modal) => {
+            modal.classList.remove("is-open");
+            modal.setAttribute("aria-hidden", "true");
+        });
+        document.body.style.overflow = "";
+        checkNearbyStation();
+    };
+
+    openModal = function upgradedOpenModal(key) {
+        closeModal();
+        worldState.activeInfoKey = null;
+        worldState.questPanelVisible = false;
+        renderWorldPanels();
+        worldState.activeStationKey = null;
+        worldState.openModalKey = key;
+        const modalMap = {
+            model: elements.modalModel,
+            hue: elements.modalHue,
+            gate: elements.modalGate,
+            print: elements.modalPrint
+        };
+        const modal = modalMap[key];
+        if (!modal) {
+            return;
+        }
+        modal.classList.add("is-open");
+        modal.setAttribute("aria-hidden", "false");
+        document.body.style.overflow = "hidden";
+        if (key === "model") {
+            startCafeRound();
+        } else if (key === "hue") {
+            startWorkbenchRound();
+            workbenchState.paused = false;
+            ui.hueOverlay?.classList.remove("is-visible");
+            renderHuePauseState();
+        } else if (key === "print") {
+            startPrintRound();
+            resumePrint();
+        }
+    };
+
+    interactWithStation = function upgradedInteractWithStation(key) {
+        if (worldState.openModalKey === key) {
+            return;
+        }
+        if (key === "model") {
+            tasks.modelVisit = true;
+            updateMissionProgress();
+            openModal("model");
+            return;
+        }
+        if (key === "print") {
+            openModal("print");
+            return;
+        }
+        baseInteractWithStation(key);
+    };
+
+    applyStaticTranslations = function upgradedApplyStaticTranslations() {
+        baseApplyStaticTranslations();
+        document.querySelectorAll(".cg-modal-close").forEach((button) => {
+            button.textContent = "×";
+        });
+        const zhButton = document.querySelector('[data-language="zh"]');
+        if (zhButton) {
+            zhButton.textContent = "中文";
+        }
+        renderCafeScene();
+        renderHuePauseState();
+        renderPrintPauseState();
+        renderPrintStudio();
+        updateMissionProgress();
+    };
+
+    ensureDom();
+    bindUpgradeEvents();
     applyStaticTranslations();
     syncAudioState();
-    renderDispatchGame();
-    renderWorkbench();
-    renderWorldPanels();
-    updateStationPrompt();
-    requestAnimationFrame(tickDispatchScene);
 })();
