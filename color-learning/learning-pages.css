@@ -326,3 +326,305 @@ html, body {
     .learning-page .page-title { font-size: 2.2rem; }
     .learning-page .content-section { padding: 1.5rem; }
 }
+/* ========== 仅 Basics、Vision 的 h2 启用下拉样式 ========== */
+#content-color-basics h2,
+#content-color-basics-cn h2,
+#content-color-vision h2,
+#content-color-vision-cn h2 {
+  cursor: pointer;
+  padding: 12px 16px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  margin: 16px 0 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background 0.3s ease;
+  user-select: none;
+}
+
+#content-color-basics h2:hover,
+#content-color-basics-cn h2:hover,
+#content-color-vision h2:hover,
+#content-color-vision-cn h2:hover {
+  background: #eef1f5;
+}
+
+#content-color-basics h2::after,
+#content-color-basics-cn h2::after,
+#content-color-vision h2::after,
+#content-color-vision-cn h2::after {
+  content: "▼";
+  font-size: 14px;
+  transition: transform 0.3s ease;
+}
+
+#content-color-basics h2.collapsed::after,
+#content-color-basics-cn h2.collapsed::after,
+#content-color-vision h2.collapsed::after,
+#content-color-vision-cn h2.collapsed::after {
+  transform: rotate(-90deg);
+}
+
+/* ========== 色彩模型页面 仅 h3 启用下拉样式 ========== */
+#content-rgb h3,
+#content-yuv h3,
+#content-cmyk h3,
+#content-hsv h3,
+#content-rgb-cn h3,
+#content-yuv-cn h3,
+#content-cmyk-cn h3,
+#content-hsv-cn h3 {
+  cursor: pointer;
+  padding: 10px 14px;
+  background: #f8f9fa;
+  border-radius: 6px;
+  margin: 12px 0 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background 0.3s ease;
+  user-select: none;
+}
+
+#content-rgb h3:hover,
+#content-yuv h3:hover,
+#content-cmyk h3:hover,
+#content-hsv h3:hover,
+#content-rgb-cn h3:hover,
+#content-yuv-cn h3:hover,
+#content-cmyk-cn h3:hover,
+#content-hsv-cn h3:hover {
+  background: #eef1f5;
+}
+
+#content-rgb h3::after,
+#content-yuv h3::after,
+#content-cmyk h3::after,
+#content-hsv h3::after,
+#content-rgb-cn h3::after,
+#content-yuv-cn h3::after,
+#content-cmyk-cn h3::after,
+#content-hsv-cn h3::after {
+  content: "▼";
+  font-size: 13px;
+  transition: transform 0.3s ease;
+}
+
+#content-rgb h3.collapsed::after,
+#content-yuv h3.collapsed::after,
+#content-cmyk h3.collapsed::after,
+#content-hsv h3.collapsed::after,
+#content-rgb-cn h3.collapsed::after,
+#content-yuv-cn h3.collapsed::after,
+#content-cmyk-cn h3.collapsed::after,
+#content-hsv-cn h3.collapsed::after {
+  transform: rotate(-90deg);
+}
+
+/* 通用折叠容器 */
+.collapse-wrap {
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height 0.4s ease;
+}
+.collapse-wrap.open {
+  max-height: 3000px;
+}
+/* 彩虹下拉标题 深色版 1~7 */
+/* 彩虹下拉标题 适中透明度版 */
+.rainbow-item-1 { background-color: rgba(220, 0, 0, 0.3) !important; }
+.rainbow-item-2 { background-color: rgba(230, 140, 0, 0.3) !important; }
+.rainbow-item-3 { background-color: rgba(200, 200, 0, 0.3) !important; }
+.rainbow-item-4 { background-color: rgba(0, 180, 0, 0.3) !important; }
+.rainbow-item-5 { background-color: rgba(0, 180, 200, 0.3) !important; }
+.rainbow-item-6 { background-color: rgba(0, 0, 180, 0.3) !important; }
+.rainbow-item-7 { background-color: rgba(100, 0, 180, 0.3) !important; }
+
+/* hover 加深一点 */
+.rainbow-item-1:hover { background-color: rgba(220, 0, 0, 0.7) !important; }
+.rainbow-item-2:hover { background-color: rgba(230, 140, 0, 0.7) !important; }
+.rainbow-item-3:hover { background-color: rgba(200, 200, 0, 0.7) !important; }
+.rainbow-item-4:hover { background-color: rgba(0, 180, 0, 0.7) !important; }
+.rainbow-item-5:hover { background-color: rgba(0, 180, 200, 0.7) !important; }
+.rainbow-item-6:hover { background-color: rgba(0, 0, 180, 0.7) !important; }
+.rainbow-item-7:hover { background-color: rgba(100, 0, 180, 0.7) !important; }
+
+/* 折叠通用样式不变 */
+.collapse-wrap {
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height 0.4s ease;
+}
+.collapse-wrap.open {
+  max-height: 3000px;
+}
+/* ============================== */
+/* 热带海滨循环背景 — 修复动画 + 防明暗模式 */
+/* ============================== */
+.beach-header-bg-wrapper {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  top: 70px;
+  height: 520px;
+  z-index: 0;
+  pointer-events: none;
+  isolation: isolate;
+}
+
+.beach-header-bg {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.beach-header-bg::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 300%;
+  height: 100%;
+  background-image: url(https://picsum.photos/id/174/1920/520);
+  background-size: auto 100%;
+  background-repeat: repeat-x;
+  background-position: left bottom;
+  animation: beachScroll 25s linear infinite !important;
+  opacity: 0.25;
+  filter: none !important;
+  mix-blend-mode: normal !important;
+}
+
+/* 无限滚动动画 */
+@keyframes beachScroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-66.666%);
+  }
+}
+
+/* 确保标题 / 按钮 在最上层 */
+.learning-page .breadcrumb,
+.learning-page .page-title,
+.learning-page .page-subtitle,
+.learning-page .main-tabs,
+.learning-page .sub-tabs {
+  position: relative;
+  z-index: 10 !important;
+}
+.quiz-container {
+    margin: 0 0 24px;
+}
+
+/* 泡泡按钮 真正气泡质感 带顶部高光 */
+.quiz-bubble-btn {
+    display: inline-block;
+    padding: 18px 60px;  /* 左右内边距加大 = 拉长 */
+    margin: 0;
+    background: linear-gradient(145deg, #b6e8ff 0%, #82cfff 40%, #74b9ff 100%);
+    border-radius: 999px;
+    border: none;
+    font-weight: bold;
+    font-size: 16px;
+    color: #fff;
+    cursor: pointer;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.15);
+    box-shadow: 
+    0 8px 20px rgba(116, 185, 255, 0.45),
+    inset 0 -6px 12px rgba(0,0,0,0.08),
+    inset 0 6px 10px rgba(255, 255, 255, 0.9),
+    inset 0 2px 4px rgba(255, 255, 255, 0.7);
+    transition: all 0.25s ease;
+    min-width: 220px; /* 固定最小宽度，强制拉长 */
+    text-align: center;
+}
+
+.quiz-bubble-btn:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 
+    0 12px 28px rgba(116, 185, 255, 0.55),
+    inset 0 -6px 12px rgba(0,0,0,0.08),
+    inset 0 6px 10px rgba(255, 255, 255, 0.9),
+    inset 0 2px 4px rgba(255, 255, 255, 0.7);
+}
+
+/* 整个答题区域 = 大泡泡整体质感 */
+.quiz-box {
+    display: none;
+    margin: 20px 0 24px;
+    padding: 28px;
+    border-radius: 30px;
+    /* 整体大泡泡通透渐变 */
+    background: linear-gradient(145deg, #e8f7ff 0%, #d1ecff 50%, #c3e4ff 100%);
+    /* 气泡整体光影 */
+    box-shadow: 
+    0 10px 30px rgba(100, 170, 255, 0.35),
+    inset 0 -8px 14px rgba(0,0,0,0.06),
+    /* 顶部全局高光 */
+    inset 0 8px 12px rgba(255, 255, 255, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+.quiz-question {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 18px;
+    color: #222;
+}
+
+.quiz-options {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.quiz-option {
+    padding: 14px 18px;
+    background: rgba(255,255,255,0.65);
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,0.8);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.quiz-option:hover {
+    background: rgba(255,255,255,0.85);
+    transform: translateX(3px);
+}
+
+.quiz-result {
+    margin-top: 18px;
+    padding: 16px;
+    border-radius: 16px;
+    font-weight: bold;
+    display: none;
+}
+
+.quiz-correct {
+    background: rgba(232, 245, 233, 0.75);
+    color: #1b5e20;
+}
+
+.quiz-wrong {
+    background: rgba(255, 235, 235, 0.75);
+    color: #c62828;
+}
+
+.quiz-explain {
+    font-weight: normal;
+    margin-top: 8px;
+    font-size: 14px;
+    color: #333;
+}
+
+.back-to-content {
+    margin-top: 16px;
+    color: #007acc;
+    font-weight: bold;
+    cursor: pointer;
+}
