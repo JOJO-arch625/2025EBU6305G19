@@ -58,36 +58,6 @@ body::after {
     background: radial-gradient(circle, rgba(123, 198, 255, 0.18), transparent 70%);
 }
 
-.cg-top-nav {
-    position: sticky;
-    top: 0;
-    z-index: 30;
-    background: rgba(255, 255, 255, 0.92);
-    backdrop-filter: blur(12px);
-}
-
-.cg-logo {
-    background: linear-gradient(135deg, var(--cg-pink), var(--cg-blue));
-    border-radius: 12px;
-    width: 42px;
-    height: 42px;
-    font-size: 0.95rem;
-}
-
-.cg-toolbar {
-    gap: 12px;
-}
-
-.cg-toolbar button.is-active {
-    background: #ffffff;
-    border-color: #d8c2e3;
-    color: #7a4fb0;
-    box-shadow: 0 8px 18px rgba(255, 126, 182, 0.16);
-}
-
-.breadcrumb-container {
-    background: transparent;
-}
 
 .cg-app {
     max-width: none;
@@ -2230,10 +2200,6 @@ body::after {
     opacity: 0.55;
     transform: none;
     box-shadow: none;
-}
-
-.cg-logo {
-    cursor: pointer;
 }
 
 .cg-footer {

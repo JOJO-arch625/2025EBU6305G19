@@ -1418,6 +1418,143 @@ body.high-contrast footer a:hover {
     color: #FFC107;
 }
 
+body.high-contrast.community-pages-body {
+    --primary: #FFFFFF;
+    --secondary: #FFD700;
+    --accent: #FFD700;
+    --light: #000000;
+    --dark: #FFFFFF;
+    --gray: #CCCCCC;
+    --white: #1A1A1A;
+    --border: #555555;
+    --shadow: none;
+    --callout-bg: #1A1A1A;
+    background-color: #000000;
+    color: #FFFFFF;
+}
+
+body.high-contrast .community-pages-body .module {
+    background: #1A1A1A;
+    border-color: #555555;
+}
+
+body.high-contrast .community-pages-body .module h3 {
+    color: #FFD700;
+    border-left-color: #FFD700;
+}
+
+body.high-contrast .community-pages-body .module p {
+    color: #CCCCCC;
+}
+
+body.high-contrast .community-pages-body .module-link {
+    background: #FFD700;
+    color: #000000;
+}
+
+body.high-contrast .community-pages-body .module-link:hover {
+    background: #FFC107;
+}
+
+body.high-contrast .community-pages-body .content-section {
+    background: #1A1A1A;
+    border-color: #555555;
+}
+
+body.high-contrast .community-pages-body .page-title {
+    color: #FFFFFF;
+}
+
+body.high-contrast .community-pages-body .page-subtitle {
+    color: #CCCCCC;
+}
+
+body.high-contrast .community-pages-body .subpages-list {
+    color: #CCCCCC;
+}
+
+body.high-contrast .community-pages-body .subpages-list a {
+    color: #FFD700;
+}
+
+body.high-contrast .community-pages-body footer {
+    background: #1A1A1A;
+    border-top-color: #555555;
+}
+
+body.high-contrast .community-pages-body footer p {
+    color: #CCCCCC;
+}
+
+body.high-contrast .community-pages-body footer a {
+    color: #FFD700;
+}
+
+body.high-contrast .community-pages-body .discussion-card {
+    background: #1A1A1A;
+    border-color: #555555;
+}
+
+body.high-contrast .community-pages-body .discussion-card h4 {
+    color: #FFFFFF;
+}
+
+body.high-contrast .community-pages-body .discussion-card p {
+    color: #CCCCCC;
+}
+
+body.high-contrast .community-pages-body .filter-btn {
+    background: #1A1A1A;
+    border-color: #555555;
+    color: #CCCCCC;
+}
+
+body.high-contrast .community-pages-body .filter-btn:hover,
+body.high-contrast .community-pages-body .filter-btn.active {
+    background: #FFD700;
+    color: #000000;
+}
+
+body.high-contrast .community-pages-body .profile-card {
+    background: #1A1A1A;
+    border-color: #555555;
+}
+
+body.high-contrast .community-pages-body .profile-card h4 {
+    color: #FFFFFF;
+}
+
+body.high-contrast .community-pages-body .leaderboard-table {
+    background: #1A1A1A;
+    border-color: #555555;
+}
+
+body.high-contrast .community-pages-body .leaderboard-table th {
+    background: #333333;
+    color: #FFD700;
+    border-color: #555555;
+}
+
+body.high-contrast .community-pages-body .leaderboard-table td {
+    color: #CCCCCC;
+    border-color: #555555;
+}
+
+body.high-contrast .privacy-section {
+    background: #1A1A1A;
+    border-color: #555555;
+}
+
+body.high-contrast .privacy-section h2 {
+    color: #FFD700;
+    border-left-color: #FFD700;
+}
+
+body.high-contrast .privacy-section p,
+body.high-contrast .privacy-section li {
+    color: #CCCCCC;
+}
+
 .privacy-section {
     background: #fff;
     padding: 2.5rem;
