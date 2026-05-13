@@ -13,11 +13,11 @@
         <div class="logo">🎨</div>
         <button class="nav-toggle" aria-label="Toggle navigation">☰</button>
         <ul>
-            <li><a href="index.html">Homepage</a></li>
-            <li><a href="learning.html">Learning</a></li>
-            <li><a href="game.html">Game</a></li>
-            <li><a href="test.html" class="active">Test</a></li>
-            <li><a href="community.html">Community</a></li>
+            <li><a href="index.html" data-i18n="Homepage">Homepage</a></li>
+            <li><a href="learning.html" data-i18n="Learning">Learning</a></li>
+            <li><a href="game.html" data-i18n="Game">Game</a></li>
+            <li><a href="test.html" class="active" data-i18n="Test">Test</a></li>
+            <li><a href="community.html" data-i18n="Community">Community</a></li>
         </ul>
         <div class="nav-right">
             <button class="lang-btn" type="button">EN</button>
@@ -26,16 +26,16 @@
         </div>
     </nav>
 
-    <div class="breadcrumb">
-        <a href="index.html">Home</a>
+    <div class="breadcrumb" aria-label="Breadcrumb">
+        <a href="index.html" data-i18n="Home">Home</a>
         <span class="breadcrumb-sep">/</span>
-        <a href="test.html">Test</a>
+        <a href="test.html" data-i18n="Test Levels">Test Levels</a>
         <span class="breadcrumb-sep">/</span>
-        <span class="breadcrumb-current">About</span>
+        <span class="breadcrumb-current" data-i18n="About Test">About Test</span>
     </div>
 
     <div class="container" id="main-content">
-        <a href="test.html" class="back-link">&larr; Back to Test</a>
+        <a href="test.html" class="back-link">&larr; <span data-i18n="Back to Test">Back to Test</span></a>
 
         <div class="test-about-container">
             <div class="about-section">
@@ -44,30 +44,31 @@
                 <p id="about-intro">This level introduces the main ideas used to read and reason about digital colour values.</p>
                 <p id="about-description">You will get immediate feedback after every answer so the test doubles as a revision activity.</p>
 
-                <h3 class="about-subtitle">Key Features</h3>
+                <h3 class="about-subtitle" data-i18n="Key Features">Key Features</h3>
                 <ul class="features-list" id="feature-list"></ul>
             </div>
             <div class="guidelines-card">
-                <h3>Before You Start</h3>
+                <h3 data-i18n="Before You Start">Before You Start</h3>
                 <div class="test-brief">
-                    <p><strong>Questions:</strong> <span id="brief-count">5</span></p>
-                    <p><strong>Estimated time:</strong> <span id="brief-time">10 minutes</span></p>
-                    <p><strong>Focus:</strong> <span id="brief-focus">RGB basics</span></p>
+                    <p><strong data-i18n="Questions:">Questions:</strong> <span id="brief-count">5</span></p>
+                    <p><strong data-i18n="Estimated time:">Estimated time:</strong> <span id="brief-time">10 minutes</span></p>
+                    <p><strong data-i18n="Focus:">Focus:</strong> <span id="brief-focus">RGB basics</span></p>
                 </div>
                 <ul id="guideline-list"></ul>
             </div>
         </div>
 
-        <button class="new-discussion-btn" id="start-test-btn" type="button">Start Test</button>
+        <button class="new-discussion-btn" id="start-test-btn" style="margin-top: 40px;" type="button" data-i18n="Start Test">Start Test</button>
     </div>
 
     <footer>
-        <p>&copy; 2026 Color Learning Website. All rights reserved.
-            <a href="privacy.html">Privacy Policy</a>
-            <a href="#">Terms of Use</a>
+        <p>&copy; 2026 Color Learning Website. <span data-i18n="All rights reserved.">All rights reserved.</span>
+            <a href="privacy.html" data-i18n="Privacy Policy">Privacy Policy</a>
+            <a href="#" data-i18n="Terms of Use">Terms of Use</a>
         </p>
     </footer>
 
+    <script src="test-utils.js"></script>
     <script>
         const levelContent = {
             1: {
@@ -138,41 +139,121 @@
             }
         };
 
+        const zhLevelContent = {
+            1: {
+                title: 'Level 1 测试说明',
+                intro: '本级别检查你对颜色编码基本组成部分的理解。',
+                description: '题目具体且适合初学者，帮助你练习读取 RGB 数值、十六进制数字和简单颜色关系。',
+                time: '10 分钟',
+                focus: 'RGB 通道、十六进制表示和简单数字颜色读取',
+                features: [
+                    '每题作答后立即反馈',
+                    '为颜色题提供可视化示例',
+                    '简短解释便于快速复习',
+                    '最终总结包含分数和重试入口'
+                ],
+                guidelines: [
+                    '选择答案前仔细阅读代码值。',
+                    '把反馈卡片当作小复习笔记。',
+                    '不用赶时间，目标是理解而不是速度。',
+                    '如果想巩固薄弱点，可以重新测试。'
+                ]
+            },
+            2: {
+                title: 'Level 2 测试说明',
+                intro: '本级别从简单读取任务过渡到实际颜色模型选择。',
+                description: '你将比较 HSL、CMYK 等模型，复习位深和 Alpha 通道，并把编码概念联系到设计工作流。',
+                time: '15 分钟',
+                focus: 'HSL、CMYK、Alpha 和位深',
+                features: [
+                    '以场景题替代孤立知识点',
+                    '解释为什么某个模型更适合具体任务',
+                    '完整测试过程中的进度跟踪',
+                    '通过重试强化难点概念'
+                ],
+                guidelines: [
+                    '注意工作流想要达成的目标。',
+                    '思考哪个模型最容易控制当前任务。',
+                    '进入下一题前先消化错误反馈。',
+                    '如果术语仍不确定，可以重新挑战本级别。'
+                ]
+            },
+            3: {
+                title: 'Level 3 测试说明',
+                intro: '本级别关注高级媒体工作流中的色彩管理概念。',
+                description: '题目涉及伽马、色域、色彩空间、视频格式和印刷准备。解释会帮助你把理论与实际生产选择联系起来。',
+                time: '18 分钟',
+                focus: '伽马、色域、色彩空间、YCbCr 和印刷工作流选择',
+                features: [
+                    '更高级的推理题和工作流题',
+                    '覆盖显示、视频和印刷语境',
+                    '为专业术语提供详细解释',
+                    '测试后回顾帮助快速定位薄弱点'
+                ],
+                guidelines: [
+                    '决定最佳工作流答案前读完所有选项。',
+                    '区分显示、视频和印刷使用场景。',
+                    '用解释文字复习不熟悉的术语。',
+                    '把最终回顾当作后续复习清单。'
+                ]
+            }
+        };
+
         const params = new URLSearchParams(window.location.search);
         const levelKey = params.get('level') || '1';
-        const currentLevel = levelContent[levelKey] || levelContent[1];
-
-        const badge = document.getElementById('about-badge');
-        badge.textContent = currentLevel.badgeLabel;
-        badge.className = `level-badge ${currentLevel.badgeClass}`;
-
-        document.getElementById('about-title').textContent = currentLevel.title;
-        document.getElementById('about-intro').textContent = currentLevel.intro;
-        document.getElementById('about-description').textContent = currentLevel.description;
-        document.getElementById('brief-count').textContent = currentLevel.questionCount;
-        document.getElementById('brief-time').textContent = currentLevel.time;
-        document.getElementById('brief-focus').textContent = currentLevel.focus;
+        const resolvedLevelKey = levelContent[levelKey] ? levelKey : '1';
+        const currentLevel = levelContent[resolvedLevelKey];
 
         const featureList = document.getElementById('feature-list');
-        currentLevel.features.forEach((feature) => {
-            const item = document.createElement('li');
-            item.textContent = feature;
-            featureList.appendChild(item);
-        });
-
         const guidelineList = document.getElementById('guideline-list');
-        currentLevel.guidelines.forEach((guideline) => {
-            const item = document.createElement('li');
-            item.textContent = guideline;
-            guidelineList.appendChild(item);
-        });
+
+        function getLocalizedLevel() {
+            if (window.TestPageUtils.getLang() !== 'zh') {
+                return currentLevel;
+            }
+
+            return {
+                ...currentLevel,
+                ...zhLevelContent[resolvedLevelKey]
+            };
+        }
+
+        function renderAboutContent() {
+            const localizedLevel = getLocalizedLevel();
+            const badge = document.getElementById('about-badge');
+            badge.textContent = currentLevel.badgeLabel;
+            badge.className = `level-badge ${currentLevel.badgeClass}`;
+
+            document.getElementById('about-title').textContent = localizedLevel.title;
+            document.getElementById('about-intro').textContent = localizedLevel.intro;
+            document.getElementById('about-description').textContent = localizedLevel.description;
+            document.getElementById('brief-count').textContent = localizedLevel.questionCount;
+            document.getElementById('brief-time').textContent = localizedLevel.time;
+            document.getElementById('brief-focus').textContent = localizedLevel.focus;
+
+            featureList.innerHTML = '';
+            localizedLevel.features.forEach((feature) => {
+                const item = document.createElement('li');
+                item.textContent = feature;
+                featureList.appendChild(item);
+            });
+
+            guidelineList.innerHTML = '';
+            localizedLevel.guidelines.forEach((guideline) => {
+                const item = document.createElement('li');
+                item.textContent = guideline;
+                guidelineList.appendChild(item);
+            });
+        }
 
         document.getElementById('start-test-btn').addEventListener('click', () => {
             if (window.confirm('Start the test now? Make sure you are ready.')) {
-                window.location.href = `test-question.html?level=${levelKey}`;
+                window.location.href = `test-question.html?level=${resolvedLevelKey}`;
             }
         });
+
+        window.TestPageUtils.init(renderAboutContent);
+        renderAboutContent();
     </script>
-    <script src="common.js"></script>
 </body>
 </html>

@@ -1,4 +1,28 @@
 /* Test page overrides and additions */
+.breadcrumbs {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 24px;
+    color: #6B7280;
+    font-size: 14px;
+}
+
+.breadcrumbs a {
+    color: #6366F1;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.breadcrumbs a:hover {
+    text-decoration: underline;
+}
+
+.breadcrumbs span:last-child {
+    color: #374151;
+    font-weight: 500;
+}
+
 .level-card {
     display: block;
     text-decoration: none;

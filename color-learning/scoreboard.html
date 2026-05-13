@@ -44,77 +44,24 @@
             <div class="scoreboard-container">
             <div>
                 <h3 class="scoreboard-heading">Global Leaderboard</h3>
+                <div class="leaderboard-table-wrap">
                 <table class="leaderboard-table">
-                    <tr class="rank-1">
-                        <td class="leaderboard-rank">1</td>
-                        <td><span class="star-badge"></span> Casey Morgan</td>
-                        <td class="leaderboard-stats">Points: 3120 • Streak: 45 days</td>
-                    </tr>
-                    <tr class="rank-2">
-                        <td class="leaderboard-rank">2</td>
-                        <td><span class="star-badge"></span> Sam Rivera</td>
-                        <td class="leaderboard-stats">Points: 2680 • Streak: 38 days</td>
-                    </tr>
-                    <tr class="rank-3">
-                        <td class="leaderboard-rank">3</td>
-                        <td><span class="star-badge"></span> Alex Chen</td>
-                        <td class="leaderboard-stats">Points: 2450 • Streak: 32 days</td>
-                    </tr>
-                    <tr>
-                        <td class="leaderboard-rank">4</td>
-                        <td>Jordan Lee</td>
-                        <td class="leaderboard-stats">Points: 1820 • Streak: 28 days</td>
-                    </tr>
-                    <tr>
-                        <td class="leaderboard-rank">5</td>
-                        <td>Riley Park</td>
-                        <td class="leaderboard-stats">Points: 1650 • Streak: 24 days</td>
-                    </tr>
-                    <tr>
-                        <td class="leaderboard-rank">6</td>
-                        <td>Morgan Davis</td>
-                        <td class="leaderboard-stats">Points: 1420 • Streak: 20 days</td>
-                    </tr>
-                    <tr>
-                        <td class="leaderboard-rank">7</td>
-                        <td>Quinn Taylor</td>
-                        <td class="leaderboard-stats">Points: 1280 • Streak: 18 days</td>
-                    </tr>
-                    <tr>
-                        <td class="leaderboard-rank">8</td>
-                        <td>Avery Wilson</td>
-                        <td class="leaderboard-stats">Points: 1150 • Streak: 15 days</td>
-                    </tr>
-                    <tr>
-                        <td class="leaderboard-rank">9</td>
-                        <td>Drew Martinez</td>
-                        <td class="leaderboard-stats">Points: 980 • Streak: 12 days</td>
-                    </tr>
-                    <tr>
-                        <td class="leaderboard-rank">10</td>
-                        <td>Taylor Kim</td>
-                        <td class="leaderboard-stats">Points: 890 • Streak: 10 days</td>
-                    </tr>
+                    <caption class="visually-hidden">Leaderboard with optional bonus points stored in this browser only.</caption>
+                    <thead>
+                        <tr>
+                            <th scope="col">Rank</th>
+                            <th scope="col">Learner</th>
+                            <th scope="col">Points &amp; streak</th>
+                            <th scope="col">Add points</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboardTbody"></tbody>
                 </table>
+                </div>
             </div>
             <div>
                 <h3 class="scoreboard-heading">Star Learners</h3>
-                <div class="star-card">
-                    <p><span class="star-badge"></span> Top 3 Performers</p>
-                    <p class="star-muted">Awarded to the top 3 learners on the global leaderboard</p>
-                </div>
-                <div class="star-card">
-                    <p><span class="star-badge"></span> #1 Casey Morgan</p>
-                    <p class="star-detail">3120 points • 45 day streak</p>
-                </div>
-                <div class="star-card">
-                    <p><span class="star-badge"></span> #2 Sam Rivera</p>
-                    <p class="star-detail">2680 points • 38 day streak</p>
-                </div>
-                <div class="star-card">
-                    <p><span class="star-badge"></span> #3 Alex Chen</p>
-                    <p class="star-detail">2450 points • 32 day streak</p>
-                </div>
+                <div id="starLearnersMount"></div>
 
                 <div class="time-periods">
                     <h3>Time Periods</h3>
@@ -133,6 +80,128 @@
             <a href="#">Terms of Use</a>
         </p>
     </footer>
+    <script>
+        (function () {
+            var STORAGE_KEY = 'colorLearningScoreboardBonus';
+            var DEFAULT_LEADERS = [
+                { name: 'Casey Morgan', points: 3120, streak: 45 },
+                { name: 'Sam Rivera', points: 2680, streak: 38 },
+                { name: 'Alex Chen', points: 2450, streak: 32 },
+                { name: 'Jordan Lee', points: 1820, streak: 28 },
+                { name: 'Riley Park', points: 1650, streak: 24 },
+                { name: 'Morgan Davis', points: 1420, streak: 20 },
+                { name: 'Quinn Taylor', points: 1280, streak: 18 },
+                { name: 'Avery Wilson', points: 1150, streak: 15 },
+                { name: 'Drew Martinez', points: 980, streak: 12 },
+                { name: 'Taylor Kim', points: 890, streak: 10 }
+            ];
+
+            function escapeHtml(s) {
+                return String(s)
+                    .replaceAll('&', '&amp;')
+                    .replaceAll('<', '&lt;')
+                    .replaceAll('>', '&gt;')
+                    .replaceAll('"', '&quot;')
+                    .replaceAll("'", '&#39;');
+            }
+
+            function loadBonusMap() {
+                try {
+                    var raw = localStorage.getItem(STORAGE_KEY);
+                    if (!raw) return {};
+                    var o = JSON.parse(raw);
+                    return typeof o === 'object' && o !== null ? o : {};
+                } catch (e) {
+                    return {};
+                }
+            }
+
+            function saveBonusMap(map) {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(map));
+            }
+
+            function addBonusForName(name, delta) {
+                if (!name || !delta || delta < 1) return;
+                var map = loadBonusMap();
+                map[name] = (map[name] | 0) + delta;
+                saveBonusMap(map);
+            }
+
+            function mergedSortedRows() {
+                var bonus = loadBonusMap();
+                return DEFAULT_LEADERS.map(function (r) {
+                    return {
+                        name: r.name,
+                        points: r.points + (bonus[r.name] | 0),
+                        streak: r.streak
+                    };
+                }).sort(function (a, b) {
+                    return b.points - a.points;
+                });
+            }
+
+            function renderStarCards(sorted) {
+                var mount = document.getElementById('starLearnersMount');
+                var top = sorted.slice(0, 3);
+                var html = '';
+                html += '<div class="star-card"><p><span class="star-badge"></span> Top 3 Performers</p>';
+                html += '<p class="star-muted">Awarded to the top 3 learners on the global leaderboard (includes bonus points you add in this browser).</p></div>';
+                top.forEach(function (row, i) {
+                    html += '<div class="star-card"><p><span class="star-badge"></span> #' + (i + 1) + ' ' + escapeHtml(row.name) + '</p>';
+                    html += '<p class="star-detail">' + row.points + ' points • ' + row.streak + ' day streak</p></div>';
+                });
+                mount.innerHTML = html;
+            }
+
+            function renderTable() {
+                var sorted = mergedSortedRows();
+                var tbody = document.getElementById('leaderboardTbody');
+                tbody.innerHTML = '';
+                sorted.forEach(function (row, i) {
+                    var rank = i + 1;
+                    var tr = document.createElement('tr');
+                    tr.dataset.learnerName = row.name;
+                    if (rank === 1) tr.classList.add('rank-1');
+                    else if (rank === 2) tr.classList.add('rank-2');
+                    else if (rank === 3) tr.classList.add('rank-3');
+                    var star = rank <= 3 ? '<span class="star-badge"></span> ' : '';
+                    tr.innerHTML =
+                        '<td class="leaderboard-rank">' + rank + '</td>' +
+                        '<td>' + star + escapeHtml(row.name) + '</td>' +
+                        '<td class="leaderboard-stats">Points: ' + row.points + ' • Streak: ' + row.streak + ' days</td>' +
+                        '<td class="leaderboard-actions">' +
+                        '<div class="scoreboard-bonus-wrap">' +
+                        '<button type="button" class="bonus-chip-btn" data-delta="10">+10</button>' +
+                        '<button type="button" class="bonus-chip-btn" data-delta="50">+50</button>' +
+                        '<input type="number" class="bonus-input" min="1" max="99999" value="100" aria-label="Custom points to add">' +
+                        '<button type="button" class="bonus-apply-btn">Apply</button>' +
+                        '</div></td>';
+                    tbody.appendChild(tr);
+                });
+                renderStarCards(sorted);
+            }
+
+            document.getElementById('leaderboardTbody').addEventListener('click', function (e) {
+                var chip = e.target.closest('.bonus-chip-btn');
+                var apply = e.target.closest('.bonus-apply-btn');
+                if (!chip && !apply) return;
+                var tr = e.target.closest('tr');
+                if (!tr || !tr.dataset.learnerName) return;
+                var name = tr.dataset.learnerName;
+                var delta = 0;
+                if (chip) {
+                    delta = parseInt(chip.getAttribute('data-delta'), 10) || 0;
+                } else {
+                    var inp = tr.querySelector('.bonus-input');
+                    delta = inp ? parseInt(inp.value, 10) : 0;
+                }
+                addBonusForName(name, delta);
+                renderTable();
+            });
+
+            renderTable();
+        })();
+    </script>
     <script src="common.js"></script>
 </body>
 </html>

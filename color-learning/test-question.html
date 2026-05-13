@@ -13,11 +13,11 @@
         <div class="logo">🎨</div>
         <button class="nav-toggle" aria-label="Toggle navigation">☰</button>
         <ul>
-            <li><a href="index.html">Homepage</a></li>
-            <li><a href="learning.html">Learning</a></li>
-            <li><a href="game.html">Game</a></li>
-            <li><a href="test.html" class="active">Test</a></li>
-            <li><a href="community.html">Community</a></li>
+            <li><a href="index.html" data-i18n="Homepage">Homepage</a></li>
+            <li><a href="learning.html" data-i18n="Learning">Learning</a></li>
+            <li><a href="game.html" data-i18n="Game">Game</a></li>
+            <li><a href="test.html" class="active" data-i18n="Test">Test</a></li>
+            <li><a href="community.html" data-i18n="Community">Community</a></li>
         </ul>
         <div class="nav-right">
             <button class="lang-btn" type="button">EN</button>
@@ -26,21 +26,22 @@
         </div>
     </nav>
 
-    <div class="breadcrumb">
-        <a href="index.html">Home</a>
+    <div class="breadcrumb" aria-label="Breadcrumb">
+        <a href="index.html" data-i18n="Home">Home</a>
         <span class="breadcrumb-sep">/</span>
-        <a href="test.html">Test</a>
+        <a href="test.html" data-i18n="Test Levels">Test Levels</a>
         <span class="breadcrumb-sep">/</span>
-        <span class="breadcrumb-current">Question</span>
+        <span class="breadcrumb-current" data-i18n="Question Test">Question Test</span>
     </div>
 
     <div class="container" id="main-content">
+        <div class="question-container">
             <div class="question-header">
                 <div class="question-status">
                     <span class="level-badge level-1" id="question-level">Level 1</span>
                     <span class="question-number" id="question-number">Question 1 of 5</span>
                 </div>
-                <button class="exit-btn" id="exit-btn" type="button">Exit Test</button>
+                <button class="exit-btn" id="exit-btn" type="button" data-i18n="Exit Test">Exit Test</button>
             </div>
 
             <div class="question-card" id="question-card">
@@ -50,7 +51,7 @@
                 <div class="question-visual" id="question-visual" hidden>
                     <div class="visual-swatch" id="visual-swatch"></div>
                     <div class="visual-caption">
-                        <span class="visual-label">Example</span>
+                        <span class="visual-label" data-i18n="Example">Example</span>
                         <strong id="visual-code">RGB(255, 0, 0)</strong>
                     </div>
                 </div>
@@ -61,48 +62,49 @@
             </div>
 
             <div class="question-actions" id="question-actions">
-                <button class="next-btn" id="next-btn" type="button" disabled>Next Question</button>
+                <button class="next-btn" id="next-btn" type="button" disabled data-i18n="Next Question">Next Question</button>
             </div>
 
             <div class="progress-bar" id="progress-bar"></div>
 
             <div class="result-card" id="result-card" hidden>
                 <span class="result-badge" id="result-badge">Strong Result</span>
-                <h3>Test Complete</h3>
-                <p id="result-summary">You finished the test.</p>
+                <h3 data-i18n="Test Complete">Test Complete</h3>
+                <p id="result-summary" data-i18n="You finished the test.">You finished the test.</p>
 
                 <div class="summary-grid">
                     <div class="summary-item">
                         <strong id="correct-count">0</strong>
-                        <span>Correct</span>
+                        <span data-i18n="Correct">Correct</span>
                     </div>
                     <div class="summary-item">
                         <strong id="incorrect-count">0</strong>
-                        <span>Incorrect</span>
+                        <span data-i18n="Incorrect">Incorrect</span>
                     </div>
                     <div class="summary-item">
                         <strong id="accuracy-rate">0%</strong>
-                        <span>Accuracy</span>
+                        <span data-i18n="Accuracy">Accuracy</span>
                     </div>
                 </div>
 
                 <div class="review-list" id="review-list"></div>
 
                 <div class="result-actions">
-                    <button class="next-btn active" id="retry-btn" type="button">Try Again</button>
-                    <button class="exit-btn" id="level-btn" type="button">Back to Test Levels</button>
+                    <button class="next-btn active" id="retry-btn" type="button" data-i18n="Try Again">Try Again</button>
+                    <button class="exit-btn" id="level-btn" type="button" data-i18n="Back to Test Levels">Back to Test Levels</button>
                 </div>
             </div>
         </div>
     </div>
 
     <footer>
-        <p>&copy; 2026 Color Learning Website. All rights reserved.
-            <a href="privacy.html">Privacy Policy</a>
-            <a href="#">Terms of Use</a>
+        <p>&copy; 2026 Color Learning Website. <span data-i18n="All rights reserved.">All rights reserved.</span>
+            <a href="privacy.html" data-i18n="Privacy Policy">Privacy Policy</a>
+            <a href="#" data-i18n="Terms of Use">Terms of Use</a>
         </p>
     </footer>
 
+    <script src="test-utils.js"></script>
     <script>
         const testBank = {
             1: {
@@ -272,8 +274,115 @@
 
         const params = new URLSearchParams(window.location.search);
         const levelKey = params.get('level') || '1';
-        const levelData = testBank[levelKey] || testBank[1];
+        const resolvedLevelKey = testBank[levelKey] ? levelKey : '1';
+        const levelData = testBank[resolvedLevelKey];
         const questions = levelData.questions;
+        const zhQuestionBank = {
+            1: [
+                {
+                    topic: 'RGB 基础',
+                    text: 'RGB 代表什么？',
+                    options: ['红、绿、蓝', '红、灰、黑', '皇家色、绿、蓝', '红、金、棕'],
+                    explanation: 'RGB 代表红、绿、蓝。它是一种屏幕使用的加色模型，通过混合光来生成许多可见颜色。'
+                },
+                {
+                    topic: '读取 RGB 数值',
+                    text: '在 RGB 编码中，(255, 0, 0) 表示什么颜色？',
+                    options: ['蓝色', '绿色', '红色', '黑色'],
+                    explanation: '红色通道为最大强度，绿色和蓝色通道都是 0，因此结果是纯红色。',
+                    visualLabel: 'RGB(255, 0, 0)'
+                },
+                {
+                    topic: '十六进制表示',
+                    text: '十六进制数 7F 的十进制值是多少？',
+                    options: ['127', '128', '129', '130'],
+                    explanation: '十六进制 7F 等于 7 x 16 加 15，也就是 112 加 15，结果为 127。'
+                },
+                {
+                    topic: '十六进制通道顺序',
+                    text: '在 #RRGGBB 格式中，哪一组控制蓝色通道？',
+                    options: ['第一组', '第二组', '第三组', '三组平均控制'],
+                    explanation: '顺序是红、绿、蓝，因此第三组表示蓝色通道。'
+                },
+                {
+                    topic: '通道强度',
+                    text: '哪个值表示最亮的绿色通道强度？',
+                    options: ['0', '64', '128', '255'],
+                    explanation: '在 8 位 RGB 中，每个通道范围是 0 到 255。255 表示最高通道强度。',
+                    visualLabel: '绿色最大强度'
+                }
+            ],
+            2: [
+                {
+                    topic: '其他颜色模型',
+                    text: '哪个颜色模型由色相、饱和度和亮度组织？',
+                    options: ['RGB', 'HSL', 'CMYK', 'YCbCr'],
+                    explanation: 'HSL 围绕色相、饱和度和亮度构建，适合直观地调整颜色。'
+                },
+                {
+                    topic: 'Alpha 通道',
+                    text: 'Alpha 通道通常控制什么？',
+                    options: ['亮度', '透明度', '色相旋转', '打印分辨率'],
+                    explanation: 'Alpha 通道控制不透明度和透明度，让图形可以与其他图层自然混合。'
+                },
+                {
+                    topic: 'CMYK 工作流',
+                    text: '在 CMYK 中，提高 K 值通常会产生什么效果？',
+                    options: ['使结果变暗', '增加透明度', '让颜色偏蓝', '只改变色相名称'],
+                    explanation: 'K 表示 key，也就是黑色。增加 K 通常会加深阴影，并改善印刷中的中性色深度。'
+                },
+                {
+                    topic: '位深',
+                    text: '一个 8 位颜色通道有多少种可能值？',
+                    options: ['16', '64', '128', '256'],
+                    explanation: '8 位通道存储 0 到 255 的值，因此共有 256 种不同可能值。'
+                },
+                {
+                    topic: '选择合适模型',
+                    text: '哪个模型通常更适合设计师用色轮和亮度控件调整？',
+                    options: ['CMYK', 'HSL', 'YCbCr', '索引色'],
+                    explanation: 'HSL 很适合颜色选择器，因为色相、饱和度和亮度对应设计师常用的控制方式。'
+                }
+            ],
+            3: [
+                {
+                    topic: '伽马校正',
+                    text: '为什么影像工作流中会使用伽马校正？',
+                    options: ['让亮度存储更接近人眼感知', '增加可用颜色通道数量', '自动把 RGB 转成 CMYK', '从文件中移除色彩空间'],
+                    explanation: '伽马校正让编码值更符合人对亮度的感知，从而提高效率和视觉一致性。'
+                },
+                {
+                    topic: '色域',
+                    text: '色域描述的是什么？',
+                    options: ['显示器刷新率', '设备或色彩空间能再现的颜色范围', '图像文件大小', '设计中的图层数量'],
+                    explanation: '色域描述设备、打印机或色彩空间能够准确再现的颜色范围。'
+                },
+                {
+                    topic: '视频编码',
+                    text: '哪个模型常用于数字视频和压缩工作流？',
+                    options: ['RGB', 'CMYK', 'YCbCr', 'HSL'],
+                    explanation: 'YCbCr 将亮度和色度信息分开，因此特别适合视频和压缩系统。'
+                },
+                {
+                    topic: '色彩空间',
+                    text: '如果两台显示器显示相同 RGB 数值但使用不同色彩空间，可能发生什么？',
+                    options: ['颜色看起来仍可能不同', '显示效果一定完全相同', '两台显示器都会变成灰度', '文件会变透明'],
+                    explanation: 'RGB 数值必须放在色彩空间中理解。不同空间可能把相同数值映射成不同的可见颜色。'
+                },
+                {
+                    topic: '广色域显示器',
+                    text: '与 sRGB 相比，广色域显示器通常能显示什么？',
+                    options: ['更少的绿色和红色', '某些区域中更饱和的颜色', '只有黑白数值', '相同色域但对比度更低'],
+                    explanation: '广色域显示器可以再现更宽的颜色范围，通常包括比 sRGB 更饱和的绿色、红色和青色。'
+                },
+                {
+                    topic: '印刷准备',
+                    text: '为专业印刷准备设计时，最稳妥的方法是什么？',
+                    options: ['使用打印机或纸张配置文件，并在最终导出前软打样', '所有文件都保留屏幕 RGB 并期待打印机自动匹配', '提高饱和度直到图像足够鲜艳', '先把所有图像转成灰度'],
+                    explanation: '印刷输出取决于打印机、油墨和纸张。使用正确配置文件并进行打样，可以减少意外色偏。'
+                }
+            ]
+        };
 
         let currentQuestion = 0;
         let score = 0;
@@ -293,6 +402,23 @@
         const questionCard = document.getElementById('question-card');
         const questionActions = document.getElementById('question-actions');
         const resultCard = document.getElementById('result-card');
+        const t = (text) => window.TestPageUtils.t(text);
+
+        function localizeQuestion(question, index) {
+            if (window.TestPageUtils.getLang() !== 'zh') {
+                return question;
+            }
+
+            const localized = zhQuestionBank[resolvedLevelKey][index];
+            return {
+                ...question,
+                ...localized,
+                visual: question.visual ? {
+                    ...question.visual,
+                    label: localized.visualLabel || question.visual.label
+                } : undefined
+            };
+        }
 
         function renderProgress() {
             progressBar.innerHTML = '';
@@ -321,12 +447,16 @@
             feedbackCard.className = `feedback-card ${answer.correct ? 'correct' : 'incorrect'}`;
 
             const heading = document.createElement('h4');
-            heading.textContent = answer.correct ? 'Correct answer' : 'Not quite';
+            heading.textContent = answer.correct ? t('Correct answer') : t('Not quite');
 
             const summary = document.createElement('p');
             summary.textContent = answer.correct
-                ? `You chose the right option: ${question.options[question.correct]}.`
-                : `You chose ${question.options[answer.selectedIndex]}. The correct answer is ${question.options[question.correct]}.`;
+                ? window.TestPageUtils.getLang() === 'zh'
+                    ? `你选择了正确答案：${question.options[question.correct]}。`
+                    : `You chose the right option: ${question.options[question.correct]}.`
+                : window.TestPageUtils.getLang() === 'zh'
+                    ? `你选择了 ${question.options[answer.selectedIndex]}。正确答案是 ${question.options[question.correct]}。`
+                    : `You chose ${question.options[answer.selectedIndex]}. The correct answer is ${question.options[question.correct]}.`;
 
             const explanation = document.createElement('p');
             explanation.textContent = question.explanation;
@@ -371,12 +501,14 @@
         }
 
         function renderQuestion() {
-            const question = questions[currentQuestion];
+            const question = localizeQuestion(questions[currentQuestion], currentQuestion);
             const answer = answers[currentQuestion];
 
             questionLevel.textContent = levelData.badgeLabel;
             questionLevel.className = `level-badge ${levelData.badgeClass}`;
-            questionNumber.textContent = `Question ${currentQuestion + 1} of ${questions.length}`;
+            questionNumber.textContent = window.TestPageUtils.getLang() === 'zh'
+                ? `第 ${currentQuestion + 1} 题 / 共 ${questions.length} 题`
+                : `Question ${currentQuestion + 1} of ${questions.length}`;
             questionTopic.textContent = question.topic;
             questionText.textContent = question.text;
 
@@ -386,7 +518,7 @@
             renderProgress();
 
             nextButton.disabled = !answer;
-            nextButton.textContent = currentQuestion === questions.length - 1 ? 'View Results' : 'Next Question';
+            nextButton.textContent = currentQuestion === questions.length - 1 ? t('View Results') : t('Next Question');
         }
 
         function selectOption(index) {
@@ -414,8 +546,10 @@
             const accuracy = Math.round((score / questions.length) * 100);
             const badgeText = accuracy === 100 ? 'Excellent' : accuracy >= 80 ? 'Strong Result' : accuracy >= 60 ? 'Good Review' : 'Keep Practising';
 
-            document.getElementById('result-badge').textContent = badgeText;
-            document.getElementById('result-summary').textContent = `You completed ${levelData.badgeLabel} with ${score} correct answers out of ${questions.length}.`;
+            document.getElementById('result-badge').textContent = t(badgeText);
+            document.getElementById('result-summary').textContent = window.TestPageUtils.getLang() === 'zh'
+                ? `你完成了 ${levelData.badgeLabel}，共 ${questions.length} 题，答对 ${score} 题。`
+                : `You completed ${levelData.badgeLabel} with ${score} correct answers out of ${questions.length}.`;
             document.getElementById('correct-count').textContent = score;
             document.getElementById('incorrect-count').textContent = incorrect;
             document.getElementById('accuracy-rate').textContent = `${accuracy}%`;
@@ -430,26 +564,33 @@
                 reviewItem.className = 'review-item';
 
                 const title = document.createElement('h4');
-                title.textContent = 'Perfect score';
+                title.textContent = t('Perfect score');
 
                 const text = document.createElement('p');
-                text.textContent = 'You answered every question correctly. Try another level to keep building your confidence.';
+                text.textContent = window.TestPageUtils.getLang() === 'zh'
+                    ? '你答对了所有题目。可以尝试另一个级别继续提升信心。'
+                    : 'You answered every question correctly. Try another level to keep building your confidence.';
 
                 reviewItem.append(title, text);
                 reviewList.appendChild(reviewItem);
             } else {
                 incorrectAnswers.forEach((question, reviewIndex) => {
                     const originalIndex = questions.indexOf(question);
+                    const localizedQuestion = localizeQuestion(question, originalIndex);
                     const answer = answers[originalIndex];
 
                     const reviewItem = document.createElement('div');
                     reviewItem.className = 'review-item';
 
                     const title = document.createElement('h4');
-                    title.textContent = `Review ${reviewIndex + 1}: ${question.topic}`;
+                    title.textContent = window.TestPageUtils.getLang() === 'zh'
+                        ? `回顾 ${reviewIndex + 1}：${localizedQuestion.topic}`
+                        : `Review ${reviewIndex + 1}: ${question.topic}`;
 
                     const text = document.createElement('p');
-                    text.textContent = `You chose ${question.options[answer.selectedIndex]}. Correct answer: ${question.options[question.correct]}. ${question.explanation}`;
+                    text.textContent = window.TestPageUtils.getLang() === 'zh'
+                        ? `你选择了 ${localizedQuestion.options[answer.selectedIndex]}。正确答案：${localizedQuestion.options[question.correct]}。${localizedQuestion.explanation}`
+                        : `You chose ${question.options[answer.selectedIndex]}. Correct answer: ${question.options[question.correct]}. ${question.explanation}`;
 
                     reviewItem.append(title, text);
                     reviewList.appendChild(reviewItem);
@@ -460,7 +601,9 @@
             questionActions.hidden = true;
             progressBar.hidden = true;
             resultCard.hidden = false;
-            questionNumber.textContent = `Completed ${questions.length} of ${questions.length}`;
+            questionNumber.textContent = window.TestPageUtils.getLang() === 'zh'
+                ? `已完成 ${questions.length} / ${questions.length}`
+                : `Completed ${questions.length} of ${questions.length}`;
         }
 
         function nextQuestion() {
@@ -491,7 +634,7 @@
         }
 
         document.getElementById('exit-btn').addEventListener('click', () => {
-            if (window.confirm('Exit this test and lose your current progress?')) {
+            if (window.confirm(t('Exit this test and lose your current progress?'))) {
                 window.location.href = 'test.html';
             }
         });
@@ -502,8 +645,14 @@
         });
         nextButton.addEventListener('click', nextQuestion);
 
+        window.TestPageUtils.init(() => {
+            if (resultCard.hidden) {
+                renderQuestion();
+            } else {
+                renderResults();
+            }
+        });
         renderQuestion();
     </script>
-    <script src="common.js"></script>
 </body>
 </html>
