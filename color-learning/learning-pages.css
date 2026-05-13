@@ -516,3 +516,115 @@ html, body {
   position: relative;
   z-index: 10 !important;
 }
+.quiz-container {
+    margin: 0 0 24px;
+}
+
+/* 泡泡按钮 真正气泡质感 带顶部高光 */
+.quiz-bubble-btn {
+    display: inline-block;
+    padding: 18px 60px;  /* 左右内边距加大 = 拉长 */
+    margin: 0;
+    background: linear-gradient(145deg, #b6e8ff 0%, #82cfff 40%, #74b9ff 100%);
+    border-radius: 999px;
+    border: none;
+    font-weight: bold;
+    font-size: 16px;
+    color: #fff;
+    cursor: pointer;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.15);
+    box-shadow: 
+    0 8px 20px rgba(116, 185, 255, 0.45),
+    inset 0 -6px 12px rgba(0,0,0,0.08),
+    inset 0 6px 10px rgba(255, 255, 255, 0.9),
+    inset 0 2px 4px rgba(255, 255, 255, 0.7);
+    transition: all 0.25s ease;
+    min-width: 220px; /* 固定最小宽度，强制拉长 */
+    text-align: center;
+}
+
+.quiz-bubble-btn:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 
+    0 12px 28px rgba(116, 185, 255, 0.55),
+    inset 0 -6px 12px rgba(0,0,0,0.08),
+    inset 0 6px 10px rgba(255, 255, 255, 0.9),
+    inset 0 2px 4px rgba(255, 255, 255, 0.7);
+}
+
+/* 整个答题区域 = 大泡泡整体质感 */
+.quiz-box {
+    display: none;
+    margin: 20px 0 24px;
+    padding: 28px;
+    border-radius: 30px;
+    /* 整体大泡泡通透渐变 */
+    background: linear-gradient(145deg, #e8f7ff 0%, #d1ecff 50%, #c3e4ff 100%);
+    /* 气泡整体光影 */
+    box-shadow: 
+    0 10px 30px rgba(100, 170, 255, 0.35),
+    inset 0 -8px 14px rgba(0,0,0,0.06),
+    /* 顶部全局高光 */
+    inset 0 8px 12px rgba(255, 255, 255, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+.quiz-question {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 18px;
+    color: #222;
+}
+
+.quiz-options {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.quiz-option {
+    padding: 14px 18px;
+    background: rgba(255,255,255,0.65);
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,0.8);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.quiz-option:hover {
+    background: rgba(255,255,255,0.85);
+    transform: translateX(3px);
+}
+
+.quiz-result {
+    margin-top: 18px;
+    padding: 16px;
+    border-radius: 16px;
+    font-weight: bold;
+    display: none;
+}
+
+.quiz-correct {
+    background: rgba(232, 245, 233, 0.75);
+    color: #1b5e20;
+}
+
+.quiz-wrong {
+    background: rgba(255, 235, 235, 0.75);
+    color: #c62828;
+}
+
+.quiz-explain {
+    font-weight: normal;
+    margin-top: 8px;
+    font-size: 14px;
+    color: #333;
+}
+
+.back-to-content {
+    margin-top: 16px;
+    color: #007acc;
+    font-weight: bold;
+    cursor: pointer;
+}
