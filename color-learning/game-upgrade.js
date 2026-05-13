@@ -628,7 +628,13 @@
         }
         if (!worldState.soundEnabled) {
             stopBgmLoop();
+            if (audioState.masterGain) {
+                audioState.masterGain.gain.value = 0;
+            }
             return;
+        }
+        if (audioState.masterGain) {
+            audioState.masterGain.gain.value = 0.22;
         }
         if (audioState.unlocked) {
             startBgmLoop();
