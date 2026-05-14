@@ -955,16 +955,28 @@ footer a:hover {
 }
 
 .usp-item {
+    display: block;
     text-align: center;
     padding: 30px 20px;
     border: 1px solid #E5E7EB;
     border-radius: 8px;
-    transition: border-color 0.2s, box-shadow 0.2s;
+    color: inherit;
+    text-decoration: none;
+    cursor: pointer;
+    transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
 }
 
-.usp-item:hover {
+.usp-item:hover,
+.usp-item:focus-visible {
     border-color: #6366F1;
-    box-shadow: 0 2px 12px rgba(99, 102, 241, 0.08);
+    box-shadow: 0 4px 16px rgba(99, 102, 241, 0.12);
+    transform: translateY(-2px);
+    outline: none;
+}
+
+.usp-item:focus-visible {
+    outline: 2px solid #6366F1;
+    outline-offset: 2px;
 }
 
 .usp-icon {

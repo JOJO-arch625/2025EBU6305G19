@@ -633,3 +633,272 @@ html, body {
 .quiz-question {
   font-size: 1em !important;
 }
+
+/* ============================================================
+   High Contrast Mode — Learning Page
+   ============================================================ */
+body.high-contrast.learning-page {
+    --primary: #FFFFFF;
+    --secondary: #FFD700;
+    --accent: #FFD700;
+    --warning: #FFA500;
+    --danger: #FF6B6B;
+    --light: #000000;
+    --dark: #FFFFFF;
+    --gray: #CCCCCC;
+    --white: #1A1A1A;
+    --black: #FFFFFF;
+    --border: #555555;
+    --shadow: rgba(255, 215, 0, 0.15);
+    background-color: #000000;
+    color: #FFFFFF;
+}
+
+body.high-contrast.learning-page html,
+body.high-contrast .learning-page {
+    background-color: #000000;
+}
+
+/* 隐藏热带海滨背景，避免亮区干扰 */
+body.high-contrast .beach-header-bg-wrapper,
+body.high-contrast .beach-header-bg,
+body.high-contrast .beach-header-bg::before {
+    display: none !important;
+}
+
+/* 标题与副标题 */
+body.high-contrast.learning-page .page-title {
+    color: #FFFFFF;
+}
+
+body.high-contrast.learning-page .page-subtitle {
+    color: #CCCCCC;
+}
+
+/* 主标签 / 子标签 */
+body.high-contrast.learning-page .main-tab,
+body.high-contrast.learning-page .sub-tab {
+    background: #1A1A1A;
+    color: #FFFFFF;
+    box-shadow: 0 3px 8px rgba(255, 215, 0, 0.15);
+    border: 1px solid #555555;
+}
+
+body.high-contrast.learning-page .main-tab.active,
+body.high-contrast.learning-page .sub-tab.active {
+    background: #FFD700;
+    color: #000000;
+    border-color: #FFD700;
+    box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4);
+}
+
+/* 中间内容卡片 */
+body.high-contrast.learning-page .content-section {
+    background: #1A1A1A;
+    border: 1px solid #555555;
+    box-shadow: 0 5px 20px rgba(255, 215, 0, 0.08);
+}
+
+body.high-contrast.learning-page .content-section h2 {
+    color: #FFD700;
+    border-left-color: #FFD700;
+}
+
+body.high-contrast.learning-page .content-section h3 {
+    color: #FFFFFF;
+}
+
+body.high-contrast.learning-page .content-section h4 {
+    color: #FFD700;
+}
+
+body.high-contrast.learning-page .content-section h5 {
+    color: #FFD700;
+}
+
+body.high-contrast.learning-page .content-section p,
+body.high-contrast.learning-page .content-section li {
+    color: #E5E5E5;
+}
+
+body.high-contrast.learning-page .content-section strong {
+    color: #FFD700;
+}
+
+/* 折叠标题（覆盖默认浅灰背景），保留彩虹色 */
+body.high-contrast #content-color-basics h2,
+body.high-contrast #content-color-basics-cn h2,
+body.high-contrast #content-color-vision h2,
+body.high-contrast #content-color-vision-cn h2,
+body.high-contrast #content-rgb h3,
+body.high-contrast #content-yuv h3,
+body.high-contrast #content-cmyk h3,
+body.high-contrast #content-hsv h3,
+body.high-contrast #content-rgb-cn h3,
+body.high-contrast #content-yuv-cn h3,
+body.high-contrast #content-cmyk-cn h3,
+body.high-contrast #content-hsv-cn h3 {
+    background: #2A2A2A;
+    color: #FFFFFF;
+}
+
+body.high-contrast #content-color-basics h2:hover,
+body.high-contrast #content-color-basics-cn h2:hover,
+body.high-contrast #content-color-vision h2:hover,
+body.high-contrast #content-color-vision-cn h2:hover,
+body.high-contrast #content-rgb h3:hover,
+body.high-contrast #content-yuv h3:hover,
+body.high-contrast #content-cmyk h3:hover,
+body.high-contrast #content-hsv h3:hover,
+body.high-contrast #content-rgb-cn h3:hover,
+body.high-contrast #content-yuv-cn h3:hover,
+body.high-contrast #content-cmyk-cn h3:hover,
+body.high-contrast #content-hsv-cn h3:hover {
+    background: #3A3A3A;
+}
+
+/* 信息 / 警告 / 重点 / 公式框 */
+body.high-contrast.learning-page .info-box {
+    background: #0F2A3F;
+    border-left-color: #4FC3F7;
+    color: #E5E5E5;
+}
+
+body.high-contrast.learning-page .warning-box {
+    background: #3F2E0F;
+    border-left-color: #FFA500;
+    color: #E5E5E5;
+}
+
+body.high-contrast.learning-page .key-box {
+    background: #0F3F1F;
+    border-left-color: #4CAF50;
+    color: #E5E5E5;
+}
+
+body.high-contrast.learning-page .info-box p,
+body.high-contrast.learning-page .warning-box p,
+body.high-contrast.learning-page .key-box p {
+    color: #E5E5E5;
+}
+
+body.high-contrast.learning-page .formula-box {
+    background: #0A0A0A;
+    border-color: #FFD700;
+    color: #FFD700;
+}
+
+body.high-contrast.learning-page .demo-box {
+    background: #0A1F0A;
+    border-color: #4CAF50;
+    color: #E5E5E5;
+}
+
+body.high-contrast.learning-page .demo-title {
+    color: #4CAF50;
+}
+
+/* 图片说明 */
+body.high-contrast.learning-page .img-box img {
+    border-color: #555555;
+    box-shadow: 0 5px 15px rgba(255, 215, 0, 0.15);
+}
+
+body.high-contrast.learning-page .img-box p {
+    color: #CCCCCC;
+}
+
+/* 色彩示例方块 */
+body.high-contrast.learning-page .color-swatch {
+    border-color: #FFD700;
+}
+
+body.high-contrast.learning-page .color-label {
+    color: #E5E5E5;
+}
+
+/* 对比表格 */
+body.high-contrast.learning-page .compare-table th {
+    background-color: #FFD700;
+    color: #000000;
+    border-color: #555555;
+}
+
+body.high-contrast.learning-page .compare-table td {
+    color: #E5E5E5;
+    border-color: #555555;
+}
+
+body.high-contrast.learning-page .compare-table tr:nth-child(even) {
+    background-color: #2A2A2A;
+}
+
+body.high-contrast.learning-page .compare-table tr:nth-child(odd) {
+    background-color: #1A1A1A;
+}
+
+/* Footer */
+body.high-contrast.learning-page footer {
+    background: #0A0A0A;
+    color: #E5E5E5;
+    border-top: 1px solid #555555;
+}
+
+body.high-contrast.learning-page footer a {
+    color: #FFD700;
+}
+
+body.high-contrast.learning-page footer a:hover {
+    color: #FFC107;
+}
+
+/* 课前趣味竞猜：泡泡按钮与答题区 */
+body.high-contrast .quiz-bubble-btn {
+    background: linear-gradient(145deg, #4A3A00 0%, #6A5500 40%, #8A7000 100%);
+    color: #FFD700;
+    text-shadow: none;
+    box-shadow: 0 8px 20px rgba(255, 215, 0, 0.35);
+}
+
+body.high-contrast .quiz-bubble-btn:hover {
+    box-shadow: 0 12px 28px rgba(255, 215, 0, 0.5);
+}
+
+body.high-contrast .quiz-box {
+    background: linear-gradient(145deg, #1A1A1A 0%, #2A2A2A 50%, #1A1A1A 100%);
+    border: 1px solid #555555;
+    box-shadow: 0 10px 30px rgba(255, 215, 0, 0.15);
+}
+
+body.high-contrast .quiz-question {
+    color: #FFFFFF;
+}
+
+body.high-contrast .quiz-option {
+    background: #0F0F0F;
+    border: 1px solid #555555;
+    color: #E5E5E5;
+}
+
+body.high-contrast .quiz-option:hover {
+    background: #2A2A2A;
+    border-color: #FFD700;
+}
+
+body.high-contrast .quiz-correct {
+    background: rgba(76, 175, 80, 0.15);
+    color: #66FF99;
+}
+
+body.high-contrast .quiz-wrong {
+    background: rgba(255, 107, 107, 0.15);
+    color: #FF8A8A;
+}
+
+body.high-contrast .quiz-explain {
+    color: #CCCCCC;
+}
+
+body.high-contrast .back-to-content {
+    color: #FFD700;
+}
