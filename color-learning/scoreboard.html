@@ -46,13 +46,13 @@
                 <h3 class="scoreboard-heading">Global Leaderboard</h3>
                 <div class="leaderboard-table-wrap">
                 <table class="leaderboard-table">
-                    <caption class="visually-hidden">Leaderboard with optional bonus points stored in this browser only.</caption>
+                    <caption class="visually-hidden" id="leaderboardCaption">Leaderboard with optional bonus points stored in this browser only.</caption>
                     <thead>
                         <tr>
-                            <th scope="col">Rank</th>
-                            <th scope="col">Learner</th>
-                            <th scope="col">Points &amp; streak</th>
-                            <th scope="col">Add points</th>
+                            <th scope="col" id="thRank">Rank</th>
+                            <th scope="col" id="thLearner">Learner</th>
+                            <th scope="col" id="thPoints">Points &amp; streak</th>
+                            <th scope="col" id="thAdd">Add points</th>
                         </tr>
                     </thead>
                     <tbody id="leaderboardTbody"></tbody>
@@ -140,20 +140,50 @@
                 });
             }
 
+            function siteZh() {
+                return document.documentElement.getAttribute('lang') === 'zh';
+            }
+
             function renderStarCards(sorted) {
                 var mount = document.getElementById('starLearnersMount');
                 var top = sorted.slice(0, 3);
+                var zh = siteZh();
                 var html = '';
-                html += '<div class="star-card"><p><span class="star-badge"></span> Top 3 Performers</p>';
-                html += '<p class="star-muted">Awarded to the top 3 learners on the global leaderboard (includes bonus points you add in this browser).</p></div>';
+                if (zh) {
+                    html += '<div class="star-card"><p><span class="star-badge"></span> 前三名学习者</p>';
+                    html += '<p class="star-muted">授予本浏览器全球排行榜前三名（含你在此添加的奖励分）。</p></div>';
+                } else {
+                    html += '<div class="star-card"><p><span class="star-badge"></span> Top 3 Performers</p>';
+                    html += '<p class="star-muted">Awarded to the top 3 learners on the global leaderboard (includes bonus points you add in this browser).</p></div>';
+                }
                 top.forEach(function (row, i) {
                     html += '<div class="star-card"><p><span class="star-badge"></span> #' + (i + 1) + ' ' + escapeHtml(row.name) + '</p>';
-                    html += '<p class="star-detail">' + row.points + ' points • ' + row.streak + ' day streak</p></div>';
+                    if (zh) {
+                        html += '<p class="star-detail">' + row.points + ' 分 • 连续 ' + row.streak + ' 天</p></div>';
+                    } else {
+                        html += '<p class="star-detail">' + row.points + ' points • ' + row.streak + ' day streak</p></div>';
+                    }
                 });
                 mount.innerHTML = html;
             }
 
             function renderTable() {
+                var zh = siteZh();
+                var cap = document.getElementById('leaderboardCaption');
+                if (cap) {
+                    cap.textContent = zh
+                        ? '排行榜：奖励分仅保存在本浏览器。'
+                        : 'Leaderboard with optional bonus points stored in this browser only.';
+                }
+                var thRank = document.getElementById('thRank');
+                var thLearner = document.getElementById('thLearner');
+                var thPoints = document.getElementById('thPoints');
+                var thAdd = document.getElementById('thAdd');
+                if (thRank) thRank.textContent = zh ? '名次' : 'Rank';
+                if (thLearner) thLearner.textContent = zh ? '学习者' : 'Learner';
+                if (thPoints) thPoints.textContent = zh ? '积分与连续天数' : 'Points & streak';
+                if (thAdd) thAdd.textContent = zh ? '加分' : 'Add points';
+
                 var sorted = mergedSortedRows();
                 var tbody = document.getElementById('leaderboardTbody');
                 tbody.innerHTML = '';
@@ -165,16 +195,21 @@
                     else if (rank === 2) tr.classList.add('rank-2');
                     else if (rank === 3) tr.classList.add('rank-3');
                     var star = rank <= 3 ? '<span class="star-badge"></span> ' : '';
+                    var statsText = zh
+                        ? ('积分：' + row.points + ' • 连续：' + row.streak + ' 天')
+                        : ('Points: ' + row.points + ' • Streak: ' + row.streak + ' days');
+                    var applyLabel = zh ? '应用' : 'Apply';
+                    var ariaCustom = zh ? '要添加的自定义分数' : 'Custom points to add';
                     tr.innerHTML =
                         '<td class="leaderboard-rank">' + rank + '</td>' +
                         '<td>' + star + escapeHtml(row.name) + '</td>' +
-                        '<td class="leaderboard-stats">Points: ' + row.points + ' • Streak: ' + row.streak + ' days</td>' +
+                        '<td class="leaderboard-stats">' + statsText + '</td>' +
                         '<td class="leaderboard-actions">' +
                         '<div class="scoreboard-bonus-wrap">' +
                         '<button type="button" class="bonus-chip-btn" data-delta="10">+10</button>' +
                         '<button type="button" class="bonus-chip-btn" data-delta="50">+50</button>' +
-                        '<input type="number" class="bonus-input" min="1" max="99999" value="100" aria-label="Custom points to add">' +
-                        '<button type="button" class="bonus-apply-btn">Apply</button>' +
+                        '<input type="number" class="bonus-input" min="1" max="99999" value="100" aria-label="' + escapeHtml(ariaCustom) + '">' +
+                        '<button type="button" class="bonus-apply-btn">' + applyLabel + '</button>' +
                         '</div></td>';
                     tbody.appendChild(tr);
                 });
@@ -196,6 +231,10 @@
                     delta = inp ? parseInt(inp.value, 10) : 0;
                 }
                 addBonusForName(name, delta);
+                renderTable();
+            });
+
+            document.addEventListener('colorsite:lang', function () {
                 renderTable();
             });
 

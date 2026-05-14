@@ -42,12 +42,12 @@
         <a href="community.html" class="back-link">← Back to Community</a>
 
         <div class="filter-bar">
-            <button class="filter-btn active" onclick="filterDiscussions('all')">All</button>
-            <button class="filter-btn" onclick="filterDiscussions('tips')">Learning Tips</button>
-            <button class="filter-btn" onclick="filterDiscussions('study')">Study Methods</button>
-            <button class="filter-btn" onclick="filterDiscussions('theory')">Color Theory</button>
-            <button class="filter-btn" onclick="filterDiscussions('progress')">Progress Updates</button>
-            <button class="filter-btn" onclick="filterDiscussions('game')">Game Tips</button>
+            <button type="button" class="filter-btn active" data-filter="all" onclick="filterDiscussions('all')">All</button>
+            <button type="button" class="filter-btn" data-filter="tips" onclick="filterDiscussions('tips')">Learning Tips</button>
+            <button type="button" class="filter-btn" data-filter="study" onclick="filterDiscussions('study')">Study Methods</button>
+            <button type="button" class="filter-btn" data-filter="theory" onclick="filterDiscussions('theory')">Color Theory</button>
+            <button type="button" class="filter-btn" data-filter="progress" onclick="filterDiscussions('progress')">Progress Updates</button>
+            <button type="button" class="filter-btn" data-filter="game" onclick="filterDiscussions('game')">Game Tips</button>
         </div>
 
         <div class="discussions-grid">
@@ -365,9 +365,9 @@
                 <div class="forum-composer-row">
                     <div class="forum-avatar-lg" id="composerAvatarDisplay" aria-hidden="true">?</div>
                     <div class="forum-composer-main">
-                        <label class="visually-hidden" for="replyNickname">Display name</label>
+                        <label class="visually-hidden" for="replyNickname"><span class="composer-lbl-nick">Display name</span></label>
                         <input type="text" id="replyNickname" placeholder="Display name" maxlength="48" autocomplete="nickname">
-                        <label class="visually-hidden" for="replyBody">Reply</label>
+                        <label class="visually-hidden" for="replyBody"><span class="composer-lbl-reply">Reply</span></label>
                         <textarea id="replyBody" placeholder="Write a reply…" rows="3"></textarea>
                         <div class="forum-composer-actions">
                             <button type="button" class="primary-btn" id="sendReplyBtn">Post reply</button>
@@ -386,15 +386,15 @@
             </div>
             <form id="newDiscussionForm" class="new-discussion-form">
                 <label>
-                    Your Name
+                    <span class="nd-lbl-name">Your Name</span>
                     <input id="authorInput" type="text" placeholder="Enter your name" required>
                 </label>
                 <label>
-                    Discussion Title
+                    <span class="nd-lbl-title">Discussion Title</span>
                     <input id="titleInput" type="text" placeholder="Enter discussion title" required>
                 </label>
                 <label>
-                    Discussion Content
+                    <span class="nd-lbl-content">Discussion Content</span>
                     <textarea id="contentInput" placeholder="Share your discussion content..." required></textarea>
                 </label>
                 <div class="form-actions">
@@ -417,16 +417,16 @@
             var REPLIES_KEY = 'colorLearningDiscussionReplies';
             var NICK_KEY = 'colorLearningDiscussionNickname';
 
+            function siteLangZh() {
+                return document.documentElement.getAttribute('lang') === 'zh';
+            }
+
             function filterDiscussions(tag) {
                 var discussionCards = document.querySelectorAll('.discussion-card');
                 var filterButtons = document.querySelectorAll('.filter-bar .filter-btn');
 
                 filterButtons.forEach(function (btn) {
-                    btn.classList.remove('active');
-                    if (btn.textContent.toLowerCase().includes(tag.toLowerCase()) ||
-                        (tag === 'all' && btn.textContent.toLowerCase() === 'all')) {
-                        btn.classList.add('active');
-                    }
+                    btn.classList.toggle('active', btn.getAttribute('data-filter') === tag);
                 });
 
                 discussionCards.forEach(function (card) {
@@ -511,7 +511,8 @@
             function formatReplyTime(iso) {
                 try {
                     var d = new Date(iso);
-                    return d.toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' });
+                    var loc = siteLangZh() ? 'zh-CN' : undefined;
+                    return d.toLocaleString(loc, { dateStyle: 'medium', timeStyle: 'short' });
                 } catch (e) {
                     return '';
                 }
@@ -524,7 +525,9 @@
                 art.className = 'forum-post' + (isOp ? ' is-op' : '');
                 art.dataset.author = author;
                 var timeStr = formatReplyTime(iso);
-                var badge = isOp ? '<span class="forum-op-badge">Original post</span>' : '';
+                var zh = siteLangZh();
+                var badgeTxt = isOp ? (zh ? '原帖' : 'Original post') : '';
+                var badge = isOp ? ('<span class="forum-op-badge">' + badgeTxt + '</span>') : '';
                 art.innerHTML =
                     '<div class="forum-post-avatar">' + initials + '</div>' +
                     '<div class="forum-post-main">' +
@@ -567,7 +570,7 @@
 
             function openDiscussionModal(card) {
                 activeThreadCard = card;
-                modalTitle.textContent = card.querySelector('h3') ? card.querySelector('h3').textContent : 'Discussion';
+                modalTitle.textContent = card.querySelector('h3') ? card.querySelector('h3').textContent : (siteLangZh() ? '讨论' : 'Discussion');
                 modalTag.textContent = card.querySelector('.discussion-tag') ? card.querySelector('.discussion-tag').textContent : '';
                 modalMeta.textContent = card.querySelector('.discussion-meta') ? card.querySelector('.discussion-meta').textContent.replace(/\s+/g, ' ').trim() : '';
                 renderThreadIntoModal(card);
@@ -599,6 +602,7 @@
             }
 
             function createDiscussionCard(author, title, content, tag) {
+                var zh = siteLangZh();
                 var safeAuthor = escapeHtml(author);
                 var safeTitle = escapeHtml(title);
                 var threadId = 'thread-' + Date.now();
@@ -609,10 +613,17 @@
                 card.className = 'discussion-card';
                 card.dataset.tag = tag || 'progress';
                 card.dataset.threadId = threadId;
+                card.dataset.threadAuthor = author;
+                var tagLabel = zh ? '进度更新' : 'Progress Updates';
+                var metaLine = zh
+                    ? ('<p class="discussion-meta">' + safeAuthor + ' 发起 • <span class="reply-count">0</span> 条回复</p>')
+                    : ('<p class="discussion-meta">by ' + safeAuthor + ' • <span class="reply-count">0</span> replies</p>');
+                var opBadge = zh ? '原帖' : 'Original post';
+                var viewTxt = zh ? '打开讨论 →' : 'Open thread →';
                 card.innerHTML =
-                    '<span class="discussion-tag">Progress Updates</span>' +
+                    '<span class="discussion-tag">' + tagLabel + '</span>' +
                     '<h3>' + safeTitle + '</h3>' +
-                    '<p class="discussion-meta">by ' + safeAuthor + ' • <span class="reply-count">0</span> replies</p>' +
+                    metaLine +
                     '<p class="discussion-excerpt">' + excerpt + '</p>' +
                     '<div class="discussion-content">' +
                     '<div class="forum-post-list">' +
@@ -621,12 +632,12 @@
                     '<div class="forum-post-main">' +
                     '<header class="forum-post-header">' +
                     '<span class="forum-author">' + safeAuthor + '</span>' +
-                    '<span class="forum-op-badge">Original post</span>' +
+                    '<span class="forum-op-badge">' + opBadge + '</span>' +
                     '<time datetime="' + escapeHtml(iso) + '">' + escapeHtml(formatReplyTime(iso)) + '</time>' +
                     '</header>' +
                     '<div class="forum-post-body"><p>' + escapeHtml(content).replaceAll('\n', '<br>') + '</p></div>' +
                     '</div></article></div></div>' +
-                    '<a href="#" class="view-link">Open thread →</a>';
+                    '<a href="#" class="view-link">' + viewTxt + '</a>';
                 return card;
             }
 
@@ -674,7 +685,7 @@
                 var title = titleInput.value.trim();
                 var content = contentInput.value.trim();
                 if (!author || !title || !content) return;
-                if (!confirm('Are you sure you want to publish this discussion?')) return;
+                if (!confirm(siteLangZh() ? '确定要发布这条讨论吗？' : 'Are you sure you want to publish this discussion?')) return;
                 var newCard = createDiscussionCard(author, title, content, 'progress');
                 discussionsGrid.prepend(newCard);
                 closeNewDiscussionModal();
@@ -688,6 +699,188 @@
                 if (event.key === 'Escape' && newDiscussionModal.classList.contains('open')) {
                     closeNewDiscussionModal();
                 }
+            });
+
+            var threadSnap = {};
+            var THREAD_I18N = {
+                'rgb-learning-tips': {
+                    tag: '学习技巧',
+                    title: '掌握 RGB 色彩数值的学习技巧',
+                    excerpt: 'Alex 分享「255 锚点」法；Mia 与 Noah 补充闪卡与分组记忆。',
+                    author: 'Alex Chen',
+                    view: '打开讨论 →',
+                    bodies: [
+                        '<p>我用「255 锚点」法：从纯红 (255, 0, 0) 出发，一次只调一个通道，感受颜色如何变化。</p>',
+                        '<p>我也是。我做了闪卡记下常见值，例如黄色 (255, 255, 0)，每天复习。</p>',
+                        '<p>好主意。我还按亮度层级把 RGB 分组记忆，会更快。</p>'
+                    ]
+                },
+                'hex-memory-study': {
+                    tag: '学习方法',
+                    title: '如何高效记住十六进制色值',
+                    excerpt: 'Jordan 把十六进制拆成 RR-GG-BB；Emma 与 Leo 分享口诀与晚间练习。',
+                    author: 'Jordan Lee',
+                    view: '打开讨论 →',
+                    bodies: [
+                        '<p>我把十六进制拆成 RR-GG-BB 两两一组，先记住每一对，长串就没那么吓人。</p>',
+                        '<p>我会给重复模式编口诀，比如 #FFAA33，再用小测验自测。</p>',
+                        '<p>我每晚用笔记本练习 RGB 转十六进制，大约 10 分钟。</p>'
+                    ]
+                },
+                'color-theory-mastery': {
+                    tag: '色彩理论',
+                    title: '系统掌握色彩理论的最佳实践',
+                    excerpt: 'Sam 建议每周聚焦一个概念；Olivia 与 Ethan 谈色板与互补练习。',
+                    author: 'Sam Rivera',
+                    view: '打开讨论 →',
+                    bodies: [
+                        '<p>每周只攻一个概念（色相、饱和度、对比度），在小设计里应用更容易记住。</p>',
+                        '<p>把差色板和好色板并排比较后，我进步很大。</p>',
+                        '<p>互补色训练帮我更快发现配色不平衡的问题。</p>'
+                    ]
+                },
+                'progress-30-days': {
+                    tag: '进度更新',
+                    title: '30 天学习后的进度分享',
+                    excerpt: 'Casey 的成绩从 58% 提到 87%；Ava 问作息，Casey 讲错题追踪。',
+                    author: 'Casey Morgan',
+                    view: '打开讨论 →',
+                    bodies: [
+                        '<p>30 天里，我的测试成绩从 58% 提到 87%，每天 20 分钟练习最关键。</p>',
+                        '<p>很鼓舞人。你是固定时间表，还是按薄弱项调整？</p>',
+                        '<p>我每周记录错题，并在色彩和谐题型上多加练习。</p>'
+                    ]
+                },
+                'quiz-game-strategies': {
+                    tag: '游戏技巧',
+                    title: '测验游戏策略交流',
+                    excerpt: '限时回合、先跳过难题、色觉友好模式等同伴经验。',
+                    author: 'Taylor Kim',
+                    view: '打开讨论 →',
+                    bodies: [
+                        '<p>在限时回合里，先答明显的原色/间色，再回头处理难辨的渐变题。</p>',
+                        '<p>我也会先跳过不确定的题目，最终准确率大约提高了 12%。</p>',
+                        '<p>打开色觉友好模式后，蓝紫题型让我少了很多混淆。</p>'
+                    ]
+                },
+                'color-complementarity': {
+                    tag: '色彩理论',
+                    title: '理解互补色关系',
+                    excerpt: 'Riley 问互补色阶；Harper 建议在界面中降低饱和度。',
+                    author: 'Riley Park',
+                    view: '打开讨论 →',
+                    bodies: [
+                        '<p>我仍纠结如何选择精确的互补色阶，而不只是色相环上的对侧。</p>',
+                        '<p>试着降低一侧的饱和度，高饱和互补对在界面里往往太刺眼。</p>',
+                        '<p>很有效，我最新的色板更干净，也更护眼。</p>'
+                    ]
+                }
+            };
+
+            function ensureThreadSnap(card) {
+                var id = card.dataset.threadId;
+                if (!id || threadSnap[id]) return;
+                var bodies = [];
+                card.querySelectorAll('.forum-post-body').forEach(function (b) {
+                    bodies.push(b.innerHTML);
+                });
+                threadSnap[id] = {
+                    tag: card.querySelector('.discussion-tag').textContent,
+                    title: card.querySelector('h3').textContent,
+                    excerpt: card.querySelector('.discussion-excerpt').textContent,
+                    meta: card.querySelector('.discussion-meta').innerHTML,
+                    view: card.querySelector('.view-link').textContent,
+                    bodies: bodies
+                };
+            }
+
+            function applyThreadCardLocale(card, zh) {
+                var id = card.dataset.threadId;
+                if (!id) return;
+                ensureThreadSnap(card);
+                var z = THREAD_I18N[id];
+                var sn = threadSnap[id];
+                if (z) {
+                    if (zh) {
+                        card.querySelector('.discussion-tag').textContent = z.tag;
+                        card.querySelector('h3').textContent = z.title;
+                        card.querySelector('.discussion-excerpt').textContent = z.excerpt;
+                        var n = card.querySelector('.reply-count').textContent;
+                        card.querySelector('.discussion-meta').innerHTML =
+                            z.author + ' 发起 • <span class="reply-count">' + n + '</span> 条回复';
+                        card.querySelector('.view-link').textContent = z.view;
+                        card.querySelectorAll('.forum-post').forEach(function (art, i) {
+                            var badge = art.querySelector('.forum-op-badge');
+                            if (badge) badge.textContent = '原帖';
+                            var b = art.querySelector('.forum-post-body');
+                            if (b && z.bodies[i]) b.innerHTML = z.bodies[i];
+                        });
+                    } else {
+                        card.querySelector('.discussion-tag').textContent = sn.tag;
+                        card.querySelector('h3').textContent = sn.title;
+                        card.querySelector('.discussion-excerpt').textContent = sn.excerpt;
+                        card.querySelector('.discussion-meta').innerHTML = sn.meta;
+                        card.querySelector('.view-link').textContent = sn.view;
+                        card.querySelectorAll('.forum-post').forEach(function (art, i) {
+                            var badge = art.querySelector('.forum-op-badge');
+                            if (badge) badge.textContent = 'Original post';
+                            var b = art.querySelector('.forum-post-body');
+                            if (b && sn.bodies[i]) b.innerHTML = sn.bodies[i];
+                        });
+                    }
+                    return;
+                }
+                if (zh && sn) {
+                    card.querySelector('.discussion-tag').textContent = '进度更新';
+                    card.querySelector('.view-link').textContent = '打开讨论 →';
+                    var n2 = card.querySelector('.reply-count').textContent;
+                    var m = sn.meta.match(/by\s+(.+?)\s+•/i);
+                    var au = (card.dataset.threadAuthor || '').trim() || (m ? m[1].trim() : '');
+                    card.querySelector('.discussion-meta').innerHTML =
+                        au + ' 发起 • <span class="reply-count">' + n2 + '</span> 条回复';
+                    card.querySelectorAll('.forum-op-badge').forEach(function (b) {
+                        b.textContent = '原帖';
+                    });
+                } else if (!zh && sn) {
+                    card.querySelector('.discussion-meta').innerHTML = sn.meta;
+                    card.querySelector('.discussion-tag').textContent = sn.tag;
+                    card.querySelector('.view-link').textContent = sn.view;
+                    card.querySelectorAll('.forum-op-badge').forEach(function (b) {
+                        b.textContent = 'Original post';
+                    });
+                }
+            }
+
+            function applyDiscussionChromeLocale(zh) {
+                document.querySelector('.composer-lbl-nick').textContent = zh ? '显示名称' : 'Display name';
+                document.querySelector('.composer-lbl-reply').textContent = zh ? '回复' : 'Reply';
+                replyNickname.setAttribute('placeholder', zh ? '你的昵称' : 'Display name');
+                replyBody.setAttribute('placeholder', zh ? '写下你的回复…' : 'Write a reply…');
+                sendReplyBtn.textContent = zh ? '发布回复' : 'Post reply';
+                closeModalBtn.setAttribute('aria-label', zh ? '关闭讨论' : 'Close thread');
+                document.getElementById('newDiscussionTitle').textContent = zh ? '发起新讨论' : 'Start New Discussion';
+                document.querySelector('.nd-lbl-name').textContent = zh ? '你的姓名' : 'Your Name';
+                document.querySelector('.nd-lbl-title').textContent = zh ? '讨论标题' : 'Discussion Title';
+                document.querySelector('.nd-lbl-content').textContent = zh ? '讨论内容' : 'Discussion Content';
+                authorInput.setAttribute('placeholder', zh ? '输入你的姓名' : 'Enter your name');
+                titleInput.setAttribute('placeholder', zh ? '输入讨论标题' : 'Enter discussion title');
+                contentInput.setAttribute('placeholder', zh ? '分享你的讨论内容…' : 'Share your discussion content...');
+                cancelNewDiscussionBtn.textContent = zh ? '取消' : 'Cancel';
+                newDiscussionForm.querySelector('.primary-btn[type="submit"]').textContent = zh ? '发布讨论' : 'Post Discussion';
+            }
+
+            function applyAllDiscussionLocales(zh) {
+                document.querySelectorAll('.discussion-card').forEach(function (card) {
+                    applyThreadCardLocale(card, zh);
+                });
+                applyDiscussionChromeLocale(zh);
+                if (discussionModal.classList.contains('open') && activeThreadCard) {
+                    openDiscussionModal(activeThreadCard);
+                }
+            }
+
+            document.addEventListener('colorsite:lang', function (e) {
+                applyAllDiscussionLocales(e.detail.zh);
             });
 
             window.filterDiscussions = filterDiscussions;

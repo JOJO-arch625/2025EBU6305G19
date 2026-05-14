@@ -916,6 +916,9 @@
         // 语言切换函数
         function switchLanguage() {
             isChinese = !isChinese;
+            try {
+                localStorage.setItem('colorLearningSiteLang', isChinese ? 'zh' : 'en');
+            } catch (eL) {}
             const lang = isChinese ? 'cn' : 'en';
             const btn = document.getElementById('langBtn');
             btn.textContent = isChinese ? '中' : 'EN';

@@ -1067,3 +1067,26 @@
     background: #ecf0f1;
     border-bottom: 1px solid var(--border);
 }
+
+/* Bilingual inline pairs (toggle with html[lang="zh"]) */
+.community-pages-body .i18n-zh {
+    display: none !important;
+}
+
+html[lang="zh"] .community-pages-body .i18n-en {
+    display: none !important;
+}
+
+html[lang="zh"] .community-pages-body .i18n-zh {
+    display: inline !important;
+}
+
+html[lang="zh"] .community-pages-body .i18n-zh.i18n-block,
+html[lang="zh"] .community-pages-body p .i18n-zh,
+html[lang="zh"] .community-pages-body h3 .i18n-zh {
+    display: block !important;
+}
+
+html[lang="zh"] .community-pages-body button .i18n-zh {
+    display: inline !important;
+}
