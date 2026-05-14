@@ -42,11 +42,11 @@
         <a href="community.html" class="back-link">← Back to Community</a>
 
         <div class="filter-bar">
-            <button class="filter-btn active" onclick="filterProfiles('all')">All</button>
-            <button class="filter-btn" onclick="filterProfiles('beginner')">Beginner</button>
-            <button class="filter-btn" onclick="filterProfiles('intermediate')">Intermediate</button>
-            <button class="filter-btn" onclick="filterProfiles('advanced')">Advanced</button>
-            <button class="filter-btn" onclick="filterProfiles('expert')">Expert</button>
+            <button type="button" class="filter-btn active" data-filter="all" onclick="filterProfiles('all')">All</button>
+            <button type="button" class="filter-btn" data-filter="beginner" onclick="filterProfiles('beginner')">Beginner</button>
+            <button type="button" class="filter-btn" data-filter="intermediate" onclick="filterProfiles('intermediate')">Intermediate</button>
+            <button type="button" class="filter-btn" data-filter="advanced" onclick="filterProfiles('advanced')">Advanced</button>
+            <button type="button" class="filter-btn" data-filter="expert" onclick="filterProfiles('expert')">Expert</button>
         </div>
 
         <div class="profiles-grid">
@@ -205,10 +205,7 @@
             const filterButtons = document.querySelectorAll('.filter-bar .filter-btn');
             
             filterButtons.forEach(btn => {
-                btn.classList.remove('active');
-                if (btn.textContent.toLowerCase() === level.toLowerCase()) {
-                    btn.classList.add('active');
-                }
+                btn.classList.toggle('active', btn.getAttribute('data-filter') === level);
             });
             
             profileCards.forEach(card => {
@@ -234,7 +231,7 @@
             profileModalLevel.classList.add('profile-modal-level');
             profileModalLevel.textContent = card.querySelector('.profile-level')?.textContent || '';
             profileModalStats.textContent = card.querySelector('.profile-stats p')?.textContent || '';
-            profileModalBody.innerHTML = card.querySelector('.profile-details')?.innerHTML || '<p>No profile details yet.</p>';
+            profileModalBody.innerHTML = card.querySelector('.profile-details')?.innerHTML || (document.documentElement.getAttribute('lang') === 'zh' ? '<p>暂无更多档案内容。</p>' : '<p>No profile details yet.</p>');
 
             profileModal.classList.add('open');
             profileModal.setAttribute('aria-hidden', 'false');
@@ -265,6 +262,54 @@
                 closeProfileModal();
             }
         });
+
+        (function () {
+            var ZH = [
+                { level: '高级', stats: '积分：2450 • 课程：48 • 准确率：94% • 加入：2026年1月', bio: '界面设计专业学生，通过每日小项目与同伴反馈练习配色。', focus: '<strong>擅长：</strong>RGB 通道控制、调色板平衡、对比度微调', goal: '<strong>当前目标：</strong>本月内让高级和谐测验准确率达到 96% 以上', progress: '<strong>近期里程碑：</strong>完成 14 天连续学习，渐变识别速度提升 18%', link: '查看完整档案 →' },
+                { level: '中级', stats: '积分：1820 • 课程：36 • 准确率：89% • 加入：2026年2月', bio: '前端初学者，致力于为网页与 App 界面打好色彩理论基础。', focus: '<strong>擅长：</strong>十六进制记忆、视觉分组、带批注的复习', goal: '<strong>当前目标：</strong>完成全部中级模块，模拟测试成绩超过 90%', progress: '<strong>近期里程碑：</strong>常见十六进制换算错误从每周 11 次降到 3 次', link: '查看完整档案 →' },
+                { level: '高级', stats: '积分：2680 • 课程：52 • 准确率：96% • 加入：2025年12月', bio: '数字插画师，注重用色彩讲故事，擅长情感化调色板。', focus: '<strong>擅长：</strong>互补色搭配、影调控制、视觉层次', goal: '<strong>当前目标：</strong>在保持测试成绩前 5% 的同时指导两名新学员', progress: '<strong>近期里程碑：</strong>分享 6 篇关于修复低对比度界面设计的社区案例', link: '查看完整档案 →' },
+                { level: '专家', stats: '积分：3120 • 课程：60 • 准确率：98% • 加入：2025年11月', bio: '资深学习者与社区导师，以研究为导向关注无障碍与色彩体系。', focus: '<strong>擅长：</strong>无障碍检测、WCAG 对比度策略、高级校色', goal: '<strong>当前目标：</strong>发布完整的初学到专家色彩练习路线图', progress: '<strong>近期里程碑：</strong>在专家模式挑战中连续 30 轮满分', link: '查看完整档案 →' },
+                { level: '初级', stats: '积分：890 • 课程：18 • 准确率：82% • 加入：2026年3月', bio: '新学员，通过小测验与重复记忆练习建立信心。', focus: '<strong>擅长：</strong>快速识别原色/间色、坚持每日复习', goal: '<strong>当前目标：</strong>再完成 15 节课后升入中级', progress: '<strong>近期里程碑：</strong>三周内平均分从 68% 提升到 82%', link: '查看完整档案 →' },
+                { level: '中级', stats: '积分：1650 • 课程：32 • 准确率：88% • 加入：2026年2月', bio: '产品设计学习者，希望在原型中做出更干净、更稳定的配色决策。', focus: '<strong>擅长：</strong>中性色板搭建、版式可读性、迭代测试', goal: '<strong>当前目标：</strong>在限时测验中提升互补色阶选择', progress: '<strong>近期里程碑：</strong>完成三次同伴评审的调色板挑战并获得好评', link: '查看完整档案 →' },
+                { level: '高级', stats: '积分：2340 • 课程：46 • 准确率：93% • 加入：2026年1月', bio: '来自孟买的平面设计师，专攻文化色彩象征与跨文化调色板。', focus: '<strong>擅长：</strong>文化色彩联想、暖色掌握、无障碍合规', goal: '<strong>当前目标：</strong>为国际界面项目编写文化自适应色彩指南', progress: '<strong>近期里程碑：</strong>发布涵盖 8 种文化的色彩含义社区资料', link: '查看完整档案 →' },
+                { level: '初级', stats: '积分：720 • 课程：14 • 准确率：79% • 加入：2026年3月', bio: '纺织艺术家转向数字设计，将传统非洲色彩知识融入现代流程。', focus: '<strong>擅长：</strong>大地色识别、图案化色彩记忆、视觉叙事', goal: '<strong>当前目标：</strong>掌握 RGB 到 CMYK 转换以输出可印刷的纺织图案', progress: '<strong>近期里程碑：</strong>完成前 10 节入门课并保持每日练习', link: '查看完整档案 →' },
+                { level: '中级', stats: '积分：1560 • 课程：30 • 准确率：87% • 加入：2026年2月', bio: '用户体验研究员，研究色彩感知在不同人群与文化中的差异。', focus: '<strong>擅长：</strong>用户测试、对比度分析、数据驱动的配色决策', goal: '<strong>当前目标：</strong>完成全部中级测试并开始高级无障碍模块', progress: '<strong>近期里程碑：</strong>组织 20 人色彩偏好调研并在讨论区分享结论', link: '查看完整档案 →' }
+            ];
+            var snap = null;
+            function captureSnap() {
+                if (snap) return;
+                snap = [];
+                document.querySelectorAll('.profile-card').forEach(function (card) {
+                    snap.push({
+                        level: card.querySelector('.profile-level').textContent,
+                        stats: card.querySelector('.profile-stats p').innerHTML,
+                        bio: card.querySelector('.profile-bio').textContent,
+                        focus: card.querySelector('.profile-focus').innerHTML,
+                        goal: card.querySelector('.profile-goal').innerHTML,
+                        progress: card.querySelector('.profile-progress').innerHTML,
+                        link: card.querySelector('.module-link').textContent
+                    });
+                });
+            }
+            function applyProfilesCardLocale(zh) {
+                captureSnap();
+                var cards = document.querySelectorAll('.profile-card');
+                cards.forEach(function (card, i) {
+                    var d = zh ? ZH[i] : snap[i];
+                    if (!d) return;
+                    card.querySelector('.profile-level').textContent = d.level;
+                    card.querySelector('.profile-stats p').innerHTML = d.stats;
+                    card.querySelector('.profile-bio').textContent = d.bio;
+                    card.querySelector('.profile-focus').innerHTML = d.focus;
+                    card.querySelector('.profile-goal').innerHTML = d.goal;
+                    card.querySelector('.profile-progress').innerHTML = d.progress;
+                    card.querySelector('.module-link').textContent = d.link;
+                });
+            }
+            document.addEventListener('colorsite:lang', function (e) {
+                applyProfilesCardLocale(e.detail.zh);
+            });
+        })();
     </script>
     <script src="common.js"></script>
 </body>

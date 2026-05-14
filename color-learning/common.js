@@ -1,4 +1,10 @@
 (function () {
+    try {
+        if (localStorage.getItem('colorLearningSiteLang') === 'zh') {
+            document.documentElement.setAttribute('lang', 'zh');
+        }
+    } catch (e0) {}
+
     var root = document.documentElement;
     var fontSize = 100;
 
@@ -34,7 +40,7 @@
     var langBtn = document.querySelector('.nav-right .lang-btn');
     if (langBtn && !langBtn.dataset.bound) {
         langBtn.dataset.bound = 'true';
-        var isZh = false;
+        var isZh = document.documentElement.getAttribute('lang') === 'zh';
 
         var navKeys = ['nav_home', 'nav_learn', 'nav_game', 'nav_test', 'nav_community'];
         var navTexts = {
@@ -100,7 +106,7 @@
             pageTitleTexts.zh.title = zhTitles[pageId] || savedEnTitle;
         }
         if (subtitleEl) {
-            pageTitleTexts.en.subtitle = subtitleEl.textContent;
+            pageSubtitleTexts.en.subtitle = subtitleEl.textContent;
             var savedEnSub = subtitleEl.textContent;
             var zhSubs = {
                 'home': '掌握 RGB/CMYK/HSV/YCbCr',
@@ -114,14 +120,21 @@
                 'profiles': '探索成员档案和学习之旅',
                 'scoreboard': '每日更新的顶尖表现者和排名'
             };
-            pageTitleTexts.zh.subtitle = zhSubs[pageId] || savedEnSub;
+            pageSubtitleTexts.zh.subtitle = zhSubs[pageId] || savedEnSub;
         }
 
-        langBtn.addEventListener('click', function () {
-            isZh = !isZh;
-            var lang = isZh ? 'zh' : 'en';
-            langBtn.textContent = isZh ? '中文' : 'EN';
-            root.lang = isZh ? 'zh' : 'en';
+        var backLinkEl = document.querySelector('.back-link');
+        var backLinkEn = backLinkEl ? backLinkEl.textContent : '';
+        var skipLinkEl = document.querySelector('.skip-link');
+        var skipLinkEn = skipLinkEl ? skipLinkEl.textContent.trim() : '';
+
+        function applyCommonLanguage(zh) {
+            var lang = zh ? 'zh' : 'en';
+            langBtn.textContent = zh ? '中文' : 'EN';
+            root.lang = zh ? 'zh' : 'en';
+            try {
+                localStorage.setItem('colorLearningSiteLang', zh ? 'zh' : 'en');
+            } catch (ePersist) {}
 
             var navLinks = document.querySelectorAll('nav ul li a');
             navLinks.forEach(function (a, i) {
@@ -159,8 +172,8 @@
             if (titleEl && pageTitleTexts[lang].title) {
                 titleEl.textContent = pageTitleTexts[lang].title;
             }
-            if (subtitleEl && pageTitleTexts[lang].subtitle) {
-                subtitleEl.textContent = pageTitleTexts[lang].subtitle;
+            if (subtitleEl && pageSubtitleTexts[lang].subtitle) {
+                subtitleEl.textContent = pageSubtitleTexts[lang].subtitle;
             }
 
             var footerP = document.querySelector('footer p');
@@ -171,74 +184,117 @@
                     ' <a href="#">' + ft.terms + '</a>';
             }
 
-            var moduleH3s = document.querySelectorAll('.module h3');
-            var moduleLinks = document.querySelectorAll('.module .module-link');
+            var moduleH3s = document.querySelectorAll('.community-modules .module h3');
+            var moduleLinks = document.querySelectorAll('.community-modules .module .module-link');
             var moduleZhH3 = ['社交学习', '个人资料', '排行榜 + 明星学习者'];
             var moduleZhLinks = ['探索讨论 →', '浏览档案 →', '查看排行榜 →'];
             var moduleEnH3 = ['Social Learning', 'Profiles', 'Scoreboard + Star Learners'];
             var moduleEnLinks = ['Explore Discussions →', 'Browse Profiles →', 'View Scoreboard →'];
             moduleH3s.forEach(function (h3, i) {
-                if (isZh && moduleZhH3[i]) h3.textContent = moduleZhH3[i];
-                else if (!isZh && moduleEnH3[i]) h3.textContent = moduleEnH3[i];
+                if (zh && moduleZhH3[i]) h3.textContent = moduleZhH3[i];
+                else if (!zh && moduleEnH3[i]) h3.textContent = moduleEnH3[i];
             });
             moduleLinks.forEach(function (a, i) {
-                if (isZh && moduleZhLinks[i]) a.textContent = moduleZhLinks[i];
-                else if (!isZh && moduleEnLinks[i]) a.textContent = moduleEnLinks[i];
+                if (zh && moduleZhLinks[i]) a.textContent = moduleZhLinks[i];
+                else if (!zh && moduleEnLinks[i]) a.textContent = moduleEnLinks[i];
             });
 
+            var modulePs = document.querySelectorAll('.community-modules .module p');
+            var moduleZhP = ['加入小组讨论并分享技巧', '查看学习者档案与进度', '查看排行榜与顶尖表现者'];
+            var moduleEnP = ['Join Group Discussions & Share Tips', 'View Learner Profiles & Progress', 'Check Leaderboard & Top Performers'];
+            modulePs.forEach(function (p, i) {
+                if (zh && moduleZhP[i]) p.textContent = moduleZhP[i];
+                else if (!zh && moduleEnP[i]) p.textContent = moduleEnP[i];
+            });
+
+            var subH4 = document.querySelector('.subpages-list h4');
+            if (subH4) {
+                subH4.textContent = zh ? '社区子页面：' : 'Community Sub-pages:';
+            }
+            var subAnchors = document.querySelectorAll('.subpages-list ul li a');
+            var subZhA = ['讨论', '学习者档案', '排行榜'];
+            var subEnA = ['Discussions', 'Learner Profiles', 'Scoreboard'];
+            subAnchors.forEach(function (a, i) {
+                if (zh && subZhA[i]) a.textContent = subZhA[i];
+                else if (!zh && subEnA[i]) a.textContent = subEnA[i];
+            });
+
+            var filterZhMap = { all: '全部', tips: '学习技巧', study: '学习方法', theory: '色彩理论', progress: '进度更新', game: '游戏技巧', beginner: '初级', intermediate: '中级', advanced: '高级', expert: '专家' };
+            var filterEnMap = { all: 'All', tips: 'Learning Tips', study: 'Study Methods', theory: 'Color Theory', progress: 'Progress Updates', game: 'Game Tips', beginner: 'Beginner', intermediate: 'Intermediate', advanced: 'Advanced', expert: 'Expert' };
             var filterBtns = document.querySelectorAll('.filter-btn');
-            var filterZhMap = { 'all': '全部', 'tips': '学习技巧', 'study': '学习方法', 'theory': '色彩理论', 'progress': '进度更新', 'game': '游戏技巧', 'beginner': '初级', 'intermediate': '中级', 'advanced': '高级', 'expert': '专家' };
-            var filterEnMap = { 'all': 'All', 'tips': 'Learning Tips', 'study': 'Study Methods', 'theory': 'Color Theory', 'progress': 'Progress Updates', 'game': 'Game Tips', 'beginner': 'Beginner', 'intermediate': 'Intermediate', 'advanced': 'Advanced', 'expert': 'Expert' };
             filterBtns.forEach(function (btn) {
-                var key = btn.textContent.trim().toLowerCase().replace(/\s+/g, '');
-                var map = isZh ? filterZhMap : filterEnMap;
-                for (var k in map) {
-                    if (key.indexOf(k.replace(/\s+/g, '')) !== -1) {
-                        btn.textContent = map[k];
-                        break;
-                    }
+                var fk = btn.getAttribute('data-filter');
+                if (fk && filterZhMap[fk]) {
+                    btn.textContent = (zh ? filterZhMap : filterEnMap)[fk];
                 }
             });
 
             var newDiscBtn = document.getElementById('openNewDiscussionBtn');
             if (newDiscBtn) {
-                newDiscBtn.textContent = isZh ? '发起新讨论' : 'Start New Discussion';
+                newDiscBtn.textContent = zh ? '发起新讨论' : 'Start New Discussion';
             }
 
-            var backLink = document.querySelector('.back-link');
-            if (backLink) {
-                backLink.textContent = isZh ? '← 返回' : backLink.textContent.replace('← 返回', '← Back');
-                if (!isZh && backLink.textContent.indexOf('← 返回') !== -1) {
-                    backLink.textContent = backLink.textContent.replace('← 返回', '← Back to');
-                }
-                if (isZh && backLink.textContent.indexOf('Back') !== -1) {
-                    backLink.textContent = backLink.textContent.replace(/← Back.*/, '← 返回');
-                }
+            if (skipLinkEl) {
+                skipLinkEl.textContent = zh ? '跳到主内容' : skipLinkEn;
+            }
+
+            if (backLinkEl) {
+                backLinkEl.textContent = zh ? '← 返回社区' : backLinkEn;
             }
 
             var startTestBtn = document.getElementById('start-test-btn');
             if (startTestBtn) {
-                startTestBtn.textContent = isZh ? '开始测试' : 'Start Test';
+                startTestBtn.textContent = zh ? '开始测试' : 'Start Test';
             }
 
             var levelCards = document.querySelectorAll('.level-card h3');
             var levelZh = ['基础概念', '高级编码', '综合测试'];
             var levelEn = ['Basic Concepts', 'Advanced Encoding', 'Comprehensive Test'];
             levelCards.forEach(function (h3, i) {
-                if (isZh && levelZh[i]) h3.textContent = levelZh[i];
-                else if (!isZh && levelEn[i]) h3.textContent = levelEn[i];
+                if (zh && levelZh[i]) h3.textContent = levelZh[i];
+                else if (!zh && levelEn[i]) h3.textContent = levelEn[i];
             });
 
             var levelBadges = document.querySelectorAll('.level-badge');
             levelBadges.forEach(function (badge) {
                 var text = badge.textContent.trim();
-                if (isZh) {
+                if (zh) {
                     badge.textContent = text.replace('Level 1', '等级1').replace('Level 2', '等级2').replace('Level 3', '等级3');
                 } else {
                     badge.textContent = text.replace('等级1', 'Level 1').replace('等级2', 'Level 2').replace('等级3', 'Level 3');
                 }
             });
+
+            var scoreHeadings = document.querySelectorAll('.scoreboard-heading');
+            if (scoreHeadings.length >= 1) {
+                scoreHeadings[0].textContent = zh ? '全球排行榜' : 'Global Leaderboard';
+            }
+            if (scoreHeadings.length >= 2) {
+                scoreHeadings[1].textContent = zh ? '明星学习者' : 'Star Learners';
+            }
+            var timePeriodTitle = document.querySelector('.time-periods h3');
+            if (timePeriodTitle) {
+                timePeriodTitle.textContent = zh ? '时间范围' : 'Time Periods';
+            }
+            var timeBtns = document.querySelectorAll('.time-periods .time-btn');
+            var timeZh = ['本周', '本月', '全部时段'];
+            var timeEn = ['This Week', 'This Month', 'All Time'];
+            timeBtns.forEach(function (tb, i) {
+                if (zh && timeZh[i]) tb.textContent = timeZh[i];
+                else if (!zh && timeEn[i]) tb.textContent = timeEn[i];
+            });
+
+            try {
+                document.dispatchEvent(new CustomEvent('colorsite:lang', { detail: { zh: zh } }));
+            } catch (eEv) {}
+        }
+
+        langBtn.addEventListener('click', function () {
+            isZh = !isZh;
+            applyCommonLanguage(isZh);
         });
+
+        applyCommonLanguage(isZh);
     }
 
     var navToggle = document.querySelector('.nav-toggle');

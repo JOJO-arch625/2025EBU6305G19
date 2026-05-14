@@ -353,6 +353,12 @@
             };
 
             var currentLang = 'en';
+            try {
+                if (localStorage.getItem('colorLearningSiteLang') === 'zh') {
+                    currentLang = 'zh';
+                }
+            } catch (eLs) {}
+
             var langBtn = document.getElementById('langToggle');
 
             function applyLang(lang) {
@@ -430,8 +436,13 @@
 
             langBtn.addEventListener('click', function () {
                 currentLang = currentLang === 'en' ? 'zh' : 'en';
+                try {
+                    localStorage.setItem('colorLearningSiteLang', currentLang);
+                } catch (eLs2) {}
                 applyLang(currentLang);
             });
+
+            applyLang(currentLang);
         })();
     </script>
 </body>
