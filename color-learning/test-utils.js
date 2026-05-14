@@ -64,6 +64,7 @@
             Excellent: '优秀',
             'Good Review': '继续复习',
             'Keep Practising': '继续练习',
+            'Start the test now? Make sure you are ready.': '现在开始测试吗？请确认你已经准备好了。',
             'Exit this test and lose your current progress?': '退出测试并丢失当前进度吗？',
             'All rights reserved.': '保留所有权利。',
             'Privacy Policy': '隐私政策',

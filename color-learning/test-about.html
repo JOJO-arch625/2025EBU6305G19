@@ -11,7 +11,7 @@
     <a href="#main-content" class="skip-link">Skip to main content</a>
     <nav>
         <div class="logo">🎨</div>
-        <button class="nav-toggle" aria-label="Toggle navigation">☰</button>
+        <button class="nav-toggle" aria-label="Toggle navigation">&#9776;</button>
         <ul>
             <li><a href="index.html" data-i18n="Homepage">Homepage</a></li>
             <li><a href="learning.html" data-i18n="Learning">Learning</a></li>
@@ -247,7 +247,7 @@
         }
 
         document.getElementById('start-test-btn').addEventListener('click', () => {
-            if (window.confirm('Start the test now? Make sure you are ready.')) {
+            if (window.confirm(window.TestPageUtils.t('Start the test now? Make sure you are ready.'))) {
                 window.location.href = `test-question.html?level=${resolvedLevelKey}`;
             }
         });
