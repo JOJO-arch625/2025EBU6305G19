@@ -628,3 +628,8 @@ html, body {
     font-weight: bold;
     cursor: pointer;
 }
+/* 让课前竞猜按钮 + 题目 跟随全局字体缩放 */
+.quiz-bubble-btn,
+.quiz-question {
+  font-size: 1em !important;
+}
