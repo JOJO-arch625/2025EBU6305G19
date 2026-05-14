@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Homepage - Color Learning</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="site-settings.js"></script>
 </head>
 <body>
     <a href="#main-content" class="skip-link">Skip to main content</a>
@@ -245,32 +246,6 @@
 
     <script>
         (function () {
-            var fontSteps = [80, 90, 100, 110, 120, 130];
-            var fontIndex = 2;
-            var root = document.documentElement;
-
-            function applyFontSize() {
-                root.style.fontSize = fontSteps[fontIndex] + '%';
-            }
-
-            document.getElementById('fontDecrease').addEventListener('click', function () {
-                if (fontIndex > 0) { fontIndex--; applyFontSize(); }
-            });
-
-            document.getElementById('fontIncrease').addEventListener('click', function () {
-                if (fontIndex < fontSteps.length - 1) { fontIndex++; applyFontSize(); }
-            });
-
-            var contrastToggle = document.getElementById('contrastToggle');
-            contrastToggle.addEventListener('click', function () {
-                document.body.classList.toggle('high-contrast');
-                contrastToggle.classList.toggle('active');
-            });
-        })();
-    </script>
-
-    <script>
-        (function () {
             var i18n = {
                 en: {
                     nav_home: 'Homepage',
@@ -352,12 +327,7 @@
                 }
             };
 
-            var currentLang = 'en';
-            try {
-                if (localStorage.getItem('colorLearningSiteLang') === 'zh') {
-                    currentLang = 'zh';
-                }
-            } catch (eLs) {}
+            var currentLang = window.SiteSettings ? window.SiteSettings.get().lang : 'en';
 
             var langBtn = document.getElementById('langToggle');
 
@@ -431,14 +401,11 @@
                 }
 
                 document.documentElement.lang = lang === 'zh' ? 'zh' : 'en';
-                langBtn.textContent = lang === 'en' ? 'EN' : '中文';
+                if (langBtn) langBtn.textContent = lang === 'en' ? 'EN' : '中文';
             }
 
-            langBtn.addEventListener('click', function () {
-                currentLang = currentLang === 'en' ? 'zh' : 'en';
-                try {
-                    localStorage.setItem('colorLearningSiteLang', currentLang);
-                } catch (eLs2) {}
+            document.addEventListener('site-settings:change', function (event) {
+                currentLang = event.detail.lang;
                 applyLang(currentLang);
             });
 

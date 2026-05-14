@@ -1,9 +1,4 @@
 (function () {
-    const STORAGE_KEYS = {
-        lang: 'colorLearningTestLang',
-        fontSize: 'colorLearningTestFontSize'
-    };
-
     const translations = {
         zh: {
             Homepage: '首页',
@@ -72,53 +67,37 @@
         }
     };
 
-    let currentLang = localStorage.getItem(STORAGE_KEYS.lang) || 'en';
-    let currentFontSize = Number(localStorage.getItem(STORAGE_KEYS.fontSize)) || 100;
+    function getLang() {
+        return window.SiteSettings ? window.SiteSettings.get().lang : 'en';
+    }
 
     function t(text) {
-        return currentLang === 'zh' && translations.zh[text] ? translations.zh[text] : text;
+        return getLang() === 'zh' && translations.zh[text] ? translations.zh[text] : text;
     }
 
     function applyStaticTranslations() {
-        document.documentElement.lang = currentLang === 'zh' ? 'zh-CN' : 'en';
+        const lang = getLang();
+        document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
         document.querySelectorAll('[data-i18n]').forEach((element) => {
             const key = element.getAttribute('data-i18n');
             element.textContent = t(key);
         });
         document.querySelectorAll('.lang-btn').forEach((button) => {
-            button.dataset.bound = 'true';
-            button.textContent = currentLang === 'zh' ? '中' : 'EN';
-            button.setAttribute('aria-label', currentLang === 'zh' ? 'Switch language' : '切换语言');
+            if (!button.hasAttribute('data-language')) {
+                button.textContent = lang === 'zh' ? '中' : 'EN';
+            }
+            button.setAttribute('aria-label', lang === 'zh' ? 'Switch language' : '切换语言');
         });
-    }
-
-    function applyFontSize() {
-        document.body.style.fontSize = `${currentFontSize}%`;
     }
 
     function initTestControls(onLanguageChange) {
-        applyFontSize();
         applyStaticTranslations();
 
-        document.querySelectorAll('.lang-btn').forEach((button) => {
-            button.addEventListener('click', () => {
-                currentLang = currentLang === 'en' ? 'zh' : 'en';
-                localStorage.setItem(STORAGE_KEYS.lang, currentLang);
-                applyStaticTranslations();
-                if (typeof onLanguageChange === 'function') {
-                    onLanguageChange(currentLang);
-                }
-            });
-        });
-
-        document.querySelectorAll('.font-btn').forEach((button) => {
-            button.addEventListener('click', (event) => {
-                event.stopImmediatePropagation();
-                const change = button.textContent.trim() === 'A+' ? 10 : -10;
-                currentFontSize = Math.min(160, Math.max(70, currentFontSize + change));
-                localStorage.setItem(STORAGE_KEYS.fontSize, String(currentFontSize));
-                applyFontSize();
-            });
+        document.addEventListener('site-settings:change', function () {
+            applyStaticTranslations();
+            if (typeof onLanguageChange === 'function') {
+                onLanguageChange(getLang());
+            }
         });
 
         const navToggle = document.querySelector('.nav-toggle');
@@ -131,11 +110,20 @@
                 }
             });
         }
+
+        const logoEl = document.querySelector('nav .logo');
+        if (logoEl && !logoEl.dataset.bound) {
+            logoEl.dataset.bound = 'true';
+            logoEl.style.cursor = 'pointer';
+            logoEl.addEventListener('click', () => {
+                window.location.href = 'index.html';
+            });
+        }
     }
 
     window.TestPageUtils = {
         init: initTestControls,
         t,
-        getLang: () => currentLang
+        getLang
     };
 })();

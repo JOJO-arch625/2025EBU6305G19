@@ -328,8 +328,8 @@ const tasks = {
 };
 
 const worldState = {
-    language: "en",
-    fontScale: 1,
+    language: (window.SiteSettings ? window.SiteSettings.get().lang : "en"),
+    fontScale: (window.SiteSettings ? window.SiteSettings.get().fontSize / 100 : 1),
     soundEnabled: true,
     score: 0,
     streak: 0,
@@ -1269,24 +1269,16 @@ function tick(now) {
 }
 
 function attachEvents() {
-    elements.chipsLanguage.forEach((button) => {
-        button.addEventListener("click", () => {
-            worldState.language = button.dataset.language;
+    document.addEventListener("site-settings:change", (event) => {
+        const lang = event.detail.lang;
+        const fontSize = event.detail.fontSize;
+        if (lang && lang !== worldState.language) {
+            worldState.language = lang;
             applyStaticTranslations();
-        });
-    });
-
-    elements.chipsFont.forEach((button) => {
-        button.addEventListener("click", () => {
-            const step = Number(button.dataset.fontStep);
-            worldState.fontScale = clamp(worldState.fontScale + step * 0.05, 0.9, 1.2);
-            document.documentElement.style.setProperty("--cg-font-scale", String(worldState.fontScale));
-        });
-    });
-
-    elements.chipReset.addEventListener("click", () => {
-        worldState.fontScale = 1;
-        document.documentElement.style.setProperty("--cg-font-scale", "1");
+        }
+        if (typeof fontSize === "number") {
+            worldState.fontScale = fontSize / 100;
+        }
     });
 
     elements.soundToggle.addEventListener("click", () => {

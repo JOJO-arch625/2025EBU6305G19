@@ -6,6 +6,7 @@
     <title>Learning - Color Encoding | EBU5303 Complete Course</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="learning-pages.css">
+    <script src="site-settings.js"></script>
 </head>
 <body class="learning-page">
     <a href="#main-content" class="skip-link">Skip to main content</a>
@@ -884,7 +885,7 @@
         const subModels = document.getElementById('sub-models');
         const subTabs = document.querySelectorAll('.sub-tab');
         const contents = document.querySelectorAll('.content-section');
-        let isChinese = false;
+        let isChinese = window.SiteSettings ? window.SiteSettings.isZh() : false;
         // 标签文字双语配置
         const tabTexts = {
             en: {
@@ -913,33 +914,45 @@
                 breadcrumb: "学习中心"
             }
         };
-        // 语言切换函数
-        function switchLanguage() {
-            isChinese = !isChinese;
-            try {
-                localStorage.setItem('colorLearningSiteLang', isChinese ? 'zh' : 'en');
-            } catch (eL) {}
+        // Language switching: page-specific application driven by global SiteSettings
+        function applyPageLanguage(zh) {
+            isChinese = !!zh;
             const lang = isChinese ? 'cn' : 'en';
             const btn = document.getElementById('langBtn');
-            btn.textContent = isChinese ? '中' : 'EN';
-            // 切换 é¡µé¢æ é¢ãå¯æ é¢ãé¢åå±
-            document.querySelector('.page-title').textContent = pageTexts[lang].title;
-            document.querySelector('.page-subtitle').textContent = pageTexts[lang].subtitle;
-            // åæ¢ä¸»æ ç­¾ä¸å­æ ç­¾æå­
-            document.getElementById('tab-basics').textContent = tabTexts[lang].basics;
-            document.getElementById('tab-models').textContent = tabTexts[lang].models;
-            document.getElementById('sub-color-basics').textContent = tabTexts[lang].colorBasics;
-            document.getElementById('sub-color-vision').textContent = tabTexts[lang].colorVision;
-            // éèææåå®¹
+            if (btn) btn.textContent = isChinese ? '中' : 'EN';
+            const titleEl = document.querySelector('.page-title');
+            const subEl = document.querySelector('.page-subtitle');
+            if (titleEl) titleEl.textContent = pageTexts[lang].title;
+            if (subEl) subEl.textContent = pageTexts[lang].subtitle;
+            const tBasics = document.getElementById('tab-basics');
+            const tModels = document.getElementById('tab-models');
+            const sBasics = document.getElementById('sub-color-basics');
+            const sVision = document.getElementById('sub-color-vision');
+            if (tBasics) tBasics.textContent = tabTexts[lang].basics;
+            if (tModels) tModels.textContent = tabTexts[lang].models;
+            if (sBasics) sBasics.textContent = tabTexts[lang].colorBasics;
+            if (sVision) sVision.textContent = tabTexts[lang].colorVision;
             document.querySelectorAll('.lang-en, .lang-cn').forEach(el => {
                 el.style.display = 'none';
             });
-            // æ¾ç¤ºå½åè¯­è¨å¯¹åºæ¿æ´»åå®¹
-            const activeSub = document.querySelector('.sub-tab.active').id.replace('sub-', '');
-            const targetId = `content-${activeSub}${isChinese ? '-cn' : ''}`;
-            const targetEl = document.getElementById(targetId);
-            if (targetEl) targetEl.style.display = 'block';
+            const activeSubEl = document.querySelector('.sub-tab.active');
+            if (activeSubEl) {
+                const activeSub = activeSubEl.id.replace('sub-', '');
+                const targetId = `content-${activeSub}${isChinese ? '-cn' : ''}`;
+                const targetEl = document.getElementById(targetId);
+                if (targetEl) targetEl.style.display = 'block';
+            }
         }
+        function switchLanguage() {
+            if (window.SiteSettings) {
+                window.SiteSettings.toggleLang();
+            } else {
+                applyPageLanguage(!isChinese);
+            }
+        }
+        document.addEventListener('site-settings:change', function (event) {
+            applyPageLanguage(event.detail.lang === 'zh');
+        });
         mainTabs.forEach(tab => {
             tab.addEventListener('click', () => {
                 mainTabs.forEach(t => t.classList.remove('active'));
@@ -963,13 +976,8 @@
                 if (target) target.style.display = 'block';
             });
         });
-document.getElementById('fontBigger').addEventListener('click', () => {
-    if (currentFontSize < 160) {
-        currentFontSize += 10;
-        root.style.fontSize = currentFontSize + '%';
-    }
-});
-document.getElementById('fontSmaller').addEventListener('click', () => { if(currentFontSize > 60) { currentFontSize -= 10; root.style.fontSize = currentFontSize + '%'; } });
+document.getElementById('fontBigger').addEventListener('click', () => {});
+document.getElementById('fontSmaller').addEventListener('click', () => {});
         document.getElementById('langBtn').addEventListener('click', switchLanguage);
 function playClickSound() {
     const audio = new Audio('./click.mp3');
@@ -982,11 +990,6 @@ themeButtons.forEach(btn => {
     btn.addEventListener('click', playClickSound);
 });
         window.addEventListener('load', () => { document.getElementById('content-color-basics').style.display = 'block'; });
-
-        document.getElementById('contrastToggle').addEventListener('click', function() {
-            document.body.classList.toggle('high-contrast');
-            this.classList.toggle('active');
-        });
 
         var logoEl = document.querySelector('nav .logo');
         if (logoEl) {

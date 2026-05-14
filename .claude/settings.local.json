@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node -c learning.html)",
+      "Bash(node -c site-settings.js)",
+      "Bash(node -c common.js)",
+      "Bash(node -c test-utils.js)",
+      "Bash(node -c game.js)",
+      "Bash(sed -n '881,1165p' learning.html)",
+      "Bash(node -c /tmp/learning_check.js)"
+    ]
+  }
+}
