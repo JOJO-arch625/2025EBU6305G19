@@ -914,12 +914,24 @@
                 breadcrumb: "学习中心"
             }
         };
+        const navTexts = {
+            en: { Homepage: 'Homepage', Learning: 'Learning', Game: 'Game', Test: 'Test', Community: 'Community', Home: 'Home', Current: 'Learning' },
+            cn: { Homepage: '首页', Learning: '学习', Game: '游戏', Test: '测试', Community: '社区', Home: '首页', Current: '学习' }
+        };
         // Language switching: page-specific application driven by global SiteSettings
         function applyPageLanguage(zh) {
             isChinese = !!zh;
             const lang = isChinese ? 'cn' : 'en';
             const btn = document.getElementById('langBtn');
             if (btn) btn.textContent = isChinese ? '中' : 'EN';
+            const navMap = navTexts[lang];
+            const navAnchors = document.querySelectorAll('nav ul li a');
+            const navOrder = ['Homepage', 'Learning', 'Game', 'Test', 'Community'];
+            navAnchors.forEach((a, i) => { if (navOrder[i]) a.textContent = navMap[navOrder[i]]; });
+            const bcHome = document.querySelector('.breadcrumb a');
+            const bcCurrent = document.querySelector('.breadcrumb-current');
+            if (bcHome) bcHome.textContent = navMap.Home;
+            if (bcCurrent) bcCurrent.textContent = navMap.Current;
             const titleEl = document.querySelector('.page-title');
             const subEl = document.querySelector('.page-subtitle');
             if (titleEl) titleEl.textContent = pageTexts[lang].title;
